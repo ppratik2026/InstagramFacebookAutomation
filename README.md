@@ -2,23 +2,23 @@
 
 Yeh tool roz apne aap:
 
-1. **Claude + web search** se Gujarat ki asli, taaza news dhundta hai (crime, sara samachar, sarkari jaherat)
-2. Us news ka ek **Gujarati news card** (1080×1920 image) banata hai
+1. **Gemini + Google Search** se Gujarat ki asli, taaza news dhundta hai (crime, sara samachar, sarkari jaherat)
+2. Us news ka ek **colourful Gujarati news card** (1080×1920 image) banata hai. Har category ki apni theme hai (crime = laal, khushkhabar = hara, sarkari = kesari/neela), aur peeche **Gemini ki banayi AI image** hoti hai
 3. Image ko **15 second ki Reel** mein badalta hai (slow zoom + music)
 4. **Instagram pe Reel post** karta hai (official Instagram API, password ki zaroorat nahi)
 
 ```
-News (Claude web search) → Card image (HTML → PNG) → Reel MP4 (FFmpeg) → Instagram API
+News (Gemini + Google Search) → AI background (Gemini image) → Card image (HTML → PNG) → Reel MP4 (FFmpeg) → Instagram API
 ```
 
 ## 1. Zaroori keys
 
 | Key | Kahan se milegi |
 |---|---|
-| `ANTHROPIC_API_KEY` | [console.anthropic.com](https://console.anthropic.com) → API Keys (paid, har reel ka thoda kharcha) |
+| `GEMINI_API_KEY` | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) → Create API key. Free tier mein limit hai; AI image aur zyada posts ke liye billing on karni pad sakti hai |
 | `IG_ACCESS_TOKEN` | Meta app → Instagram API → API setup with Instagram login → **Generate token** |
 | `IG_USER_ID` | Usi page pe account ke neeche likha number (`17841422688299078`) |
-| `PEXELS_API_KEY` | Optional, free: [pexels.com/api](https://www.pexels.com/api/). Isse card ke peeche photo aati hai |
+| `PEXELS_API_KEY` | Optional, free: [pexels.com/api](https://www.pexels.com/api/). AI image na bane to backup photo yahan se aati hai |
 
 > ⚠️ Token/keys kabhi chat, code ya GitHub pe paste mat karna. Sirf `.env` (local) ya GitHub Secrets mein.
 
@@ -56,8 +56,8 @@ python main.py run --category government    # sirf ek category
 ```
 
 Har run ka folder `output/<date-time>/` mein banta hai, usmein yeh files hoti hain:
-- `research.md`: Claude ko kaunsi news mili aur kis source se
-- `story.json`, `caption.txt`, `card.png`, `reel.mp4`
+- `research.md`: Gemini ko kaunsi news mili aur kin sources se
+- `story.json`, `caption.txt`, `background.png`, `card.png`, `reel.mp4`
 
 ## 4. Music 🎵
 
@@ -73,12 +73,15 @@ Har run ka folder `output/<date-time>/` mein banta hai, usmein yeh files hoti ha
 - `content.categories`: kaun si news chahiye (crime / good_news / government)
 - `content.extra_instructions`: jaise "sirf Ahmedabad ki news" ya "exam aur job news ko priority do"
 - `card.handle`: card pe dikhne wala Instagram handle
+- `gemini.text_model` / `gemini.image_model`: Gemini models. Google naya model laaye ya purana band kare to yahan naam badal do
+- `gemini.ai_background`: `false` karoge to AI image nahi banegi, sirf Pexels photo ya theme colours
+- Colours/themes badalne hain to `src/card.py` mein `THEMES` dekho
 - `video.seconds`: reel ki length (12–15 achha hai)
 - `video.zoom`: slow zoom on/off
 
 ## 6. News ke niyam (built-in)
 
-Claude ko yeh niyam diye gaye hain:
+Gemini ko yeh niyam diye gaye hain:
 - Sirf web pe mile **asli sources** ki baatein. Koi number ya date guess nahi karega.
 - Crime news mein victim (khaaskar sexual offence ke cases) ya bachchon ki pehchaan nahi batayega. Jinka case abhi chal raha hai unhe sirf "આરોપી" kahega.
 - Har card aur caption pe **source ka naam** dikhega.

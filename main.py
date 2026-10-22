@@ -21,20 +21,20 @@ def instagram(cfg: dict):
 
 
 def cmd_run(args, cfg):
-    from src.backgrounds import fetch_background
+    from src.backgrounds import get_background
     from src.card import render_card
     from src.history import add_entry, recent_titles
     from src.news import find_story
     from src.video_builder import build_video, pick_music
 
-    require_env("ANTHROPIC_API_KEY")
+    require_env("GEMINI_API_KEY")
     if not args.no_publish:
         ig = instagram(cfg)  # fail early if the Instagram secrets are missing
 
     work_dir = ROOT / "output" / datetime.now().strftime("%Y%m%d-%H%M%S")
     work_dir.mkdir(parents=True, exist_ok=True)
 
-    print("1/4 Finding Gujarat news with Claude + web search...")
+    print("1/4 Finding Gujarat news with Gemini + Google Search...")
     story, notes = find_story(cfg, recent_titles(), args.category)
     caption = story.full_caption()
     (work_dir / "research.md").write_text(notes, encoding="utf-8")
@@ -44,7 +44,7 @@ def cmd_run(args, cfg):
     print(f"   Source: {story.source_name} {story.source_url}")
 
     print("2/4 Designing the news card...")
-    background = fetch_background(story.image_keywords, work_dir / "background.jpg")
+    background = get_background(story, cfg, work_dir)
     card = render_card(story, cfg, work_dir / "card.png", background)
 
     print("3/4 Making the reel...")
