@@ -1,0 +1,7 @@
+.env
+.new_token
+__pycache__/
+*.pyc
+.venv/
+venv/
+output/

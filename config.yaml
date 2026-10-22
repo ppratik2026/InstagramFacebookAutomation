@@ -1,0 +1,31 @@
+# What the reels are about.
+content:
+  region: "Gujarat"
+  language: "Gujarati"
+  # Categories Claude looks for. Remove any you don't want.
+  categories:
+    crime: "ક્રાઇમ ન્યૂઝ (crime and police news)"
+    good_news: "સારા સમાચાર (positive stories, achievements, development)"
+    government: "સરકારી જાહેરાત (government announcements, schemes, exam dates, rules, prices)"
+  max_news_age_hours: 48
+  hashtags_count: 10
+  extra_instructions: ""
+
+# Look of the news card.
+card:
+  handle: "@aehaalogujarat"
+  font: "Baloo Bhai 2"            # any Google Font that supports Gujarati
+
+video:
+  seconds: 15                     # Instagram needs at least 3s; 12-15s works well for news reels
+  fps: 30
+  zoom: true                      # slow zoom-in on the image
+  music_volume: 0.9               # music from assets/music/*.mp3 (random pick each run)
+
+claude:
+  model: "claude-opus-5-5"
+  effort: "medium"
+
+instagram:
+  api_version: "v21.0"
+  share_to_feed: true

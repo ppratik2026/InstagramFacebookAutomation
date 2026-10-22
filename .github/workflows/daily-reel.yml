@@ -1,0 +1,76 @@
+name: Gujarat news reel
+
+on:
+  schedule:
+    # times are UTC: 02:40, 07:40, 13:40 UTC = 08:10, 13:10, 19:10 IST
+    - cron: "40 2 * * *"
+    - cron: "40 7 * * *"
+    - cron: "40 13 * * *"
+  workflow_dispatch:
+    inputs:
+      category:
+        description: "crime / good_news / government (empty = any)"
+        required: false
+        default: ""
+      publish:
+        description: "Post to Instagram (untick to only make the video)"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: reel
+  cancel-in-progress: false
+
+jobs:
+  reel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install system packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-noto-core fonts-noto-color-emoji
+
+      - name: Install Python packages
+        run: |
+          pip install -r requirements.txt
+          python -m playwright install --with-deps chromium
+
+      - name: Make (and post) the reel
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          ARGS=""
+          if [ -n "${{ inputs.category }}" ]; then ARGS="$ARGS --category ${{ inputs.category }}"; fi
+          if [ "${{ inputs.publish }}" = "false" ]; then ARGS="$ARGS --no-publish"; fi
+          python main.py run $ARGS
+
+      - name: Save the video
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reel-${{ github.run_number }}
+          path: output/
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Remember posted stories
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/history.json || true
+          git diff --cached --quiet || (git commit -m "Update posted history" && git push)
