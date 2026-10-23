@@ -9,9 +9,14 @@ on:
   workflow_dispatch:
     inputs:
       category:
-        description: "crime / good_news / government (empty = any)"
-        required: false
-        default: ""
+        description: "News category"
+        type: choice
+        options:
+          - any
+          - government
+          - crime
+          - good_news
+        default: any
       publish:
         description: "Post to Instagram (untick to only make the video)"
         type: boolean
@@ -54,7 +59,7 @@ jobs:
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
         run: |
           ARGS=""
-          if [ -n "${{ inputs.category }}" ]; then ARGS="$ARGS --category ${{ inputs.category }}"; fi
+          if [ -n "${{ inputs.category }}" ] && [ "${{ inputs.category }}" != "any" ]; then ARGS="$ARGS --category ${{ inputs.category }}"; fi
           if [ "${{ inputs.publish }}" = "false" ]; then ARGS="$ARGS --no-publish"; fi
           python main.py run $ARGS
 
