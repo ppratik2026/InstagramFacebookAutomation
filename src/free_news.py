@@ -7,6 +7,7 @@ import html
 import json
 import os
 import re
+import time
 import urllib.parse
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
@@ -148,6 +149,16 @@ def _post(provider: dict, key: str, model: str, messages: list, json_mode: bool)
     return requests.post(provider["url"], headers=headers, json=body, timeout=120, allow_redirects=False)
 
 
+def _retry_after(resp: requests.Response) -> int:
+    """Seconds to wait after a rate-limit reply (Retry-After header or 'Retry after 14s' in the body)."""
+    match = re.search(r"[Rr]etry after (\d+)", resp.text)
+    seconds = resp.headers.get("retry-after") or (match.group(1) if match else "30")
+    try:
+        return min(max(int(float(seconds)), 5) + 3, 90)
+    except ValueError:
+        return 33
+
+
 def _chat(cfg: dict, system: str, user: str) -> dict:
     """Ask the first free LLM provider that works. Providers whose key isn't set are skipped."""
     messages = [{"role": "system", "content": system}, {"role": "user", "content": user}]
@@ -161,6 +172,13 @@ def _chat(cfg: dict, system: str, user: str) -> dict:
                 resp = None
                 try:
                     resp = _post(provider, key, model, messages, json_mode)
+                    for _ in range(3):  # free tiers rate-limit ("1 reply every 30 seconds"): wait and retry
+                        if resp.status_code not in (402, 429):
+                            break
+                        wait = _retry_after(resp)
+                        print(f"   {provider['name']} rate limit, waiting {wait}s...")
+                        time.sleep(wait)
+                        resp = _post(provider, key, model, messages, json_mode)
                     if resp.status_code == 200:
                         return _parse_json(resp.json()["choices"][0]["message"]["content"])
                     problem = f"HTTP {resp.status_code}"
