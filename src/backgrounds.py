@@ -68,7 +68,7 @@ def fetch_stock_background(keywords: list[str], out_path: Path) -> Path | None:
 
 
 def get_background(story, cfg: dict, work_dir: Path) -> Path | None:
-    if cfg["gemini"].get("ai_background", True):
+    if cfg.get("provider") == "gemini" and cfg["gemini"].get("ai_background", True):
         path = generate_ai_background(story.image_prompt, cfg["gemini"]["image_model"], work_dir / "background.png")
         if path:
             return path

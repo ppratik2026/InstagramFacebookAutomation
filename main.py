@@ -24,18 +24,23 @@ def cmd_run(args, cfg):
     from src.backgrounds import get_background
     from src.card import render_card
     from src.history import add_entry, recent_titles
-    from src.news import find_story
     from src.poster import make_poster
     from src.video_builder import build_video, pick_music
 
-    require_env("GEMINI_API_KEY")
+    if cfg.get("provider") == "gemini":
+        from src.news import find_story
+        require_env("GEMINI_API_KEY")
+    else:
+        from src.free_news import find_story
+        require_env("GITHUB_TOKEN")
+
     if not args.no_publish:
         ig = instagram(cfg)  # fail early if the Instagram secrets are missing
 
     work_dir = ROOT / "output" / datetime.now().strftime("%Y%m%d-%H%M%S")
     work_dir.mkdir(parents=True, exist_ok=True)
 
-    print("1/4 Finding Gujarat news with Gemini + Google Search...")
+    print(f"1/4 Finding Gujarat news ({cfg.get('provider', 'free')})...")
     story, notes = find_story(cfg, recent_titles(), args.category)
     caption = story.full_caption()
     (work_dir / "research.md").write_text(notes, encoding="utf-8")
@@ -46,7 +51,7 @@ def cmd_run(args, cfg):
 
     print("2/4 Designing the news poster...")
     card = None
-    if cfg["card"].get("style", "ai_poster") == "ai_poster":
+    if cfg.get("provider") == "gemini" and cfg["card"].get("style", "ai_poster") == "ai_poster":
         card = make_poster(story, cfg, work_dir / "card.png")
         if not card:
             print("   AI poster not usable, falling back to the template card.")

@@ -39,7 +39,7 @@ THEMES = {
         {"tag": "📢 સરકારી અપડેટ", "scene": ["🏛️", "📜", "✅"], "banner": "linear-gradient(90deg,#b23a00,#ff8a00,#b23a00)",
          "accent": "#ff9f1c", "glow": "rgba(255,138,0,.55)", "bokeh": "#ffb347",
          "base": "radial-gradient(circle at 50% 42%,#1e3a8a 0%,#0b1a45 50%,#040a1f 100%)"},
-        {"tag": "📢 મોટા સમાચાર", "scene": ["📣", "📅", "💰"], "banner": "linear-gradient(90deg,#9d0208,#e85d04,#9d0208)",
+        {"tag": "📢 મોટા સમાચાર", "scene": ["📣", "🗞️", "🏛️"], "banner": "linear-gradient(90deg,#9d0208,#e85d04,#9d0208)",
          "accent": "#ffba08", "glow": "rgba(255,186,8,.55)", "bokeh": "#ffd166",
          "base": "radial-gradient(circle at 50% 42%,#e85d04 0%,#9d0208 40%,#370617 100%)"},
     ],

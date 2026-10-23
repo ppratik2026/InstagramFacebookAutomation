@@ -2,30 +2,41 @@
 
 Yeh tool roz apne aap:
 
-1. **Gemini + Google Search** se Gujarat ki asli, taaza news dhundta hai (crime, sara samachar, sarkari jaherat)
-2. Us news ka ek **colourful Gujarati news card** (1080×1920 image) banata hai. Har category ki apni theme hai (crime = laal, khushkhabar = hara, sarkari = kesari/neela), aur peeche **Gemini ki banayi AI image** hoti hai
+1. Gujarat ki asli, taaza news dhundta hai (crime, sara samachar, sarkari jaherat)
+2. Us news ka ek **colourful Gujarati news card** (1080×1920 image) banata hai
 3. Image ko **15 second ki Reel** mein badalta hai (slow zoom + music)
 4. **Instagram pe Reel post** karta hai (official Instagram API, password ki zaroorat nahi)
 
+Do mode hain (`config.yaml` → `provider`):
+
+| | `free` (default) | `gemini` |
+|---|---|---|
+| News | Google News + Gujarati news sites ke RSS feeds | Gemini + Google Search |
+| Gujarati text | **GitHub Models** (OpenAI GPT-4.1, GitHub Actions mein free) | Gemini |
+| Poster | Template design (`src/card.py`) | Gemini ka poora AI poster |
+| Kharcha | **₹0** | Gemini billing |
+
 ```
-News (Gemini + Google Search) → AI background (Gemini image) → Card image (HTML → PNG) → Reel MP4 (FFmpeg) → Instagram API
+free:   RSS news → GitHub Models (Gujarati text) → Card image (HTML → PNG) → Reel MP4 (FFmpeg) → Instagram API
 ```
 
 ## 1. Zaroori keys
 
 | Key | Kahan se milegi |
 |---|---|
-| `GEMINI_API_KEY` | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) → Create API key. Free tier mein limit hai; AI image aur zyada posts ke liye billing on karni pad sakti hai |
 | `IG_ACCESS_TOKEN` | Meta app → Instagram API → API setup with Instagram login → **Generate token** |
 | `IG_USER_ID` | Usi page pe account ke neeche likha number (`17841422688299078`) |
-| `PEXELS_API_KEY` | **Optional** (na do to bhi tool chalega), free: [pexels.com/api](https://www.pexels.com/api/). Sirf backup card mein, jab Gemini background image na bana paaye, tab photo yahan se aati hai. Key na ho ya Pexels fail ho to emoji/colour design lag jaata hai |
+| `PEXELS_API_KEY` | **Optional**, free: [pexels.com/api](https://www.pexels.com/api/). Card ke peeche photo ke liye. Na do to emoji/colour design lagta hai |
+| `GEMINI_API_KEY` | Sirf `provider: "gemini"` ke liye (billing chahiye). Free mode mein zaroorat nahi |
+
+`free` mode mein AI ke liye koi key nahi chahiye: GitHub Actions ka apna `GITHUB_TOKEN` GitHub Models use karta hai. Free limit lagbhag 50–150 requests/din hai, aur ek reel mein 2 requests lagti hain.
 
 > ⚠️ Token/keys kabhi chat, code ya GitHub pe paste mat karna. Sirf `.env` (local) ya GitHub Secrets mein.
 
 ## 2. GitHub Actions pe roz automatic chalana (recommended)
 
 1. GitHub repo → **Settings → Secrets and variables → Actions → New repository secret**
-2. Upar wali 4 keys add karo (same naam ke saath).
+2. Upar wali keys add karo (same naam ke saath). Free mode mein sirf `IG_ACCESS_TOKEN` aur `IG_USER_ID` zaroori hain.
 3. **Actions** tab → **Gujarat news reel** → **Run workflow**.
    - Pehli baar `publish` ka tick hata kar chalao. Video **Artifacts** mein milega, use download karke dekh lo.
    - Theek lage to tick laga kar chalao, Reel post ho jayegi.
