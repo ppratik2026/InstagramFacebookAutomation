@@ -37,14 +37,10 @@ free:
     - "https://tv9gujarati.com/feed"
 
 # Free LLMs for the "free" provider, tried in order (OpenAI-compatible chat APIs).
+# If none answers, the card is made from the news headline itself, without AI.
 # A provider with key_env is only used when that secret is set. If a model is unknown or its free
 # daily limit is used up, the next model / provider is tried.
 llm_providers:
-  - name: github-models               # free inside GitHub Actions (GITHUB_TOKEN is automatic)
-    url: "https://models.github.ai/inference/chat/completions"
-    key_env: GITHUB_TOKEN
-    headers: {Accept: "application/vnd.github+json", X-GitHub-Api-Version: "2022-11-28"}
-    models: ["openai/gpt-4.1", "openai/gpt-4.1-mini", "openai/gpt-4o-mini"]
   - name: groq                        # free key, no card: https://console.groq.com/keys
     url: "https://api.groq.com/openai/v1/chat/completions"
     key_env: GROQ_API_KEY

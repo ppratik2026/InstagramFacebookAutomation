@@ -16,6 +16,7 @@ from email.utils import parsedate_to_datetime
 
 import requests
 
+from .card import GUJARATI_MONTHS
 from .news import IST, NewsStory
 
 CONTENT_NS = "{http://purl.org/rss/1.0/modules/content/}encoded"
@@ -71,6 +72,7 @@ class FeedItem:
     source: str
     published: datetime
     text: str  # summary or full text from the feed (may be short)
+    category: str | None = None  # known when the item came from a per-category search
 
 
 def _strip_html(raw: str) -> str:
@@ -146,7 +148,7 @@ def _post(provider: dict, key: str, model: str, messages: list, json_mode: bool)
     if key:
         headers["Authorization"] = f"Bearer {key}"
     # no redirects: a redirected POST silently turns into a GET and returns a useless page
-    return requests.post(provider["url"], headers=headers, json=body, timeout=120, allow_redirects=False)
+    return requests.post(provider["url"], headers=headers, json=body, timeout=90, allow_redirects=False)
 
 
 def _retry_after(resp: requests.Response) -> int:
@@ -193,8 +195,46 @@ def _chat(cfg: dict, system: str, user: str) -> dict:
                 if resp is None or resp.status_code != 400:
                     break  # only a 400 is worth retrying without response_format
     if not errors:
-        raise SystemExit("No LLM provider available: set GITHUB_TOKEN, or add a free key (see README).")
+        raise RuntimeError("No LLM provider available: add a free GROQ_API_KEY (see README).")
     raise RuntimeError("All free LLM providers failed:\n" + "\n".join(errors))
+
+
+KICKERS = {
+    "crime": "ગુજરાત ક્રાઇમ ન્યૂઝ",
+    "good_news": "ગુજરાત માટે ખુશખબર",
+    "government": "ગુજરાત માટે મોટા સમાચાર",
+}
+DEFAULT_HASHTAGS = ["ગુજરાત", "ગુજરાતસમાચાર", "GujaratNews", "Gujarat", "GujaratiNews",
+                    "News", "BreakingNews", "Ahmedabad", "Surat", "Vadodara", "Rajkot"]
+
+
+def _shorten(text: str, limit: int) -> str:
+    return text if len(text) <= limit else text[:limit].rsplit(" ", 1)[0] + "…"
+
+
+def _plain_card(item: FeedItem, category: str, article: str, hashtags_count: int) -> dict:
+    """Card text taken straight from the news item, for when no AI is reachable. Adds nothing new."""
+    head, rest = item.title, ""
+    for sep in (":", "|", " - "):
+        if sep in item.title:
+            head, rest = (part.strip() for part in item.title.split(sep, 1))
+            break
+    sentences = [x.strip() for x in re.split(r"(?<=[.।!?])\s+", article) if len(x.strip()) > 20]
+    date = item.published.astimezone(IST)
+    return {
+        "category": category,
+        "title_en": item.title,
+        "kicker": KICKERS.get(category, KICKERS["government"]),
+        "headline": _shorten(head, 70),
+        "subheadline": _shorten(rest or (sentences[0] if sentences else ""), 90),
+        "facts": [{"label": "સ્રોત", "value": item.source},
+                  {"label": "તારીખ", "value": f"{date.day} {GUJARATI_MONTHS[date.month - 1]} {date.year}"}],
+        "points": [],
+        "cta": "તમારો અભિપ્રાય કોમેન્ટમાં જણાવો 👇",
+        "caption": _shorten(" ".join([item.title, *sentences[:2]]), 400),
+        "hashtags": DEFAULT_HASHTAGS[:hashtags_count],
+        "image_keywords": ["gujarat", "india news"],
+    }
 
 
 def find_story(cfg: dict, previous: list[str], category: str | None = None) -> tuple[NewsStory, str]:
@@ -202,14 +242,15 @@ def find_story(cfg: dict, previous: list[str], category: str | None = None) -> t
     wanted = [category] if category else list(content["categories"])
     cutoff = datetime.now(timezone.utc) - timedelta(hours=content["max_news_age_hours"])
 
-    urls = list(cfg["free"].get("feeds", []))
-    urls += [_google_news_url(GOOGLE_NEWS_QUERIES[c]) for c in wanted if c in GOOGLE_NEWS_QUERIES]
-    items, seen = [], set()
-    for url in urls:
+    sources = [(url, None) for url in cfg["free"].get("feeds", [])]
+    sources += [(_google_news_url(GOOGLE_NEWS_QUERIES[c]), c) for c in wanted if c in GOOGLE_NEWS_QUERIES]
+    items, seen = [], {t.lower() for t in previous}
+    for url, feed_category in sources:
         for item in _read_feed(url):
             key = item.title.lower()
             if item.published >= cutoff and key not in seen:
                 seen.add(key)
+                item.category = feed_category
                 items.append(item)
     if not items:
         raise RuntimeError("No recent news found in the RSS feeds.")
@@ -221,7 +262,8 @@ def find_story(cfg: dict, previous: list[str], category: str | None = None) -> t
     listing = "\n".join(
         f"{n}. [{i.source}] {i.title}{' (full text)' if len(i.text) > 400 else ''}" for n, i in enumerate(items)
     )
-    pick = _chat(cfg, "You are the editor of a Gujarati Instagram news page. Reply with JSON only.", f"""
+    try:
+        pick = _chat(cfg, "You are the editor of a Gujarati Instagram news page. Reply with JSON only.", f"""
 Pick the ONE headline below that is most useful or interesting for ordinary people in {content['region']}
 (prices, exams, jobs, schemes, weather alerts, safety, big local achievements, major police action).
 It must be about {content['region']} and fit one of these categories: {', '.join(wanted)}.
@@ -232,21 +274,31 @@ Headlines:
 {listing}
 
 Return {{"index": <number>, "category": "<category>"}}.""")
-    item = items[min(max(int(pick.get("index", 0)), 0), len(items) - 1)]
+        item = items[min(max(int(pick.get("index", 0)), 0), len(items) - 1)]
+    except RuntimeError:
+        # no AI available: take the newest story, preferring ones with full text
+        print("   No AI available to pick a story, taking the newest one.")
+        pick = {}
+        item = next((i for i in items if len(i.text) > 400), items[0])
     print(f"   Picked: [{item.source}] {item.title}")
 
     # 2) write the card from the article text only
     article = _article_text(item)
     notes = (f"Source: {item.source}\nLink: {item.link}\nPublished: {item.published.astimezone(IST):%d %b %Y %H:%M} IST\n"
              f"Headline: {item.title}\n\nText:\n{article}")
-    card = _chat(cfg, CARD_RULES, f"""{CARD_FORMAT}
+    suggested = pick.get("category") or item.category or wanted[0]
+    try:
+        card = _chat(cfg, CARD_RULES, f"""{CARD_FORMAT}
 
-Category must be one of: {', '.join(wanted)} (suggested: {pick.get('category')}).
+Category must be one of: {', '.join(wanted)} (suggested: {suggested}).
 Use exactly {content['hashtags_count']} hashtags (Gujarati and English mix).
 {('Extra instructions: ' + content['extra_instructions']) if content.get('extra_instructions') else ''}
 
 Article:
 {notes}""")
+    except RuntimeError:
+        print("   No AI available to write the card, using the headline as it is.")
+        card = _plain_card(item, suggested, article, content["hashtags_count"])
 
     story = NewsStory(
         category=card.get("category") if card.get("category") in wanted else wanted[0],
