@@ -55,8 +55,8 @@ TEMPLATE = """<!doctype html>
     background: radial-gradient(circle, {glow} 0%, transparent 65%); }}
   .photo {{ position: absolute; inset: 0; background-position: center; background-size: cover; }}
   .shade {{ position: absolute; inset: 0;
-    background: linear-gradient(180deg, rgba(0,0,0,.82) 0%, rgba(0,0,0,.45) 30%, rgba(0,0,0,.08) 45%,
-                rgba(0,0,0,.15) 58%, rgba(0,0,0,.8) 75%, rgba(0,0,0,.92) 100%); }}
+    background: linear-gradient(180deg, rgba(0,0,0,.6) 0%, rgba(0,0,0,.3) 28%, rgba(0,0,0,0) 42%,
+                rgba(0,0,0,0) 60%, rgba(0,0,0,.55) 78%, rgba(0,0,0,.8) 100%); }}
   .icon {{ position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); font-size: 300px;
     filter: drop-shadow(0 20px 40px rgba(0,0,0,.6)); opacity: .9; }}
   .edge {{ position: absolute; inset: 0; border: 14px solid {accent}; pointer-events: none;
