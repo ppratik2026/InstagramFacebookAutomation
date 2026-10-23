@@ -16,19 +16,36 @@ from .news import NewsStory
 
 STYLES = {
     "crime": [
-        "dark red and black dramatic background, police lights glow, sparks, red alert banner at the top",
-        "deep maroon background with fiery orange light, breaking-news red ribbons and warning icons",
+        "midnight-black and blood-red palette, flashing red-blue police light glow, rain-wet reflections, "
+        "yellow 'police line' tape slashing diagonally across a corner, cinematic thriller mood",
+        "deep maroon background with fiery orange rim light, sparks and smoke, cracked-glass texture behind the "
+        "headline, red 'BREAKING' sticker badge, intense investigative mood",
     ],
     "good_news": [
-        "bright green and gold celebratory background, sunrays, confetti, proud and positive mood",
-        "fresh teal and white background with golden highlights, clean modern look, happy mood",
+        "emerald green and royal gold palette, golden sunburst rays, floating confetti and sparkles, glossy "
+        "celebration ribbons, joyful proud festive mood",
+        "sunrise sky gradient (peach, pink, sky blue) with soft clouds, golden light beams, fresh modern look, "
+        "uplifting hopeful mood",
     ],
     "government": [
-        "navy blue background with orange and red accents, lightning and upward arrows, official announcement feel",
-        "clean light background (white/sky blue) with a bold red headline and red information boxes, like a newspaper infographic",
-        "dark red-orange background with glowing particles and a 3D illustration of the subject, premium news thumbnail look",
+        "navy-blue night background with saffron and red accents, electric lightning, glowing upward arrows, "
+        "official big-announcement feel",
+        "clean white newspaper-infographic look with a huge bold red headline, red rounded info boxes, "
+        "a 3D scene of the subject on the right side",
+        "fiery red-orange background with glowing particles, light streaks and a heroic 3D illustration of the "
+        "subject, premium viral news thumbnail look",
     ],
 }
+
+ART_DIRECTION = """Art direction (make it look like a top viral Instagram news poster, not a plain template):
+- One hero 3D illustration of the subject (Pixar-quality render, glossy materials, dramatic rim lighting,
+  shallow depth of field), overlapping the boxes a little so the poster has depth.
+- Headline in extra-bold rounded Gujarati letters with a thick black outline, glossy gradient fill
+  (white/gold/yellow) and a strong 3D drop shadow; one key word can be in a contrasting colour.
+- Rounded glass-like info boxes with glowing borders, small 3D icons (calendar, ₹ coins, pin, alert) next to text.
+- Energy details: light rays, sparkles, particles, a diagonal ribbon or sticker badge, subtle texture.
+- Bold colour contrast, clear visual hierarchy: banner -> headline -> picture -> facts -> call to action.
+"""
 
 VERIFY_SCHEMA = {
     "type": "object",
@@ -54,6 +71,7 @@ and a light pastel box on the right with the right text in dark bold letters. St
 
 Visual style: {style}.
 Illustration idea for the header: {story.image_prompt}
+{ART_DIRECTION}
 
 Write ALL of this text on the poster exactly as given (Gujarati script, same spelling, same numbers, nothing extra):
 - Top banner: "{story.kicker}"
@@ -70,6 +88,7 @@ rounded information boxes, strong contrast, everything readable on a phone.
 
 Visual style: {style}.
 Illustration idea: {story.image_prompt}
+{ART_DIRECTION}
 
 Write ALL of this text on the poster exactly as given (Gujarati script, same spelling, same numbers, nothing extra):
 - Top banner: "{story.kicker}"
