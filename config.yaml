@@ -35,7 +35,6 @@ free:
   # A feed that fails or doesn't exist is skipped, so it's safe to add more.
   feeds:
     - "https://tv9gujarati.com/feed"
-    - "https://www.deshgujarat.com/feed/"
 
 github_models:
   # Tried in order; if one is unknown or its free daily limit is used up, the next one is used.

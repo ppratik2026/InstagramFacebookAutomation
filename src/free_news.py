@@ -17,7 +17,11 @@ import requests
 
 from .news import IST, NewsStory
 
-GITHUB_MODELS_URL = "https://models.github.ai/inference/chat/completions"
+GITHUB_MODELS_ENDPOINTS = [
+    {"url": "https://models.github.ai/inference/chat/completions", "prefixed": True,
+     "headers": {"Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"}},
+    {"url": "https://models.inference.ai.azure.com/chat/completions", "prefixed": False, "headers": {}},
+]
 CONTENT_NS = "{http://purl.org/rss/1.0/modules/content/}encoded"
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; GujaratNewsReels/1.0)"}
 
@@ -130,30 +134,43 @@ def _article_text(item: FeedItem) -> str:
     return item.text[:6000]
 
 
+def _parse_json(text: str) -> dict:
+    text = text.strip()
+    if text.startswith("```"):  # some models wrap JSON in a code fence
+        text = text.strip("`").removeprefix("json").strip()
+    return json.loads(text)
+
+
 def _chat(cfg: dict, system: str, user: str) -> dict:
     token = os.environ.get("GITHUB_TOKEN", "").strip()
     if not token:
         raise SystemExit("Missing GITHUB_TOKEN (GitHub Models). In GitHub Actions it is provided automatically.")
-    last_error = None
-    for model in cfg["github_models"]["models"]:
-        resp = requests.post(
-            GITHUB_MODELS_URL,
-            headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
-            json={
-                "model": model,
-                "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
-                "response_format": {"type": "json_object"},
-                "temperature": 0.4,
-            },
-            timeout=120,
-        )
-        if resp.status_code == 200:
-            content = resp.json()["choices"][0]["message"]["content"]
-            return json.loads(content)
-        # unknown model or daily limit reached: try the next model in the list
-        last_error = f"{model}: HTTP {resp.status_code} {resp.text[:300]}"
-        print(f"   GitHub Models {last_error}")
-    raise RuntimeError(f"All GitHub Models failed. Last error: {last_error}")
+    messages = [{"role": "system", "content": system}, {"role": "user", "content": user}]
+    errors = []
+    for endpoint in GITHUB_MODELS_ENDPOINTS:
+        for model in cfg["github_models"]["models"]:
+            # the older Azure endpoint names models without the "openai/" publisher prefix
+            name = model if endpoint["prefixed"] else model.split("/", 1)[-1]
+            resp = None
+            try:
+                resp = requests.post(
+                    endpoint["url"],
+                    headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json", **endpoint["headers"]},
+                    json={"model": name, "messages": messages, "response_format": {"type": "json_object"}},
+                    timeout=120,
+                )
+                if resp.status_code == 200:
+                    return _parse_json(resp.json()["choices"][0]["message"]["content"])
+                problem = f"HTTP {resp.status_code}"
+            except (requests.RequestException, ValueError, KeyError, IndexError) as e:
+                problem = f"{type(e).__name__}: {e}"
+            detail = ""
+            if resp is not None:
+                detail = f" [{resp.headers.get('content-type', '?')}] {resp.text[:200]!r}"
+            # unknown model, daily limit reached or a bad reply: try the next model / endpoint
+            errors.append(f"{endpoint['url']} {name}: {problem}{detail}")
+            print(f"   GitHub Models failed: {errors[-1]}")
+    raise RuntimeError("All GitHub Models attempts failed:\n" + "\n".join(errors))
 
 
 def find_story(cfg: dict, previous: list[str], category: str | None = None) -> tuple[NewsStory, str]:
