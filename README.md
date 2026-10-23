@@ -68,7 +68,16 @@ Har run ka folder `output/<date-time>/` mein banta hai, usmein yeh files hoti ha
 - Royalty-free music use karo, jaise [Pixabay Music](https://pixabay.com/music/), YouTube Audio Library, ya [Uppbeat](https://uppbeat.io).
 - Agar trending audio hi chahiye, to `--no-publish` se video banao aur phone se manually upload karo. Upload karte waqt Instagram app mein trending audio add kar sakte ho.
 
-## 5. Settings (`config.yaml`)
+## 5. Poster design
+
+`card.style: "ai_poster"` (default): **Gemini ka image model poora poster banata hai**, jaise viral Gujarati news pages ke posters hote hain. Usmein badi headline, 3D illustration, info boxes, aur schedule/list wali news ke liye rangeen table hoti hai. Har baar style alag hota hai.
+
+- Image models kabhi-kabhi Gujarati mein spelling ya number galat likh dete hain. Isliye har poster ko Gemini **dobara padh kar check karta hai**. Galti mile to poster dobara banta hai (`poster_attempts`, default 3).
+- Teeno baar fail hua to tool apna **template card** (`src/card.py`) use karta hai, taaki galat number wala poster kabhi post na ho.
+- Har try `output/<folder>/poster_try1.png`, `poster_try2.png` mein save hota hai, taaki aap dekh sako.
+- `card.style: "template"` karoge to hamesha fixed template design banega.
+
+## 6. Settings (`config.yaml`)
 
 - `content.categories`: kaun si news chahiye (crime / good_news / government)
 - `content.extra_instructions`: jaise "sirf Ahmedabad ki news" ya "exam aur job news ko priority do"
@@ -79,7 +88,7 @@ Har run ka folder `output/<date-time>/` mein banta hai, usmein yeh files hoti ha
 - `video.seconds`: reel ki length (12–15 achha hai)
 - `video.zoom`: slow zoom on/off
 
-## 6. News ke niyam (built-in)
+## 7. News ke niyam (built-in)
 
 Gemini ko yeh niyam diye gaye hain:
 - Sirf web pe mile **asli sources** ki baatein. Koi number ya date guess nahi karega.

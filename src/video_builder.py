@@ -32,14 +32,15 @@ def build_video(image: Path, vcfg: dict, out_path: Path, music: Path | None = No
     frames = int(seconds * fps)
 
     if vcfg.get("zoom", True):
-        # upscale first so the zoom is smooth, then zoom from 1.0 to ~1.08 over the whole clip
+        # upscale first so the zoom is smooth, then zoom from 1.0 to 1.04 (gentle, so edge text stays in frame)
         video_filter = (
-            f"scale=2160:3840,zoompan=z='1+0.08*on/{frames}':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'"
+            "scale=2160:3840:force_original_aspect_ratio=increase,crop=2160:3840,"
+            f"zoompan=z='1+0.04*on/{frames}':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'"
             f":d={frames}:s=1080x1920:fps={fps},format=yuv420p"
         )
         args = ["ffmpeg", "-y", "-i", str(image)]
     else:
-        video_filter = "scale=1080:1920,format=yuv420p"
+        video_filter = "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,format=yuv420p"
         args = ["ffmpeg", "-y", "-loop", "1", "-framerate", str(fps), "-i", str(image)]
 
     if music:

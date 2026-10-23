@@ -13,6 +13,9 @@ content:
 
 # Look of the news card. Colour themes per category are in src/card.py (THEMES).
 card:
+  # ai_poster: Gemini designs the whole poster (text + illustration), checked for mistakes before use.
+  # template:  fixed HTML design (src/card.py) with an AI/stock background. Also the fallback for ai_poster.
+  style: "ai_poster"
   handle: "@aehaalogujarat"
   font: "Baloo Bhai 2"            # any Google Font that supports Gujarati
 
@@ -24,7 +27,10 @@ video:
 
 gemini:
   text_model: "gemini-3.5-flash"        # news search + card text (Google Search grounding)
-  image_model: "gemini-2.5-flash-image" # AI background illustration
+  image_model: "gemini-2.5-flash-image" # background illustration for the template card
+  # Image models for the full poster, tried in order. Newer models write Gujarati text much better.
+  poster_models: ["gemini-3.1-flash-image-preview", "gemini-2.5-flash-image"]
+  poster_attempts: 3                    # regenerate if the proof-read finds mistakes
   ai_background: true                   # false = Pexels photo / theme colours only
 
 instagram:

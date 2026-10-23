@@ -45,6 +45,35 @@ SCHEMA = {
                 "required": ["label", "value"],
             },
         },
+        "points": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "2-4 short Gujarati lines with more detail: why it happened, who is affected, what to do next.",
+        },
+        "note": {
+            "type": "string",
+            "description": "Optional one-line Gujarati disclaimer (e.g. prices may vary by city), or empty string.",
+        },
+        "layout": {
+            "type": "string",
+            "enum": ["illustration", "list"],
+            "description": (
+                "'list' when the news is mainly a schedule or list (dates, districts, timings, rates per item); "
+                "'illustration' for everything else."
+            ),
+        },
+        "rows": {
+            "type": "array",
+            "description": "For layout 'list': 3-11 rows shown as a colourful table (e.g. day -> districts). Empty otherwise.",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "left": {"type": "string", "description": "Short key, e.g. 'સોમવાર' or '5 નવેમ્બર'."},
+                    "right": {"type": "string", "description": "The value, e.g. 'ગાંધીનગર, વલસાડ'."},
+                },
+                "required": ["left", "right"],
+            },
+        },
         "cta": {"type": "string", "description": "Bottom line asking viewers to comment/share."},
         "caption": {"type": "string", "description": "Instagram caption in Gujarati, 3-5 short lines summarising the news, no hashtags."},
         "hashtags": {"type": "array", "items": {"type": "string"}},
@@ -65,7 +94,7 @@ SCHEMA = {
         "source_url": {"type": "string"},
     },
     "required": [
-        "category", "title_en", "kicker", "headline", "subheadline", "facts", "cta",
+        "category", "title_en", "kicker", "headline", "subheadline", "facts", "points", "note", "layout", "rows", "cta",
         "caption", "hashtags", "image_prompt", "image_keywords", "source_name", "source_url",
     ],
 }
@@ -79,6 +108,10 @@ class NewsStory:
     headline: str
     subheadline: str
     facts: list[dict]
+    points: list[str]
+    note: str
+    layout: str
+    rows: list[dict]
     cta: str
     caption: str
     hashtags: list[str]

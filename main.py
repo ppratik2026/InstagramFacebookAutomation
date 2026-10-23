@@ -25,6 +25,7 @@ def cmd_run(args, cfg):
     from src.card import render_card
     from src.history import add_entry, recent_titles
     from src.news import find_story
+    from src.poster import make_poster
     from src.video_builder import build_video, pick_music
 
     require_env("GEMINI_API_KEY")
@@ -43,9 +44,15 @@ def cmd_run(args, cfg):
     print(f"   [{story.category}] {story.title_en}")
     print(f"   Source: {story.source_name} {story.source_url}")
 
-    print("2/4 Designing the news card...")
-    background = get_background(story, cfg, work_dir)
-    card = render_card(story, cfg, work_dir / "card.png", background)
+    print("2/4 Designing the news poster...")
+    card = None
+    if cfg["card"].get("style", "ai_poster") == "ai_poster":
+        card = make_poster(story, cfg, work_dir / "card.png")
+        if not card:
+            print("   AI poster not usable, falling back to the template card.")
+    if not card:
+        background = get_background(story, cfg, work_dir)
+        card = render_card(story, cfg, work_dir / "card.png", background)
 
     print("3/4 Making the reel...")
     music = pick_music()
