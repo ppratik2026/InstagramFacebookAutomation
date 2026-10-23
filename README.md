@@ -29,7 +29,14 @@ free:   RSS news → GitHub Models (Gujarati text) → Card image (HTML → PNG)
 | `PEXELS_API_KEY` | **Optional**, free: [pexels.com/api](https://www.pexels.com/api/). Card ke peeche photo ke liye. Na do to emoji/colour design lagta hai |
 | `GEMINI_API_KEY` | Sirf `provider: "gemini"` ke liye (billing chahiye). Free mode mein zaroorat nahi |
 
-`free` mode mein AI ke liye koi key nahi chahiye: GitHub Actions ka apna `GITHUB_TOKEN` GitHub Models use karta hai. Free limit lagbhag 50–150 requests/din hai, aur ek reel mein 2 requests lagti hain.
+`free` mode mein AI ke liye koi key zaroori nahi hai. Tool in free AI services ko order mein try karta hai (`config.yaml` → `llm_providers`):
+
+1. **GitHub Models**: GitHub Actions ka apna `GITHUB_TOKEN`, koi key nahi
+2. **Groq**: optional `GROQ_API_KEY` secret. Free key [console.groq.com/keys](https://console.groq.com/keys) se milti hai, card nahi chahiye
+3. **OpenRouter**: optional `OPENROUTER_API_KEY` secret. Free key [openrouter.ai/keys](https://openrouter.ai/keys) se milti hai, card nahi chahiye
+4. **Pollinations**: koi key nahi, lekin dheema ho sakta hai
+
+Ek reel mein 2 AI requests lagti hain. Groq ki free key daal doge to sabse bharosemand rahega.
 
 > ⚠️ Token/keys kabhi chat, code ya GitHub pe paste mat karna. Sirf `.env` (local) ya GitHub Secrets mein.
 

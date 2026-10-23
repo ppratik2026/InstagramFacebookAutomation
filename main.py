@@ -32,7 +32,6 @@ def cmd_run(args, cfg):
         require_env("GEMINI_API_KEY")
     else:
         from src.free_news import find_story
-        require_env("GITHUB_TOKEN")
 
     if not args.no_publish:
         ig = instagram(cfg)  # fail early if the Instagram secrets are missing

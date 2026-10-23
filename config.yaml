@@ -36,9 +36,26 @@ free:
   feeds:
     - "https://tv9gujarati.com/feed"
 
-github_models:
-  # Tried in order; if one is unknown or its free daily limit is used up, the next one is used.
-  models: ["openai/gpt-4.1", "openai/gpt-4.1-mini", "openai/gpt-4o-mini"]
+# Free LLMs for the "free" provider, tried in order (OpenAI-compatible chat APIs).
+# A provider with key_env is only used when that secret is set. If a model is unknown or its free
+# daily limit is used up, the next model / provider is tried.
+llm_providers:
+  - name: github-models               # free inside GitHub Actions (GITHUB_TOKEN is automatic)
+    url: "https://models.github.ai/inference/chat/completions"
+    key_env: GITHUB_TOKEN
+    headers: {Accept: "application/vnd.github+json", X-GitHub-Api-Version: "2022-11-28"}
+    models: ["openai/gpt-4.1", "openai/gpt-4.1-mini", "openai/gpt-4o-mini"]
+  - name: groq                        # free key, no card: https://console.groq.com/keys
+    url: "https://api.groq.com/openai/v1/chat/completions"
+    key_env: GROQ_API_KEY
+    models: ["openai/gpt-oss-120b", "llama-3.3-70b-versatile"]
+  - name: openrouter                  # free key, no card: https://openrouter.ai/keys
+    url: "https://openrouter.ai/api/v1/chat/completions"
+    key_env: OPENROUTER_API_KEY
+    models: ["openai/gpt-oss-120b:free", "meta-llama/llama-3.3-70b-instruct:free"]
+  - name: pollinations                # free, no key at all (rate limited)
+    url: "https://text.pollinations.ai/openai"
+    models: ["openai"]
 
 gemini:
   text_model: "gemini-3.5-flash"        # news search + card text (Google Search grounding)

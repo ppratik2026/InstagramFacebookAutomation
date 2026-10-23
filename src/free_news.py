@@ -17,11 +17,6 @@ import requests
 
 from .news import IST, NewsStory
 
-GITHUB_MODELS_ENDPOINTS = [
-    {"url": "https://models.github.ai/inference/chat/completions", "prefixed": True,
-     "headers": {"Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"}},
-    {"url": "https://models.inference.ai.azure.com/chat/completions", "prefixed": False, "headers": {}},
-]
 CONTENT_NS = "{http://purl.org/rss/1.0/modules/content/}encoded"
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; GujaratNewsReels/1.0)"}
 
@@ -135,42 +130,53 @@ def _article_text(item: FeedItem) -> str:
 
 
 def _parse_json(text: str) -> dict:
-    text = text.strip()
-    if text.startswith("```"):  # some models wrap JSON in a code fence
-        text = text.strip("`").removeprefix("json").strip()
-    return json.loads(text)
+    """Parse a JSON object from a model reply, tolerating code fences or text around it."""
+    start, end = text.find("{"), text.rfind("}")
+    if start == -1 or end < start:
+        raise ValueError(f"no JSON object in reply: {text[:200]!r}")
+    return json.loads(text[start:end + 1])
+
+
+def _post(provider: dict, key: str, model: str, messages: list, json_mode: bool) -> requests.Response:
+    body = {"model": model, "messages": messages}
+    if json_mode:
+        body["response_format"] = {"type": "json_object"}
+    headers = {"Content-Type": "application/json", **provider.get("headers", {})}
+    if key:
+        headers["Authorization"] = f"Bearer {key}"
+    # no redirects: a redirected POST silently turns into a GET and returns a useless page
+    return requests.post(provider["url"], headers=headers, json=body, timeout=120, allow_redirects=False)
 
 
 def _chat(cfg: dict, system: str, user: str) -> dict:
-    token = os.environ.get("GITHUB_TOKEN", "").strip()
-    if not token:
-        raise SystemExit("Missing GITHUB_TOKEN (GitHub Models). In GitHub Actions it is provided automatically.")
+    """Ask the first free LLM provider that works. Providers whose key isn't set are skipped."""
     messages = [{"role": "system", "content": system}, {"role": "user", "content": user}]
     errors = []
-    for endpoint in GITHUB_MODELS_ENDPOINTS:
-        for model in cfg["github_models"]["models"]:
-            # the older Azure endpoint names models without the "openai/" publisher prefix
-            name = model if endpoint["prefixed"] else model.split("/", 1)[-1]
-            resp = None
-            try:
-                resp = requests.post(
-                    endpoint["url"],
-                    headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json", **endpoint["headers"]},
-                    json={"model": name, "messages": messages, "response_format": {"type": "json_object"}},
-                    timeout=120,
-                )
-                if resp.status_code == 200:
-                    return _parse_json(resp.json()["choices"][0]["message"]["content"])
-                problem = f"HTTP {resp.status_code}"
-            except (requests.RequestException, ValueError, KeyError, IndexError) as e:
-                problem = f"{type(e).__name__}: {e}"
-            detail = ""
-            if resp is not None:
-                detail = f" [{resp.headers.get('content-type', '?')}] {resp.text[:200]!r}"
-            # unknown model, daily limit reached or a bad reply: try the next model / endpoint
-            errors.append(f"{endpoint['url']} {name}: {problem}{detail}")
-            print(f"   GitHub Models failed: {errors[-1]}")
-    raise RuntimeError("All GitHub Models attempts failed:\n" + "\n".join(errors))
+    for provider in cfg["llm_providers"]:
+        key = os.environ.get(provider["key_env"], "").strip() if provider.get("key_env") else ""
+        if provider.get("key_env") and not key:
+            continue
+        for model in provider["models"]:
+            for json_mode in (True, False):  # some providers reject response_format; retry without it
+                resp = None
+                try:
+                    resp = _post(provider, key, model, messages, json_mode)
+                    if resp.status_code == 200:
+                        return _parse_json(resp.json()["choices"][0]["message"]["content"])
+                    problem = f"HTTP {resp.status_code}"
+                except (requests.RequestException, ValueError, KeyError, IndexError, TypeError) as e:
+                    problem = f"{type(e).__name__}: {e}"
+                detail = ""
+                if resp is not None:
+                    where = f" -> {resp.headers['location']}" if resp.headers.get("location") else ""
+                    detail = f"{where} [{resp.headers.get('content-type', '?')}] {resp.text[:200]!r}"
+                errors.append(f"{provider['name']} {model} (json_mode={json_mode}): {problem}{detail}")
+                print(f"   LLM failed: {errors[-1]}")
+                if resp is None or resp.status_code != 400:
+                    break  # only a 400 is worth retrying without response_format
+    if not errors:
+        raise SystemExit("No LLM provider available: set GITHUB_TOKEN, or add a free key (see README).")
+    raise RuntimeError("All free LLM providers failed:\n" + "\n".join(errors))
 
 
 def find_story(cfg: dict, previous: list[str], category: str | None = None) -> tuple[NewsStory, str]:
