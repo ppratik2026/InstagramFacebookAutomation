@@ -18,7 +18,7 @@ News (Gemini + Google Search) → AI background (Gemini image) → Card image (H
 | `GEMINI_API_KEY` | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) → Create API key. Free tier mein limit hai; AI image aur zyada posts ke liye billing on karni pad sakti hai |
 | `IG_ACCESS_TOKEN` | Meta app → Instagram API → API setup with Instagram login → **Generate token** |
 | `IG_USER_ID` | Usi page pe account ke neeche likha number (`17841422688299078`) |
-| `PEXELS_API_KEY` | Optional, free: [pexels.com/api](https://www.pexels.com/api/). AI image na bane to backup photo yahan se aati hai |
+| `PEXELS_API_KEY` | **Optional** (na do to bhi tool chalega), free: [pexels.com/api](https://www.pexels.com/api/). Sirf backup card mein, jab Gemini background image na bana paaye, tab photo yahan se aati hai. Key na ho ya Pexels fail ho to emoji/colour design lag jaata hai |
 
 > ⚠️ Token/keys kabhi chat, code ya GitHub pe paste mat karna. Sirf `.env` (local) ya GitHub Secrets mein.
 

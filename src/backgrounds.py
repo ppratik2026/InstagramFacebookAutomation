@@ -72,7 +72,11 @@ def get_background(story, cfg: dict, work_dir: Path) -> Path | None:
         path = generate_ai_background(story.image_prompt, cfg["gemini"]["image_model"], work_dir / "background.png")
         if path:
             return path
-    path = fetch_stock_background(story.image_keywords, work_dir / "background.jpg")
+    try:
+        path = fetch_stock_background(story.image_keywords, work_dir / "background.jpg")
+    except requests.RequestException as e:  # Pexels is optional, never fail the run for it
+        print(f"Pexels failed: {e}")
+        path = None
     if not path:
         print("Background: theme colours only.")
     return path
