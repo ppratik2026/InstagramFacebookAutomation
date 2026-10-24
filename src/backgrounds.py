@@ -77,7 +77,9 @@ def generate_free_ai_image(prompt: str, out_path: Path) -> Path | None:
     """Free AI illustration from Pollinations (no key). None if it fails; never stops the run."""
     # stylised 3D characters keep it clearly illustrative: never a real, recognisable person
     full = (f"{prompt}, Pixar style 3D render, cinematic news thumbnail, vivid colours, dramatic rim lighting, "
-            "shallow depth of field, anonymous characters, no real person, no text, no letters, no watermark")
+            "shallow depth of field, anonymous characters, no real person. "
+            "IMPORTANT: absolutely no text anywhere in the image - no letters, numbers, words, signs, sign boards, "
+            "banners, posters, labels, logos, stamps, price tags or watermarks; any board or screen must be blank")
     key = os.environ.get("POLLINATIONS_API_KEY", "").strip()
     if key:   # with the free account key: a better model (gptimage) than the keyless one
         model = os.environ.get("POLLINATIONS_IMAGE_MODEL", "gptimage")
