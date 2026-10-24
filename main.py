@@ -4,6 +4,8 @@
     python main.py run --no-publish          # make the reel only, review output/ first
     python main.py run --category crime      # crime | good_news | government
     python main.py publish output/<dir>/reel.mp4 --caption-file output/<dir>/caption.txt
+    python main.py prepare                   # semi-auto: news + Gemini prompt as a GitHub issue
+    python main.py from-issue                # semi-auto: poster uploaded to the issue -> reel -> post
     python main.py check                     # verify the Instagram token
     python main.py refresh-token             # extend the token by 60 days
 """
@@ -90,6 +92,57 @@ def cmd_publish(args, cfg):
     print(f"Published: {result.get('permalink') or result['media_id']}")
 
 
+def cmd_prepare(args, cfg):
+    """Find a story and write a GitHub issue (Gemini prompt + caption) for the semi-automatic flow."""
+    from src.history import recent_titles
+    from src.issue_flow import issue_body
+    from src.poster import _poster_prompt
+
+    if cfg.get("provider") == "gemini":
+        from src.news import find_story
+    else:
+        from src.free_news import find_story
+
+    work_dir = ROOT / "output" / datetime.now().strftime("%Y%m%d-%H%M%S")
+    work_dir.mkdir(parents=True, exist_ok=True)
+    story, notes = find_story(cfg, recent_titles(), args.category)
+    prompt = _poster_prompt(story, cfg["card"]["handle"])
+    (work_dir / "research.md").write_text(notes, encoding="utf-8")
+    (work_dir / "story.json").write_text(json.dumps(story.__dict__, ensure_ascii=False, indent=2), encoding="utf-8")
+    (work_dir / "issue_title.txt").write_text(f"📰 {story.headline}", encoding="utf-8")
+    (work_dir / "issue.md").write_text(issue_body(story, prompt, story.full_caption()), encoding="utf-8")
+    print(f"Prepared: [{story.category}] {story.title_en}\n   {work_dir.relative_to(ROOT)}/issue.md")
+
+
+def cmd_from_issue(args, cfg):
+    """Turn the poster uploaded as an issue comment into a reel and post it (runs in GitHub Actions)."""
+    import os
+
+    from src.history import add_entry
+    from src.issue_flow import caption_from, download, image_url_from, title_from
+    from src.video_builder import build_video, pick_music
+
+    event = json.loads(Path(os.environ["GITHUB_EVENT_PATH"]).read_text(encoding="utf-8"))
+    body, comment = event["issue"]["body"] or "", event["comment"]["body"] or ""
+    url = image_url_from(comment)
+    if not url:
+        raise SystemExit("No image in the comment. Upload the poster image as a comment.")
+
+    work_dir = ROOT / "output" / f"issue-{event['issue']['number']}"
+    work_dir.mkdir(parents=True, exist_ok=True)
+    poster = download(url, work_dir / "poster.png", os.environ.get("GITHUB_TOKEN", ""))
+    caption = caption_from(body) or event["issue"]["title"]
+    (work_dir / "caption.txt").write_text(caption, encoding="utf-8")
+    video = build_video(poster, cfg["video"], work_dir / "reel.mp4", pick_music())
+    print(f"Reel: {video.relative_to(ROOT)}")
+    if args.no_publish:
+        return
+    result = instagram(cfg).publish_reel(video, caption, cfg["instagram"]["share_to_feed"])
+    add_entry(title_from(body) or event["issue"]["title"], result["media_id"], result.get("permalink"))
+    (ROOT / "output" / "result.txt").write_text(result.get("permalink") or result["media_id"], encoding="utf-8")
+    print(f"Published: {result.get('permalink') or result['media_id']}")
+
+
 def cmd_check(args, cfg):
     me = instagram(cfg).me()
     print(f"Token OK: @{me['username']} ({me['account_type']}), user_id={me['user_id']}")
@@ -120,6 +173,14 @@ def main():
     pub.add_argument("--caption")
     pub.add_argument("--caption-file")
     pub.set_defaults(func=cmd_publish)
+
+    prep = sub.add_parser("prepare", help="find news and write a GitHub issue with a Gemini poster prompt")
+    prep.add_argument("--category", choices=["crime", "good_news", "government"], help="limit to one category")
+    prep.set_defaults(func=cmd_prepare)
+
+    iss = sub.add_parser("from-issue", help="make and post the reel from a poster uploaded to an issue")
+    iss.add_argument("--no-publish", action="store_true")
+    iss.set_defaults(func=cmd_from_issue)
 
     sub.add_parser("check", help="verify the Instagram token").set_defaults(func=cmd_check)
     sub.add_parser("refresh-token", help="extend the Instagram token by 60 days").set_defaults(func=cmd_refresh)

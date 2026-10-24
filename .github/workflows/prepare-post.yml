@@ -1,0 +1,55 @@
+name: Prepare post (Gemini prompt)
+
+# Semi-automatic flow, step 1: find news and open an issue with a ready Gemini prompt.
+# Make the poster in the Gemini app and upload it as a comment on that issue; "Post from issue" does the rest.
+on:
+  schedule:
+    # times are UTC: 02:10, 07:10, 13:10 UTC = 07:40, 12:40, 18:40 IST
+    - cron: "10 2 * * *"
+    - cron: "10 7 * * *"
+    - cron: "10 13 * * *"
+  workflow_dispatch:
+    inputs:
+      category:
+        description: "News category"
+        type: choice
+        options: [any, government, crime, good_news]
+        default: any
+
+permissions:
+  contents: read
+  issues: write
+  models: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Find news and write the issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          ARGS=""
+          if [ -n "${{ inputs.category }}" ] && [ "${{ inputs.category }}" != "any" ]; then ARGS="--category ${{ inputs.category }}"; fi
+          python main.py prepare $ARGS
+
+      - name: Open the issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          DIR=$(ls -d output/*/ | tail -1)
+          gh label create poster-needed --color FBCA04 --description "Waiting for the Gemini poster" --force
+          gh issue create --title "$(cat "$DIR/issue_title.txt")" --body-file "$DIR/issue.md" \
+            --label poster-needed --assignee "${{ github.repository_owner }}"

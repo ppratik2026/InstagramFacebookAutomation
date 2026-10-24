@@ -1,0 +1,72 @@
+name: Post from issue
+
+# Semi-automatic flow, step 2: when the owner uploads the poster image as a comment on a
+# "poster-needed" issue, turn it into a reel, post it to Instagram and close the issue.
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: reel
+  cancel-in-progress: false
+
+jobs:
+  post:
+    if: >-
+      contains(github.event.issue.labels.*.name, 'poster-needed') &&
+      github.event.comment.user.login == github.repository_owner &&
+      (contains(github.event.comment.body, '![') || contains(github.event.comment.body, '<img'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: |
+          sudo apt-get update && sudo apt-get install -y ffmpeg
+          pip install requests PyYAML python-dotenv
+
+      - name: Make the reel and post it
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+        run: python main.py from-issue
+
+      - name: Report back on the issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          N=${{ github.event.issue.number }}
+          if [ -f output/result.txt ]; then
+            gh issue comment $N --body "✅ Instagram પર post થઈ ગયું: $(cat output/result.txt)"
+            gh issue edit $N --remove-label poster-needed --add-label posted || true
+            gh issue close $N
+          else
+            gh issue comment $N --body "❌ Post ન થયું. કારણ જોવા માટે: $RUN_URL"
+          fi
+
+      - name: Save the video
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reel-issue-${{ github.event.issue.number }}
+          path: output/
+          if-no-files-found: ignore
+
+      - name: Remember posted stories
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/history.json || true
+          git diff --cached --quiet || (git commit -m "Update posted history" && git push)

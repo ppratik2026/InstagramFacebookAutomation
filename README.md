@@ -20,6 +20,18 @@ Do mode hain (`config.yaml` → `provider`):
 free:   RSS news → GitHub Models (Gujarati text) → Card image (HTML → PNG) → Reel MP4 (FFmpeg) → Instagram API
 ```
 
+## ⭐ Roz ka tareeka: Gemini quality, free (semi-automatic)
+
+Gemini app (free) sabse sundar poster banata hai, lekin uski API paid hai. Isliye kaam aise bata gaya hai:
+
+1. **Tool (automatic, roz 7:40, 12:40 aur 18:40 IST):** news dhundhta hai, Gujarati text likhta hai, aur GitHub mein ek **Issue** kholta hai jismein **taiyaar Gemini prompt** hota hai. Aapke phone pe GitHub app ka notification aata hai.
+2. **Aap (2 minute):** Issue kholo → prompt copy karo (box ke kone mein copy button hai) → **Gemini app** mein paste karo → poster download karo.
+3. **Aap:** wahi image us Issue mein **comment** karke upload karo.
+4. **Tool (automatic):** poster ko 15 sec ki reel (zoom + music) banata hai, **Instagram pe post** karta hai, aur Issue mein link daal ke use band kar deta hai.
+
+Kisi poster ko skip karna ho to bas Issue band kar do. Manual chalana ho to **Actions → Prepare post (Gemini prompt) → Run workflow**.
+Poora automatic template wala tareeka (`daily-reel.yml`) ab sirf haath se chalta hai.
+
 ## 1. Zaroori keys
 
 | Key | Kahan se milegi |

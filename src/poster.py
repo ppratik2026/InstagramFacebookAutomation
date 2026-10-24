@@ -57,13 +57,23 @@ VERIFY_SCHEMA = {
 }
 
 
+def _extras(story: NewsStory) -> str:
+    """Optional summary box and stamp lines for the prompt."""
+    out = ""
+    if getattr(story, "summary", ""):
+        out += f'\n- Short explanation box titled "શું થયું?": "{story.summary}"'
+    if getattr(story, "stamp", ""):
+        out += f'\n- A tilted rubber-stamp / sticker on the picture: "{story.stamp}"'
+    return out
+
+
 def _poster_prompt(story: NewsStory, handle: str, extra_fix: str = "") -> str:
     facts = "\n".join(f'  - "{f["label"]}": "{f["value"]}"' for f in story.facts[:4])
     points = "\n".join(f'  - "{p}"' for p in story.points[:4])
     style = random.choice(STYLES.get(story.category, STYLES["government"]))
     if story.layout == "list" and story.rows:
         rows = "\n".join(f'  - "{r["left"]}" | "{r["right"]}"' for r in story.rows[:11])
-        prompt = f"""Design a vertical 9:16 Instagram news poster for a Gujarati news page, in the style of
+        prompt = f"""Create an image: design a vertical 9:16 Instagram news poster for a Gujarati news page, in the style of
 viral Gujarati list infographics: a big bold Gujarati headline at the top over a small themed illustration,
 then a colourful table where every row is a rounded bar - a vivid coloured block on the left (each row a
 different colour: red, blue, green, orange, purple, teal...) with a small icon and the left text in white,
@@ -76,13 +86,13 @@ Illustration idea for the header: {story.image_prompt}
 Write ALL of this text on the poster exactly as given (Gujarati script, same spelling, same numbers, nothing extra):
 - Top banner: "{story.kicker}"
 - Headline (biggest text, two colours e.g. white + yellow/gold): "{story.headline}"
-- Highlight strip under the headline: "{story.subheadline}"
+- Highlight strip under the headline: "{story.subheadline}"{_extras(story)}
 - Table rows (left | right), in this order:
 {rows}
 - Bottom strip: "{story.cta}"
 """
     else:
-        prompt = f"""Design a vertical 9:16 Instagram news poster for a Gujarati news page, in the style of
+        prompt = f"""Create an image: design a vertical 9:16 Instagram news poster for a Gujarati news page, in the style of
 viral Gujarati news infographics: huge bold Gujarati headline, eye-catching 3D illustration of the topic,
 rounded information boxes, strong contrast, everything readable on a phone.
 
@@ -93,7 +103,7 @@ Illustration idea: {story.image_prompt}
 Write ALL of this text on the poster exactly as given (Gujarati script, same spelling, same numbers, nothing extra):
 - Top banner: "{story.kicker}"
 - Headline (biggest text, two colours e.g. white + yellow/gold): "{story.headline}"
-- Sub-headline strip: "{story.subheadline}"
+- Sub-headline strip: "{story.subheadline}"{_extras(story)}
 - Key facts in highlighted boxes:
 {facts}
 - Detail lines in a box:
