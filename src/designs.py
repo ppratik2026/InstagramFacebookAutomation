@@ -235,7 +235,7 @@ def hero_page(story, theme: dict, font: str, image_url: str | None, date: str, h
         blocks = order.get(layout, order["split"])
     css = HERO_CSS % {"accent": theme["accent"], "glow": theme["glow"], "base": theme["base"]}
     page = _head(font, css, theme["accent"]) + f"""
-  {picture}<div class="shade"></div>{_sparks(theme["bokeh"])}<div class="frame"></div>{extra}
+  {picture}<div class="shade"></div>{_sparks(theme["bokeh"])}{extra}
   <div id="main">{"".join(blocks)}</div></body></html>"""
     return page.replace("<body>", f'<body class="{layout}">', 1)
 
@@ -297,5 +297,149 @@ def paper_page(story, theme: dict, font: str, image_url: str | None, date: str, 
     <div class="boxes">{boxes}</div>
     {points}
     <div class="cta">{esc(story.cta)}</div>
+    <div class="footer"><span>સ્રોત: {esc(story.source_name)} • {date}</span><span>{esc(handle)}</span></div>
+  </div></body></html>"""
+
+
+def icon_for(text: str) -> str:
+    """A fitting emoji icon for a fact box, from its words."""
+    rules = [
+        (r"₹|રૂ|ફી|ભાવ|કિંમત|પગાર|price|fee|cost", "💰"), (r"દિવસ|તારીખ|date|day|મહિન|વર્ષ", "📅"),
+        (r"વાગ્યા|સમય|કલાક|time|hour", "⏰"), (r"ધરપકડ|આરોપી|પોલીસ|arrest|police", "🚔"),
+        (r"જિલ્લ|શહેર|ગામ|સ્થળ|place|city", "📍"), (r"વિદ્યાર્થી|પરીક્ષા|ધોરણ|exam|school", "🎓"),
+        (r"વીજ|લાઈટ|power|electric", "⚡"), (r"ખેડૂત|પાક|farmer|crop", "🌾"), (r"હોસ્પિટલ|દર્દી|health", "🏥"),
+        (r"સરકાર|યોજના|નિર્ણય|govt|scheme", "🏛️"), (r"ગેસ|પેટ્રોલ|ડીઝલ|CNG|fuel", "⛽"),
+    ]
+    for pattern, icon in rules:
+        if re.search(pattern, text, re.I):
+            return icon
+    return "📌"
+
+
+def big_number(story) -> str:
+    """The most striking number in the story (for the bottom banner), or ''."""
+    for text in [f["value"] for f in story.facts] + [story.headline, story.subheadline]:
+        m = re.search(r"₹?\s?[\d૦-૯][\d૦-૯,.]*\s?(કરોડ|લાખ|%)?", text)
+        if m:
+            return m.group(0).strip()
+    return ""
+
+
+# Magazine design, modelled on Gemini-made Gujarati news posters: bright top, deep navy body, picture in a
+# slanted frame on the right with a red callout, icon cards on the left, checklist panel, big-number banner.
+MAG_CSS = """
+  body { color: #fff; background:
+    radial-gradient(circle at 80%% 8%%, rgba(255,255,255,.35), transparent 30%%),
+    linear-gradient(180deg, %(top)s 0%%, %(top2)s 17%%, #0f1d4a 33%%, #0a1433 70%%, #050a1f 100%%); }
+  .rays { position: absolute; inset: -400px -400px auto; height: 1100px;
+    background: repeating-conic-gradient(from 0deg at 50%% 60%%, rgba(255,255,255,.10) 0deg 4deg, transparent 4deg 13deg);
+    -webkit-mask: radial-gradient(circle at 50%% 60%%, #000, transparent 60%%); }
+  .spark { position: absolute; border-radius: 50%%; }
+  #main { position: absolute; inset: 0; padding: 40px 38px 34px; display: flex; flex-direction: column; gap: 18px; }
+  .pill { align-self: center; background: #111a3a; border: 3px solid rgba(255,255,255,.25); border-radius: 40px;
+    padding: 8px 34px; font-size: 44px; font-weight: 800; box-shadow: 0 10px 24px rgba(0,0,0,.4); }
+  .h3d .back { color: #fff; -webkit-text-stroke: 20px #fff; text-shadow: 0 12px 0 #0b1340, 0 20px 36px rgba(0,0,0,.55); }
+  .h3d .back .l3 { -webkit-text-stroke-color: #0b1340; color: #0b1340; }   /* dark outline keeps the light line readable */
+  .h3d .front .l1 { background: linear-gradient(180deg, #7fd3ff, #1f6feb 60%%, #0b3fa8); -webkit-background-clip: text;
+    background-clip: text; color: transparent; }
+  .h3d .front .l2 { background: linear-gradient(180deg, #ff7a7a, #e00000 60%%, #8b0000); -webkit-background-clip: text;
+    background-clip: text; color: transparent; }
+  .h3d .front .l3 { background: linear-gradient(180deg, #ffffff, #c9f3ff 50%%, #5ad1ff); -webkit-background-clip: text;
+    background-clip: text; color: transparent; filter: drop-shadow(0 0 18px rgba(90,209,255,.8)); }
+  .mid { flex: 1; min-height: 0; position: relative; display: flex; gap: 16px; }
+  .col { width: 52%%; display: flex; flex-direction: column; gap: 14px; z-index: 2; }
+  .tag { align-self: flex-start; background: #0b1340; border: 3px solid #ffb703; border-radius: 30px; padding: 6px 20px;
+    font-size: 34px; font-weight: 800; }
+  .strip { background: linear-gradient(90deg, #c1121f, rgba(193,18,31,.0)); padding: 6px 14px; font-size: var(--sub);
+    font-weight: 800; border-radius: 8px; }
+  .card { display: flex; gap: 14px; align-items: center; background: linear-gradient(180deg, #ffffff, #e7ecf7);
+    color: #0b1340; border-radius: 26px; padding: 12px 18px 12px 12px; box-shadow: 0 12px 26px rgba(0,0,0,.45);
+    font-size: var(--pt); font-weight: 800; line-height: 1.25; }
+  .card .ic { flex: none; width: 94px; height: 94px; border-radius: 50%%; display: flex; align-items: center;
+    justify-content: center; font-size: 52px; background: radial-gradient(circle at 35%% 30%%, #3d7bff, #0b2d8a);
+    box-shadow: inset 0 -6px 0 rgba(0,0,0,.25), 0 6px 14px rgba(0,0,0,.35); border: 4px solid #fff; color: #fff; }
+  .card .ic.q { font-size: 34px; font-weight: 800; line-height: 1.05; text-align: center; }
+  .card .v { color: #d90429; }
+  .card .s { font-size: .82em; font-weight: 700; color: #26305c; }
+  .photo { position: absolute; right: -38px; top: 0; bottom: 120px; width: 60%%; z-index: 1;
+    clip-path: polygon(14%% 0, 100%% 0, 100%% 100%%, 0 100%%); border-radius: 0; overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,.6); }
+  .photo .img { position: absolute; inset: 0; background-size: cover; background-position: center top; }
+  .photo .emoji { position: absolute; left: 55%%; top: 45%%; transform: translate(-50%%,-50%%); font-size: 260px; }
+  .photo .symbolic { left: auto; right: 0; border-radius: 0 0 0 14px; }
+  .callout { position: absolute; right: -38px; bottom: 40px; width: 50%%; z-index: 3; padding: 26px 30px 26px 70px;
+    background: linear-gradient(135deg, #e00000, #8b0000); transform: skewY(-8deg); text-align: center;
+    box-shadow: 0 16px 30px rgba(0,0,0,.5); border-left: 8px solid #ffd60a; }
+  .callout span { display: inline-block; transform: skewY(8deg); font-size: 58px; font-weight: 800; line-height: 1.1;
+    color: #fff; text-shadow: 0 4px 0 rgba(0,0,0,.35); }
+  .arrows { position: absolute; left: -10px; top: 50%%; transform: translateY(-50%%) skewY(8deg); font-size: 62px;
+    line-height: .9; color: #ffd60a; filter: drop-shadow(0 4px 4px rgba(0,0,0,.4)); }
+  .checks { position: relative; display: flex; align-items: center; gap: 14px; }
+  .checks .side { font-size: 120px; filter: drop-shadow(0 12px 18px rgba(0,0,0,.5)); flex: none; }
+  .checks .panel { flex: 1; background: #fff; color: #10183a; border-radius: 26px; padding: 14px 22px;
+    display: flex; flex-direction: column; gap: 8px; box-shadow: 0 14px 30px rgba(0,0,0,.5); }
+  .pt { display: flex; gap: 12px; align-items: flex-start; font-size: var(--pt); font-weight: 700; line-height: 1.28; }
+  .pt i { flex: none; width: 1.05em; height: 1.05em; margin-top: .14em; border-radius: 50%%; background: #d90429; color: #fff;
+    font-style: normal; font-size: .8em; display: flex; align-items: center; justify-content: center; font-weight: 900; }
+  .bottom { background: linear-gradient(180deg, #13245e, #0a1433); border: 4px solid #ffd60a; border-radius: 26px;
+    padding: 14px 22px; box-shadow: 0 14px 30px rgba(0,0,0,.55); }
+  .bottom .t { text-align: center; font-size: 38px; font-weight: 800; color: #ffd60a; margin-bottom: 6px; }
+  .bottom .row { display: flex; align-items: center; gap: 18px; justify-content: center; }
+  .bottom .bign { font-size: 120px; font-weight: 800; line-height: 1; color: #ffe14d;
+    text-shadow: 0 6px 0 #a35b00, 0 0 30px rgba(255,214,10,.5); white-space: nowrap; }
+  .bottom .q { font-size: 46px; font-weight: 800; line-height: 1.2; background: #fff; color: #0b1340; border-radius: 18px;
+    padding: 10px 20px; }
+  .footer { color: #dfe6ff; text-shadow: 0 2px 6px #000; }
+"""
+
+MAG_TOPS = [("#ffd000", "#ff9f1c"), ("#ffb703", "#fb8500"), ("#ffe14d", "#ffb703"), ("#7ae582", "#25a18e"),
+            ("#ff8fa3", "#e5383b")]
+
+
+def headline_3tone(headline: str) -> str:
+    """Headline in three coloured parts (blue / red / glowing white) with a thick white outline."""
+    words = headline.split()
+    n = len(words)
+    a, b = max(1, round(n * .35)), max(2, round(n * .7))
+    parts = [" ".join(words[:a]), " ".join(words[a:b]), " ".join(words[b:])]
+    inner = "<br>".join(f'<span class="l{i + 1}">{esc(p)}</span>' for i, p in enumerate(parts) if p)
+    return f'<div class="h3d"><span class="back">{inner}</span><span class="front">{inner}</span></div>'
+
+
+def mag_page(story, theme: dict, font: str, image_url: str | None, date: str, handle: str) -> str:
+    import random
+    top, top2 = random.choice(MAG_TOPS)
+    picture = (f'<div class="img" style="background-image:url({image_url})"></div>{SYMBOLIC}' if image_url
+               else f'<div class="emoji">{theme["scene"][0]}</div>')
+    cards = ""
+    if story.summary:
+        cards += f'<div class="card fit"><div class="ic q">શું<br>થયું?</div><div class="s">{esc(story.summary)}</div></div>'
+    cards += "".join(
+        f'<div class="card"><div class="ic">{icon_for(f["label"] + " " + f["value"])}</div>'
+        f'<div>{esc(f["label"])}: <span class="v">{esc(f["value"])}</span></div></div>' for f in story.facts[:2])
+    callout = ""
+    if story.stamp:
+        callout = f'<div class="callout"><div class="arrows">➜<br>➜</div><span>{esc(story.stamp)}</span></div>'
+    checks = ""
+    if story.points:
+        checks = ('<div class="checks"><div class="side">🚨</div><div class="panel fit">'
+                  + "".join(f'<div class="pt"><i>✓</i><span>{esc(p)}</span></div>' for p in story.points[:3])
+                  + '</div><div class="side">📄</div></div>')
+    num = big_number(story)
+    bottom = (f'<div class="bottom"><div class="t">{highlight_numbers(story.subheadline)}</div>'
+              f'<div class="row">{f"<div class=bign>{esc(num)}</div>" if num else ""}'
+              f'<div class="q">{esc(story.cta)}</div></div></div>')
+    css = MAG_CSS % {"top": top, "top2": top2}
+    return _head(font, css, theme["accent"]) + f"""
+  <div class="rays"></div>{_sparks("#ffd60a", 25)}
+  <div id="main">
+    <div class="pill">{esc(theme["tag"].split(" ", 1)[0])} {esc(story.kicker)}</div>
+    {headline_3tone(story.headline)}
+    <div class="mid">
+      <div class="col"><div class="tag">🚨 {esc(story.kicker)}</div>{cards}</div>
+      <div class="photo">{picture}</div>{callout}
+    </div>
+    {checks}
+    {bottom}
     <div class="footer"><span>સ્રોત: {esc(story.source_name)} • {date}</span><span>{esc(handle)}</span></div>
   </div></body></html>"""

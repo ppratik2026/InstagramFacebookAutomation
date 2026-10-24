@@ -277,18 +277,19 @@ ANIM_JS = """(steps) => {
 
 ANIM_STEPS = [
     [".head", "zoomIn", 0.0, 0.4, 0],
-    [".banner, .tag, .kicker", "dropIn", 0.05, 0.45, 0],
+    [".banner, .pill, .tag, .kicker", "dropIn", 0.05, 0.45, 0],
     [".h3d, .headline", "punchIn", 0.3, 0.6, 0],
     [".photo, .img, .fallback, .scene, .icon, .pic", "zoomIn", 0.7, 0.7, 0],
     [".sub, .strip", "slideL", 1.0, 0.45, 0],
     [".summary", "slideR", 1.1, 0.45, 0],
-    [".stamp", "slam", 1.3, 0.45, 0],
+    [".stamp, .callout", "slam", 1.3, 0.45, 0],
     [".sticker", "popIn", 1.3, 0.35, 0],
-    [".bar, .box, .fact, .chip", "slideAlt", 1.7, 0.4, 0.15],
-    [".glass, .right, .pts, .why", "fadeIn", 1.9, 0.25, 0],
+    [".bar, .box, .fact, .chip, .card", "slideAlt", 1.5, 0.4, 0.15],
+    [".checks .side", "popIn", 1.9, 0.35, 0.2],
+    [".glass, .right, .pts, .why, .panel", "fadeIn", 1.9, 0.25, 0],
     [".pt", "popIn", 2.0, 0.35, 0.14],
     [".ribbon", "slideR", 2.6, 0.4, 0],
-    [".cta", "riseUp", 2.8, 0.45, 0],
+    [".cta, .bottom", "riseUp", 2.8, 0.45, 0],
     [".footer", "fadeIn", 3.0, 0.3, 0],
 ]
 
@@ -387,7 +388,7 @@ def render_card(story: NewsStory, cfg: dict, out_path: Path, background: Path | 
     if font == "random":
         font = random.choice(designs.FONTS)
     # pick one of the designs that suits this story, so the feed doesn't look repetitive
-    allowed = cfg["card"].get("designs", ["hero", "split", "paper", "classic"])
+    allowed = cfg["card"].get("designs", ["mag", "hero", "split", "paper"])
     options = [d for d in allowed
                if not (d == "split" and len(story.points) < 3) and not (d == "hero" and not background)]
     design = random.choice(options or ["classic"])
@@ -399,6 +400,9 @@ def render_card(story: NewsStory, cfg: dict, out_path: Path, background: Path | 
         layout = designs.hero_layout(background)
         print(f"   Layout: {layout} (text placed away from the picture's subject)")
         page_html = designs.hero_page(story, theme, font, image_url, date, cfg["card"]["handle"], layout)
+        fit_script = designs.FIT_SCRIPT
+    elif design == "mag":
+        page_html = designs.mag_page(story, theme, font, image_url, date, cfg["card"]["handle"])
         fit_script = designs.FIT_SCRIPT
     elif design == "paper":
         page_html = designs.paper_page(story, theme, font, image_url, date, cfg["card"]["handle"])
