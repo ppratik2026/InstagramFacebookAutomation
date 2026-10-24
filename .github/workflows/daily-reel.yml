@@ -66,7 +66,12 @@ jobs:
         run: |
           ARGS=""
           if [ -n "${{ inputs.category }}" ] && [ "${{ inputs.category }}" != "any" ]; then ARGS="$ARGS --category ${{ inputs.category }}"; fi
-          if [ "${{ inputs.publish }}" = "false" ]; then ARGS="$ARGS --no-publish"; fi
+          if [ "${{ inputs.publish }}" = "false" ]; then
+            ARGS="$ARGS --no-publish"
+            # test runs: skip the stories already shown in earlier previews
+            git fetch -q origin previews 2>/dev/null && git log origin/previews --format=%s | sed 's/^Preview run [0-9]*: //' > preview_titles.txt || true
+            [ -s preview_titles.txt ] && ARGS="$ARGS --skip-titles preview_titles.txt"
+          fi
           python main.py run $ARGS
 
       - name: Save the video

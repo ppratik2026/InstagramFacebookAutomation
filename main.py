@@ -43,7 +43,10 @@ def cmd_run(args, cfg):
     work_dir.mkdir(parents=True, exist_ok=True)
 
     print(f"1/4 Finding Gujarat news ({cfg.get('provider', 'free')})...")
-    story, notes = find_story(cfg, recent_titles(), args.category)
+    previous = recent_titles()
+    if args.skip_titles and Path(args.skip_titles).exists():   # e.g. stories already shown in test previews
+        previous += [t.strip() for t in Path(args.skip_titles).read_text(encoding="utf-8").splitlines() if t.strip()]
+    story, notes = find_story(cfg, previous, args.category)
     caption = story.full_caption()
     (work_dir / "research.md").write_text(notes, encoding="utf-8")
     (work_dir / "story.json").write_text(json.dumps(story.__dict__, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -186,6 +189,7 @@ def main():
     run = sub.add_parser("run", help="find news, make a reel and (by default) publish it")
     run.add_argument("--no-publish", action="store_true", help="only make the video")
     run.add_argument("--category", choices=["crime", "good_news", "government"], help="limit to one category")
+    run.add_argument("--skip-titles", help="file with headlines to avoid (one per line)")
     run.set_defaults(func=cmd_run)
 
     pub = sub.add_parser("publish", help="publish an existing video file")
