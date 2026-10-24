@@ -186,16 +186,18 @@ def _chat(cfg: dict, system: str, user: str) -> dict:
                     if resp.status_code == 200:
                         return _parse_json(resp.json()["choices"][0]["message"]["content"])
                     problem = f"HTTP {resp.status_code}"
+                    bad_reply = False
                 except (requests.RequestException, ValueError, KeyError, IndexError, TypeError) as e:
                     problem = f"{type(e).__name__}: {e}"
+                    bad_reply = isinstance(e, ValueError) and resp is not None and resp.status_code == 200
                 detail = ""
                 if resp is not None:
                     where = f" -> {resp.headers['location']}" if resp.headers.get("location") else ""
                     detail = f"{where} [{resp.headers.get('content-type', '?')}] {resp.text[:200]!r}"
                 errors.append(f"{provider['name']} {model} (json_mode={json_mode}): {problem}{detail}")
                 print(f"   LLM failed: {errors[-1]}")
-                if resp is None or resp.status_code != 400:
-                    break  # only a 400 is worth retrying without response_format
+                if not bad_reply and (resp is None or resp.status_code != 400):
+                    break  # a 400 or a broken JSON reply is worth one more try without response_format
     if not errors:
         raise RuntimeError("No LLM provider available: add a free GROQ_API_KEY (see README).")
     raise RuntimeError("All free LLM providers failed:\n" + "\n".join(errors))
