@@ -253,12 +253,13 @@ PAPER_CSS = """
   .h3d .front .b { background: linear-gradient(180deg, #ff4d4d, #d90429 55%%, #8b0000); -webkit-background-clip: text;
     background-clip: text; color: transparent; }
   .sub { font-size: var(--sub); font-weight: 800; text-align: center; line-height: 1.3; }
-  .pic { flex: 1; min-height: 300px; max-height: 620px; position: relative; border-radius: 30px; overflow: hidden; border: 6px solid #111;
+  .pic { flex: 1; min-height: 480px; max-height: 680px; position: relative; border-radius: 30px; overflow: hidden; border: 6px solid #111;
     box-shadow: 0 16px 34px rgba(0,0,0,.3); background: radial-gradient(circle at 50%% 45%%, %(glow)s, #1b1b2f 75%%); }
   .pic .img { position: absolute; inset: 0; background-size: cover; background-position: center top; }
   .pic b { position: absolute; left: 50%%; top: 50%%; transform: translate(-50%%,-50%%); font-size: 260px; }
   .pic .stamp { right: 30px; bottom: 34px; }
   .boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .box:last-child:nth-child(odd) { grid-column: span 2; }
   .box { background: linear-gradient(180deg, #e01e37, #a4161a); color: #fff; border-radius: 22px; padding: 14px 18px;
     text-align: center; box-shadow: 0 10px 22px rgba(164,22,26,.35); border: 4px solid #fff; outline: 3px solid #a4161a; }
   .box .l { font-size: 32px; font-weight: 700; opacity: .95; }
@@ -289,7 +290,7 @@ def paper_page(story, theme: dict, font: str, image_url: str | None, date: str, 
     return _head(font, css, theme["accent"], fill=red) + f"""
   <div class="topbar"></div>
   <div id="main">
-    <div class="tag">{esc(theme["tag"])} • {esc(story.kicker)}</div>
+    <div class="tag">{esc(theme["tag"].split(" ", 1)[0])} {esc(story.kicker)}</div>
     {headline_3d(story.headline)}
     <div class="sub">{highlight_numbers(story.subheadline)}</div>
     {summary_box(story)}
@@ -481,9 +482,10 @@ BRUSH_MASK = ("url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/
 DECOR_CSS = """<style>
   .pill, .banner, .tag, .strip, .ribbon, .kicker {
     -webkit-mask-image: %(mask)s; -webkit-mask-size: 100%% 100%%; mask-image: %(mask)s; mask-size: 100%% 100%%;
-    border-radius: 0 !important; padding-left: 34px !important; padding-right: 34px !important; }
-  .sash { position: absolute; z-index: 60; top: 52px; left: -92px; width: 400px; transform: rotate(-45deg);
-    background: %(paint)s; color: #fff; text-align: center; font-size: 30px; font-weight: 900; letter-spacing: 2px;
+    border-radius: 0 !important; padding-left: 30px !important; padding-right: 30px !important;
+    max-width: calc(100%% - 150px); white-space: normal; text-align: center; }
+  .sash { position: absolute; z-index: 60; top: 58px; left: -98px; width: 420px; transform: rotate(-45deg);
+    background: %(paint)s; color: #fff; text-align: center; font-size: 24px; font-weight: 900; letter-spacing: 1px;
     padding: 8px 0; border-top: 4px solid #fff; border-bottom: 4px solid #fff; box-shadow: 0 8px 18px rgba(0,0,0,.45);
     font-family: 'Arial Black', Impact, sans-serif; }
   .stk { position: absolute; z-index: 60; background: #fff; border-radius: 20px; padding: 6px;
@@ -497,14 +499,25 @@ DECOR_CSS = """<style>
 
 
 def decor_html(mood: str) -> str:
-    """Corner banner, a text sticker and an emoji sticker for the mood, plus the brush-paint CSS."""
+    """Corner banner, a text sticker and an emoji sticker for the mood, plus the brush-paint CSS.
+
+    The stickers are placed on the picture's corners by a small script, so they never cover any text.
+    """
     import random
     m = MOODS[mood]
     text = random.choice(m["stickers"])
     emoji = random.choice(m["emoji"])
-    corner = random.choice([("top: 26px; right: 22px;", 8), ("top: 26px; right: 22px;", -6)])
-    spot = "bottom: 236px; right: 16px;"   # lower corner: never on top of the headline or the summary
     css = DECOR_CSS % {"mask": BRUSH_MASK, "paint": m["paint"]}
+    # called by card.py after the text has been fitted, when the picture's final position is known
+    place = """<script>window.__placeStickers = (() => {
+  const pic = document.querySelector('.photo, .pic, .hero-space');
+  const [t, e] = document.querySelectorAll('.stk');
+  if (!pic) { t.remove(); e.remove(); return; }
+  const r = pic.getBoundingClientRect();
+  const right = Math.min(r.right, window.innerWidth);   // the picture may run past the screen edge
+  t.style.top = (r.top + 14) + 'px'; t.style.left = (right - t.offsetWidth - 16) + 'px';
+  e.style.top = (r.bottom - e.offsetHeight - 14) + 'px'; e.style.left = (r.left + 14) + 'px';
+});</script>"""
     return (css + f'<div class="sash">{esc(m["sash"])}</div>'
-            f'<div class="stk" style="{corner[0]} transform: rotate({corner[1]}deg)"><span>{esc(text)}</span></div>'
-            f'<div class="stk e" style="{spot} transform: rotate({random.randint(-14, 14)}deg)">{emoji}</div>')
+            f'<div class="stk" style="transform: rotate({random.choice([-6, 6, 8])}deg)"><span>{esc(text)}</span></div>'
+            f'<div class="stk e" style="transform: rotate({random.randint(-14, 14)}deg)">{emoji}</div>' + place)

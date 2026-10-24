@@ -207,7 +207,7 @@ INFO_TEMPLATE = """<!doctype html>
   <div class="rays"></div>
   {bokeh_html}
   <div id="main">
-    <div class="head"><div class="tag">{tag} • {kicker}</div><div class="headline">{headline}</div></div>
+    <div class="head"><div class="tag">{tag} {kicker}</div><div class="headline">{headline}</div></div>
     <div class="strip">{subheadline}</div>
     <div class="mid">
       <div class="left"><div class="pic">{picture}{stamp}</div>{chips}</div>
@@ -359,7 +359,7 @@ def _info_page(story: NewsStory, cfg: dict, theme: dict, image: Path | None, fon
         points = f'<div class="pt sum"><span><b>શું થયું?</b> {esc(story.summary)}</span></div>' + points
     return INFO_TEMPLATE.format(
         w=WIDTH, h=HEIGHT, font=font, font_url=font.replace(" ", "+"), base=theme["base"], banner=theme["banner"],
-        accent=theme["accent"], glow=theme["glow"], bokeh=theme["bokeh"], bokeh_html=_bokeh(), tag=esc(theme["tag"]),
+        accent=theme["accent"], glow=theme["glow"], bokeh=theme["bokeh"], bokeh_html=_bokeh(), tag=esc(theme["tag"].split(" ", 1)[0]),
         kicker=esc(story.kicker), headline=_two_tone(story.headline),
         subheadline=designs.highlight_numbers(story.subheadline), picture=picture, stamp=stamp, chips=chips, points=points, cta=esc(story.cta), source=esc(story.source_name),
         date=_gujarati_date(datetime.now(IST)), handle=esc(cfg["card"]["handle"]),
@@ -433,6 +433,7 @@ def render_card(story: NewsStory, cfg: dict, out_path: Path, background: Path | 
         page.evaluate("document.fonts.ready")
         if not page.evaluate(fit_script):
             print("Warning: card text is too long and may be cut off.")
+        page.evaluate("window.__placeStickers && window.__placeStickers()")
         page.screenshot(path=str(out_path))
         if intro_dir:
             vcfg = cfg["video"]

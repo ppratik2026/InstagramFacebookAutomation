@@ -53,6 +53,9 @@ Hard rules:
   specific subject and place (e.g. "ડ્રાઇવિંગ લાયસન્સ", "અમદાવાદ", "GSEB ધોરણ 10"), never a vague word like
   "લાયસન્સ અપડેટ" or "મોટા સમાચાર". The summary answers: what happened, where, who decided/did it, who is affected.
   Every point and fact must make sense on its own (say what it is about).
+- Write everything in Gujarati script. No English words except names, acronyms and numbers
+  (never "additionally", "update", "news" written in English letters inside Gujarati sentences).
+- Keep it short: kicker max 4 words, summary max 2 sentences, each point max 10 words.
 - Reply with JSON only."""
 
 CARD_FORMAT = """Return a JSON object with exactly these keys:
