@@ -190,7 +190,7 @@ INFO_TEMPLATE = """<!doctype html>
   .chip .label {{ font-size: 32px; font-weight: 700; color: #dfe7ff; }}
   .chip .value {{ font-size: 44px; font-weight: 800; color: #ffd60a; line-height: 1.15; }}
   .right {{ flex: 1; background: rgba(255,255,255,.95); color: #10183a; border-radius: 30px; padding: 22px 22px;
-    display: flex; flex-direction: column; justify-content: space-evenly; gap: 10px; box-shadow: 0 16px 34px rgba(0,0,0,.55); }}
+    display: flex; flex-direction: column; justify-content: center; gap: 14px; box-shadow: 0 16px 34px rgba(0,0,0,.55); }}
   .pt {{ display: flex; gap: 12px; align-items: flex-start; font-size: var(--pt, 36px); font-weight: 700; line-height: 1.3;
     padding-bottom: 10px; border-bottom: 2px solid #e3e7f2; }}
   .pt:last-child {{ border-bottom: none; padding-bottom: 0; }}
@@ -223,8 +223,8 @@ INFO_FIT_SCRIPT = """() => {
   const main = document.getElementById('main');
   const right = document.querySelector('.right');
   const root = document.documentElement.style;
-  let hl = 108, sub = 48, pt = 36;
-  const overflow = () => main.scrollHeight > main.clientHeight + 1 || right.scrollHeight > right.clientHeight + 1;
+  let hl = 120, sub = 52, pt = 44;   // start big; shrink only to fit
+  const overflow = () => main.scrollHeight > main.clientHeight + 12 || right.scrollHeight > right.clientHeight + 12;
   while (overflow() && (hl > 64 || pt > 24)) {
     if (hl > 64) hl -= 4;
     if (pt > 24) pt -= 1;
@@ -353,8 +353,8 @@ def _info_page(story: NewsStory, cfg: dict, theme: dict, image: Path | None, fon
     if image:
         stamp = designs.SYMBOLIC + stamp
     chips = "".join(f'<div class="chip"><div class="label">{esc(f["label"])}</div>'
-                    f'<div class="value">{esc(f["value"])}</div></div>' for f in story.facts[:2])
-    points = "".join(f'<div class="pt"><span class="tick">✓</span><span>{esc(p)}</span></div>' for p in story.points[:5])
+                    f'<div class="value">{esc(f["value"])}</div></div>' for f in story.facts[:3])
+    points = "".join(f'<div class="pt"><span class="tick">✓</span><span>{esc(p)}</span></div>' for p in story.points[:6])
     if story.summary:
         points = f'<div class="pt sum"><span><b>શું થયું?</b> {esc(story.summary)}</span></div>' + points
     return INFO_TEMPLATE.format(

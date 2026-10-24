@@ -13,14 +13,14 @@ esc = html.escape
 FIT_SCRIPT = """() => {
   const main = document.getElementById('main');
   const root = document.documentElement.style;
-  const v = {hl: 124, sub: 46, pt: 34, val: 60};
+  const v = {hl: 140, sub: 54, pt: 44, val: 70};   // start big: text grows into free space, shrinks only to fit
   const set = () => { for (const k in v) root.setProperty('--' + k, v[k] + 'px'); };
   // Gujarati vowel signs poke a few px past the line box; that is not a real overflow
   const over = el => el.scrollHeight > el.clientHeight + 12;
   const overflow = () => over(main) || [...document.querySelectorAll('.fit')].some(over);
   set();
   while (overflow() && (v.hl > 60 || v.pt > 22)) {
-    if (v.hl > 60) v.hl -= 4;
+    if (v.hl > 60) v.hl -= 3;
     if (v.pt > 22) v.pt -= 1;
     v.sub = Math.max(32, v.sub - 1); v.val = Math.max(36, v.val - 2);
     set();
@@ -212,11 +212,11 @@ def hero_page(story, theme: dict, font: str, image_url: str | None, date: str, h
     banner = f'<div class="banner">{esc(theme["tag"].split(" ", 1)[0])} {esc(story.kicker)}</div>'
     head = headline_3d(story.headline)
     bars = "".join(f'<div class="bar"><span class="l">{esc(f["label"])}: </span><span class="v">{esc(f["value"])}</span></div>'
-                   for f in story.facts[:2])
+                   for f in story.facts[:3])
     points = ""
     if story.points:
         points = '<div class="glass fit">' + "".join(
-            f'<div class="pt"><i>✓</i><span>{esc(p)}</span></div>' for p in story.points[:3]) + "</div>"
+            f'<div class="pt"><i>✓</i><span>{esc(p)}</span></div>' for p in story.points[:4]) + "</div>"
     summary = summary_box(story)
     ribbon = f'<div class="ribbon">{highlight_numbers(story.subheadline)}</div>'
     cta = f'<div class="cta">{esc(story.cta)}</div>'
@@ -253,7 +253,7 @@ PAPER_CSS = """
   .h3d .front .b { background: linear-gradient(180deg, #ff4d4d, #d90429 55%%, #8b0000); -webkit-background-clip: text;
     background-clip: text; color: transparent; }
   .sub { font-size: var(--sub); font-weight: 800; text-align: center; line-height: 1.3; }
-  .pic { flex: 1; min-height: 260px; position: relative; border-radius: 30px; overflow: hidden; border: 6px solid #111;
+  .pic { flex: 1; min-height: 300px; max-height: 620px; position: relative; border-radius: 30px; overflow: hidden; border: 6px solid #111;
     box-shadow: 0 16px 34px rgba(0,0,0,.3); background: radial-gradient(circle at 50%% 45%%, %(glow)s, #1b1b2f 75%%); }
   .pic .img { position: absolute; inset: 0; background-size: cover; background-position: center top; }
   .pic b { position: absolute; left: 50%%; top: 50%%; transform: translate(-50%%,-50%%); font-size: 260px; }
@@ -279,11 +279,11 @@ def paper_page(story, theme: dict, font: str, image_url: str | None, date: str, 
                else f'<b>{theme["scene"][0]}</b>')
     stamp = f'<div class="stamp">{esc(story.stamp)}</div>' if story.stamp else ""
     boxes = "".join(f'<div class="box"><div class="l">{esc(f["label"])}</div><div class="v">{esc(f["value"])}</div></div>'
-                    for f in story.facts[:2])
+                    for f in story.facts[:4])
     points = ""
     if story.points:
         points = ('<div class="why">મુખ્ય મુદ્દા</div><div class="pts fit">'
-                  + "".join(f'<div class="pt"><i>▶</i><span>{esc(p)}</span></div>' for p in story.points[:3]) + "</div>")
+                  + "".join(f'<div class="pt"><i>▶</i><span>{esc(p)}</span></div>' for p in story.points[:5]) + "</div>")
     css = PAPER_CSS % {"accent": theme["accent"], "glow": theme["glow"]}
     red = "linear-gradient(180deg, #ff4d4d, #d90429 55%, #8b0000)"
     return _head(font, css, theme["accent"], fill=red) + f"""
@@ -346,8 +346,8 @@ MAG_CSS = """
     background-clip: text; color: transparent; }
   .h3d .front .l3 { background: linear-gradient(180deg, #ffffff, #c9f3ff 50%%, #5ad1ff); -webkit-background-clip: text;
     background-clip: text; color: transparent; filter: drop-shadow(0 0 18px rgba(90,209,255,.8)); }
-  .mid { flex: 1; min-height: 0; position: relative; display: flex; gap: 16px; }
-  .col { width: 52%%; display: flex; flex-direction: column; gap: 14px; z-index: 2; }
+  .mid { flex: 1; min-height: 600px; position: relative; display: flex; gap: 16px; }   /* picture keeps its room */
+  .col { width: 52%%; display: flex; flex-direction: column; gap: 14px; z-index: 2; justify-content: space-around; }
   .tag { align-self: flex-start; background: #0b1340; border: 3px solid #ffb703; border-radius: 30px; padding: 6px 20px;
     font-size: 34px; font-weight: 800; }
   .strip { background: linear-gradient(90deg, #c1121f, rgba(193,18,31,.0)); padding: 6px 14px; font-size: var(--sub);
@@ -417,14 +417,14 @@ def mag_page(story, theme: dict, font: str, image_url: str | None, date: str, ha
         cards += f'<div class="card fit"><div class="ic q">શું<br>થયું?</div><div class="s">{esc(story.summary)}</div></div>'
     cards += "".join(
         f'<div class="card"><div class="ic">{icon_for(f["label"] + " " + f["value"])}</div>'
-        f'<div>{esc(f["label"])}: <span class="v">{esc(f["value"])}</span></div></div>' for f in story.facts[:2])
+        f'<div>{esc(f["label"])}: <span class="v">{esc(f["value"])}</span></div></div>' for f in story.facts[:3])
     callout = ""
     if story.stamp:
         callout = f'<div class="callout"><div class="arrows">➜<br>➜</div><span>{esc(story.stamp)}</span></div>'
     checks = ""
     if story.points:
         checks = ('<div class="checks"><div class="side">🚨</div><div class="panel fit">'
-                  + "".join(f'<div class="pt"><i>✓</i><span>{esc(p)}</span></div>' for p in story.points[:3])
+                  + "".join(f'<div class="pt"><i>✓</i><span>{esc(p)}</span></div>' for p in story.points[:4])
                   + '</div><div class="side">📄</div></div>')
     num = big_number(story)
     bottom = (f'<div class="bottom"><div class="t">{highlight_numbers(story.subheadline)}</div>'
@@ -437,7 +437,7 @@ def mag_page(story, theme: dict, font: str, image_url: str | None, date: str, ha
     <div class="pill">{esc(theme["tag"].split(" ", 1)[0])} {esc(story.kicker)}</div>
     {headline_3tone(story.headline)}
     <div class="mid">
-      <div class="col"><div class="tag">🚨 {esc(story.kicker)}</div>{cards}</div>
+      <div class="col fit"><div class="tag">🚨 {esc(story.kicker)}</div>{cards}</div>
       <div class="photo">{picture}</div>{callout}
     </div>
     {checks}
