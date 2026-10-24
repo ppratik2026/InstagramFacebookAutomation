@@ -3,11 +3,7 @@ name: Prepare post (Gemini prompt)
 # Semi-automatic flow, step 1: find news and open an issue with a ready Gemini prompt.
 # Make the poster in the Gemini app and upload it as a comment on that issue; "Post from issue" does the rest.
 on:
-  schedule:
-    # times are UTC: 02:10, 07:10, 13:10 UTC = 07:40, 12:40, 18:40 IST
-    - cron: "10 2 * * *"
-    - cron: "10 7 * * *"
-    - cron: "10 13 * * *"
+  # manual only now; daily-reel.yml posts automatically
   workflow_dispatch:
     inputs:
       category:

@@ -38,9 +38,9 @@ video:
 
 free:
   ai_images: true                 # free AI illustration (Pollinations) on the card; false = Pexels / emoji
-  # Whole poster from the Gemini-style prompt with free image models (tried in order). If none works the
-  # template design is used. Remove the list to always use the template.
-  ai_poster_models: ["nanobanana", "gptimage", "seedream", "kontext"]
+  # Whole poster (picture + Gujarati text) from the Gemini-style prompt. Needs the free POLLINATIONS_API_KEY
+  # secret; without it, or if every model fails, the template design is used. Models are tried in order.
+  ai_poster_models: ["gptimage"]
   # Extra RSS feeds (Gujarati news sites). Google News searches per category are always added.
   # A feed that fails or doesn't exist is skipped, so it's safe to add more.
   feeds:

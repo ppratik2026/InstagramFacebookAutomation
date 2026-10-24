@@ -100,28 +100,60 @@ def generate_free_ai_image(prompt: str, out_path: Path) -> Path | None:
     return None
 
 
+POLLINATIONS_IMAGES_API = "https://gen.pollinations.ai/v1/images/generations"
+
+
+def fit_to_reel(path: Path) -> Path:
+    """Make a poster 1080x1920 without cutting it: the whole poster in the middle on a blurred copy of itself."""
+    from PIL import Image, ImageFilter
+
+    img = Image.open(path).convert("RGB")
+    if abs(img.width / img.height - 9 / 16) < 0.01:
+        return path
+    back = img.resize((1080, 1920)).filter(ImageFilter.GaussianBlur(40))
+    scale = min(1080 / img.width, 1920 / img.height)
+    front = img.resize((round(img.width * scale), round(img.height * scale)), Image.LANCZOS)
+    back.paste(front, ((1080 - front.width) // 2, (1920 - front.height) // 2))
+    back.save(path)
+    return path
+
+
 def generate_free_poster(prompt: str, models: list[str], out_path: Path) -> Path | None:
-    """The whole poster (picture + Gujarati text) from the same prompt a person would paste into Gemini,
-    using Pollinations' free image models. Returns None if no model gives an image."""
-    url = POLLINATIONS_IMAGE + urllib.parse.quote(prompt)
+    """The whole poster (picture + Gujarati text) from the same prompt a person would paste into Gemini.
+    Needs a free Pollinations account key (POLLINATIONS_API_KEY): the keyless API only has a model that
+    cannot write text. Returns None if there is no key or no model gives an image."""
+    key = os.environ.get("POLLINATIONS_API_KEY", "").strip()
+    if not key:
+        print("   AI poster skipped: no POLLINATIONS_API_KEY (free key from enter.pollinations.ai).")
+        return None
     for model in models:
-        params = {"model": model, "width": 1080, "height": 1920, "nologo": "true", "enhance": "false",
-                  "seed": random.randint(1, 10**6)}
-        for attempt in range(3):
+        for attempt in range(2):
             try:
-                resp = requests.get(url, params=params, timeout=240)
+                resp = requests.post(POLLINATIONS_IMAGES_API, headers={"Authorization": f"Bearer {key}"},
+                                     json={"model": model, "prompt": prompt, "size": "1024x1536", "n": 1},
+                                     timeout=300)
             except requests.RequestException as e:
                 print(f"   AI poster ({model}) failed: {e}")
                 break
-            if resp.status_code == 200 and resp.headers.get("content-type", "").startswith("image/"):
-                out_path.write_bytes(resp.content)
-                print(f"   AI poster made with free model '{model}'")
-                return out_path
+            if resp.status_code == 200:
+                try:
+                    item = resp.json()["data"][0]
+                    if item.get("b64_json"):
+                        import base64
+                        out_path.write_bytes(base64.b64decode(item["b64_json"]))
+                    else:
+                        with requests.get(item["url"], timeout=120) as dl:
+                            dl.raise_for_status()
+                            out_path.write_bytes(dl.content)
+                except (ValueError, KeyError, IndexError, requests.RequestException) as e:
+                    print(f"   AI poster ({model}) gave no image: {e}")
+                    break
+                print(f"   AI poster made with model '{model}'")
+                return fit_to_reel(out_path)
             print(f"   AI poster ({model}) failed: HTTP {resp.status_code} {resp.text[:200]!r}")
             if resp.status_code not in (429, 500, 502, 503, 504):
-                break   # e.g. model not available on the free tier: try the next model
-            match = re.search(r"[Rr]etry after (\d+)", resp.text)
-            time.sleep(min(int(match.group(1)) + 5 if match else 20, 60))
+                break   # e.g. out of free credits or model unavailable: try the next model
+            time.sleep(20)
     return None
 
 

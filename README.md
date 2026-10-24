@@ -20,17 +20,19 @@ Do mode hain (`config.yaml` → `provider`):
 free:   RSS news → GitHub Models (Gujarati text) → Card image (HTML → PNG) → Reel MP4 (FFmpeg) → Instagram API
 ```
 
-## ⭐ Roz ka tareeka: Gemini quality, free (semi-automatic)
+## ⭐ Roz ka tareeka: poora automatic
 
-Gemini app (free) sabse sundar poster banata hai, lekin uski API paid hai. Isliye kaam aise bata gaya hai:
+`daily-reel.yml` roz **8:10, 13:10 aur 19:10 IST** pe apne aap chalta hai:
 
-1. **Tool (automatic, roz 7:40, 12:40 aur 18:40 IST):** news dhundhta hai, Gujarati text likhta hai, aur GitHub mein ek **Issue** kholta hai jismein **taiyaar Gemini prompt** hota hai. Aapke phone pe GitHub app ka notification aata hai.
-2. **Aap (2 minute):** Issue kholo → prompt copy karo (box ke kone mein copy button hai) → **Gemini app** mein paste karo → poster download karo.
-3. **Aap:** wahi image us Issue mein **comment** karke upload karo.
-4. **Tool (automatic):** poster ko 15 sec ki reel (zoom + music) banata hai, **Instagram pe post** karta hai, aur Issue mein link daal ke use band kar deta hai.
+1. News dhundhta hai aur Gujarati text likhta hai.
+2. **Wahi creative prompt jo Gemini app ke liye banta hai**, tool khud image AI ko deta hai aur poora poster (picture + Gujarati text) banwata hai.
+   - Iske liye free **`POLLINATIONS_API_KEY`** secret chahiye: [enter.pollinations.ai](https://enter.pollinations.ai) pe GitHub se login karo → key banao. Card nahi lagta, roz kuch free credit milta hai.
+   - Key na ho, credit khatam ho, ya model fail ho, to tool apna **template design** (AI illustration + stickers) bana deta hai. Post kabhi nahi rukti.
+3. 12–18 sec ki reel (mood ke hisaab se motion) banake **Instagram pe post** karta hai.
 
-Kisi poster ko skip karna ho to bas Issue band kar do. Manual chalana ho to **Actions → Prepare post (Gemini prompt) → Run workflow**.
-Poora automatic template wala tareeka (`daily-reel.yml`) ab sirf haath se chalta hai.
+> Dhyan do: free image models Gujarati text kabhi-kabhi galat likh dete hain (Gemini app jitna perfect nahi). Shuru ke kuch din `publish` ka tick hata ke chalao aur Artifacts mein poster check karo.
+
+Purana semi-automatic tareeka (Issue mein Gemini prompt → aap Gemini app se poster banao → comment karo) ab bhi haath se chal sakta hai: **Actions → Prepare post (Gemini prompt) → Run workflow**.
 
 ## 1. Zaroori keys
 
@@ -38,6 +40,7 @@ Poora automatic template wala tareeka (`daily-reel.yml`) ab sirf haath se chalta
 |---|---|
 | `IG_ACCESS_TOKEN` | Meta app → Instagram API → API setup with Instagram login → **Generate token** |
 | `IG_USER_ID` | Usi page pe account ke neeche likha number (`17841422688299078`) |
+| `POLLINATIONS_API_KEY` | **Optional**, free: [enter.pollinations.ai](https://enter.pollinations.ai). Poora AI poster ke liye. Na do to template design |
 | `PEXELS_API_KEY` | **Optional**, free: [pexels.com/api](https://www.pexels.com/api/). Card ke peeche photo ke liye. Na do to emoji/colour design lagta hai |
 | `GEMINI_API_KEY` | Sirf `provider: "gemini"` ke liye (billing chahiye). Free mode mein zaroorat nahi |
 
