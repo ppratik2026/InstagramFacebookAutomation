@@ -123,6 +123,7 @@ def _read_feed(url: str) -> list[FeedItem]:
         full = node.findtext(CONTENT_NS) or node.findtext("description") or ""
         if " - " in title and source and title.endswith(source):  # Google News appends " - Source"
             title = title[: -len(source)].rstrip(" -")
+        title = NOISE.sub("", title).strip(" :-|,")
         if title and link:
             items.append(FeedItem(title, link, source.strip(" -|"), published, _strip_html(full)))
     return items
@@ -211,6 +212,10 @@ def _chat(cfg: dict, system: str, user: str) -> dict:
         raise RuntimeError("No LLM provider available: add a free GROQ_API_KEY (see README).")
     raise RuntimeError("All free LLM providers failed:\n" + "\n".join(errors))
 
+
+# "Breaking News :", "Big News-" prefixes and ", જુઓ Video" style tails that news sites add to titles
+NOISE = re.compile(r"^\s*(big\s+)?(breaking\s+)?news\s*[:\-–|]\s*|^\s*big\s+breaking\s*[:\-–|]?\s*"
+                   r"|[,|:\-–]?\s*(જુઓ|watch)\s+(video|વીડિયો|વિડીયો)\s*$|\|\s*video\s*$", re.I)
 
 ROUNDUP = re.compile(r"\blive\b|મહત્વના સમાચાર|ટોપ ન્યૂઝ|top news|news update|headlines|સમાચાર ફટાફટ", re.I)
 
