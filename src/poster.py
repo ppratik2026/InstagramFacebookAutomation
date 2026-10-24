@@ -57,6 +57,56 @@ VERIFY_SCHEMA = {
 }
 
 
+# Poster concepts, modelled on the best Gujarati news posters made with Gemini. Each post gets one that fits its
+# mood, so the feed never repeats one pattern.
+CONCEPTS = {
+    "infographic": """SPLIT INFOGRAPHIC: bright glowing sky (yellow/orange or sky blue) at the top fading into deep navy.
+Top: dark rounded pill with the banner text and a 3D icon. Below it the huge headline in three colour bands
+(e.g. bright blue, red, glowing white/cyan), each letter with a thick white outline and a 3D drop shadow.
+Middle: on the RIGHT a large isometric 3D diorama of the scene (buildings, vehicles, small people in 3D cartoon style)
+bursting out of a slanted frame; a big angled RED callout banner over its corner with the stamp text and yellow 3D arrows.
+On the LEFT a column of white rounded cards, each with a glossy round 3D icon badge (₹ coin, calendar, clock, pin,
+siren...) and the fact text. Lower: a white checklist panel with red ✓ ticks, a 3D siren light on its left and a 3D
+document on its right. Bottom: a navy banner with a gold border showing one huge golden 3D number next to the
+call-to-action in a white box.""",
+    "cinematic": """CINEMATIC HERO: a full-bleed dramatic 3D movie-poster scene of the story filling the whole canvas
+(dramatic rim light, volumetric light rays, sparks, depth of field). Top: glowing banner ribbon and a gigantic metallic
+gold 3D headline with black outline and heavy shadow. The stamp slammed diagonally across the scene like a rubber stamp.
+Bottom third: stacked glass cards with glowing neon borders for the facts (big golden numbers), a translucent panel with
+gold ✓ points, a red ribbon with the sub-headline and a yellow call-to-action bar.""",
+    "newspaper": """NEWSPAPER FRONT PAGE: cream paper texture with halftone dots and a thick red masthead bar. A red tag
+label top-left. Huge headline: first line bold black, then giant RED 3D letters with white outline and dark shadow,
+spanning the full width. A large framed 3D illustration of the scene with taped corners, a small red label
+'પ્રતિકાત્મક તસવીર', and a red stamp on it. Two or three red rounded boxes with white text for the facts, each with a
+small 3D icon. A bold black heading 'મુખ્ય મુદ્દા' with red ▶ bullet points. Black bottom bar with yellow text.""",
+    "bignumber": """BIG NUMBER: the most important number from the facts rendered as a giant 3D golden/metallic number in
+the centre, exploding with 3D coins, arrows, sparkles and light rays around it. Headline at the top in bold 3D letters
+(white + gold/red), banner pill above it. Fact chips with round 3D icons orbiting the number. A white panel with ✓ points
+below and a bright call-to-action strip at the bottom. Rich gradient background matching the mood.""",
+    "breakingtv": """BREAKING TV NEWS: styled like a live TV news screen. A red 'BREAKING NEWS' banner with a 'LIVE' badge,
+a glossy studio-style background with a huge 3D scene of the story on a giant screen, the headline in bold white +
+yellow 3D letters on a red/black lower-third bar, a scrolling-ticker style strip with the sub-headline, info boxes with
+icons for the facts, and a yellow call-to-action bar. Dramatic red and blue lights.""",
+    "celebration": """CELEBRATION: joyful festive poster with golden light, confetti, fireworks, balloons and sparkles.
+A 3D trophy / medal / smiling cartoon characters celebrating the story. Headline in glossy gold and white 3D letters
+with a ribbon banner above. Fact cards shaped like badges with 3D icons, a white panel with green ✓ points, and a
+bright call-to-action ribbon at the bottom.""",
+}
+
+MOOD_CONCEPTS = {
+    "breaking": ["breakingtv", "cinematic", "infographic"],
+    "money": ["bignumber", "infographic", "cinematic"],
+    "info": ["infographic", "newspaper", "bignumber"],
+    "happy": ["celebration", "newspaper", "infographic"],
+}
+
+CREATIVE_RULES = """Make it a STUNNING, highly creative, premium poster - the kind that stops people scrolling on Instagram,
+like the best viral Gujarati news pages. Fill the whole canvas with rich detail: no plain or empty areas, layered depth
+(elements overlapping the frame), 3D icons in glossy round badges next to the facts, stickers, ribbons, arrows,
+light rays, sparkles. Bold saturated colours, strong contrast and a clear reading order. Every Gujarati word must be
+large and readable on a phone."""
+
+
 def _extras(story: NewsStory) -> str:
     """Optional summary box and stamp lines for the prompt."""
     out = ""
@@ -92,17 +142,21 @@ Write ALL of this text on the poster exactly as given (Gujarati script, same spe
 - Bottom strip: "{story.cta}"
 """
     else:
-        prompt = f"""Create an image: design a vertical 9:16 Instagram news poster for a Gujarati news page, in the style of
-viral Gujarati news infographics: huge bold Gujarati headline, eye-catching 3D illustration of the topic,
-rounded information boxes, strong contrast, everything readable on a phone.
+        from .designs import mood_of
+        concept = CONCEPTS[random.choice(MOOD_CONCEPTS[mood_of(story)])]
+        prompt = f"""Create an image: a vertical 9:16 Instagram news poster for a Gujarati news page.
 
-Visual style: {style}.
-Illustration idea: {story.image_prompt}
-{ART_DIRECTION}
+{CREATIVE_RULES}
+
+Layout concept - follow it closely:
+{concept}
+
+Colour mood: {style}.
+What the 3D illustration shows: {story.image_prompt}
 
 Write ALL of this text on the poster exactly as given (Gujarati script, same spelling, same numbers, nothing extra):
 - Top banner: "{story.kicker}"
-- Headline (biggest text, two colours e.g. white + yellow/gold): "{story.headline}"
+- Headline (biggest text, coloured as the layout concept says): "{story.headline}"
 - Sub-headline strip: "{story.subheadline}"{_extras(story)}
 - Key facts in highlighted boxes:
 {facts}
