@@ -25,12 +25,13 @@ free:   RSS news → GitHub Models (Gujarati text) → Card image (HTML → PNG)
 `daily-reel.yml` roz **8:10, 13:10 aur 19:10 IST** pe apne aap chalta hai:
 
 1. News dhundhta hai aur Gujarati text likhta hai.
-2. **Wahi creative prompt jo Gemini app ke liye banta hai**, tool khud image AI ko deta hai aur poora poster (picture + Gujarati text) banwata hai.
-   - Iske liye free **`POLLINATIONS_API_KEY`** secret chahiye: [enter.pollinations.ai](https://enter.pollinations.ai) pe GitHub se login karo → key banao. Card nahi lagta, roz kuch free credit milta hai.
-   - Key na ho, credit khatam ho, ya model fail ho, to tool apna **template design** (AI illustration + stickers) bana deta hai. Post kabhi nahi rukti.
+2. Poster banata hai, Gemini-style posters jaisa ("bulletin" design: upar label, laal patti pe headline, bada number box, ✅ points, picture, CTA patti).
+   - **Picture** AI banata hai, bina text ke. Free **`POLLINATIONS_API_KEY`** secret ho to behtar model (gptimage) use hota hai: [enter.pollinations.ai](https://enter.pollinations.ai) pe GitHub se login karo → key banao. Card nahi lagta.
+   - **Gujarati text** hamara code asli font mein likhta hai, isliye spelling hamesha sahi rehti hai. Free image AI Gujarati akshar tod deta hai, isliye poster ka text AI se nahi likhwaya jaata.
+   - `GEMINI_API_KEY` pe billing chalu ho to poora poster Gemini banata hai (sabse best quality).
 3. 12–18 sec ki reel (mood ke hisaab se motion) banake **Instagram pe post** karta hai.
 
-> Dhyan do: free image models Gujarati text kabhi-kabhi galat likh dete hain (Gemini app jitna perfect nahi). Shuru ke kuch din `publish` ka tick hata ke chalao aur Artifacts mein poster check karo.
+> Shuru ke kuch din `publish` ka tick hata ke chalao aur Artifacts mein poster check karo.
 
 Purana semi-automatic tareeka (Issue mein Gemini prompt → aap Gemini app se poster banao → comment karo) ab bhi haath se chal sakta hai: **Actions → Prepare post (Gemini prompt) → Run workflow**.
 
@@ -40,7 +41,7 @@ Purana semi-automatic tareeka (Issue mein Gemini prompt → aap Gemini app se po
 |---|---|
 | `IG_ACCESS_TOKEN` | Meta app → Instagram API → API setup with Instagram login → **Generate token** |
 | `IG_USER_ID` | Usi page pe account ke neeche likha number (`17841422688299078`) |
-| `POLLINATIONS_API_KEY` | **Optional**, free: [enter.pollinations.ai](https://enter.pollinations.ai). Poora AI poster ke liye. Na do to template design |
+| `POLLINATIONS_API_KEY` | **Optional**, free: [enter.pollinations.ai](https://enter.pollinations.ai). Behtar AI picture ke liye. Na do to bina key wali free picture |
 | `PEXELS_API_KEY` | **Optional**, free: [pexels.com/api](https://www.pexels.com/api/). Card ke peeche photo ke liye. Na do to emoji/colour design lagta hai |
 | `GEMINI_API_KEY` | Sirf `provider: "gemini"` ke liye (billing chahiye). Free mode mein zaroorat nahi |
 

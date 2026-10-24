@@ -22,9 +22,10 @@ card:
   # template:  fixed HTML design (src/card.py) with an AI/stock background. Also the fallback for ai_poster.
   style: "ai_poster"              # only used with provider "gemini"; "free" always uses the template
   handle: "@aehaalogujarat"
-  # Designs that may be used: mag, hero, split, paper (classic is the fallback).
+  # Designs that may be used: bulletin, mag, hero, split, paper (classic is the fallback).
   # The news mood (breaking / money / info / happy) decides which of these fit; one of them is picked at random.
-  designs: ["mag", "hero", "split", "paper"]
+  designs: ["bulletin", "mag", "hero", "split", "paper"]
+  bulletin_share: 0.6             # how often the bulletin design (closest to the Gemini posters) is used
   stickers: true                  # corner banner, stickers and brush-paint edges on every design
   font: "random"                  # "random" = a different Gujarati font each post, or a Google Font name
 
@@ -38,9 +39,10 @@ video:
 
 free:
   ai_images: true                 # free AI illustration (Pollinations) on the card; false = Pexels / emoji
-  # Whole poster (picture + Gujarati text) from the Gemini-style prompt. Needs the free POLLINATIONS_API_KEY
-  # secret; without it, or if every model fails, the template design is used. Models are tried in order.
-  ai_poster_models: ["gptimage"]
+  # Whole poster (picture + Gujarati text) from the free image AI. Off: those models garble Gujarati letters.
+  # The picture comes from the AI (POLLINATIONS_API_KEY gives the better gptimage model) and the text is
+  # written by the card design, so it is always spelled right. Put e.g. ["gptimage"] here to try it anyway.
+  ai_poster_models: []
   # Extra RSS feeds (Gujarati news sites). Google News searches per category are always added.
   # A feed that fails or doesn't exist is skipped, so it's safe to add more.
   feeds:

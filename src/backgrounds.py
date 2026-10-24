@@ -78,6 +78,26 @@ def generate_free_ai_image(prompt: str, out_path: Path) -> Path | None:
     # stylised 3D characters keep it clearly illustrative: never a real, recognisable person
     full = (f"{prompt}, Pixar style 3D render, cinematic news thumbnail, vivid colours, dramatic rim lighting, "
             "shallow depth of field, anonymous characters, no real person, no text, no letters, no watermark")
+    key = os.environ.get("POLLINATIONS_API_KEY", "").strip()
+    if key:   # with the free account key: a better model (gptimage) than the keyless one
+        model = os.environ.get("POLLINATIONS_IMAGE_MODEL", "gptimage")
+        try:
+            resp = requests.post(POLLINATIONS_IMAGES_API, headers={"Authorization": f"Bearer {key}"},
+                                 json={"model": model, "prompt": full, "size": "1024x1536", "n": 1}, timeout=300)
+            if resp.status_code == 200:
+                item = resp.json()["data"][0]
+                if item.get("b64_json"):
+                    import base64
+                    out_path.write_bytes(base64.b64decode(item["b64_json"]))
+                else:
+                    with requests.get(item["url"], timeout=120) as dl:
+                        dl.raise_for_status()
+                        out_path.write_bytes(dl.content)
+                print(f"Background: AI illustration ({model}, Pollinations key)")
+                return out_path
+            print(f"AI illustration with key failed: HTTP {resp.status_code} {resp.text[:150]!r}; trying keyless")
+        except (requests.RequestException, ValueError, KeyError, IndexError) as e:
+            print(f"AI illustration with key failed: {e}; trying keyless")
     url = POLLINATIONS_IMAGE + urllib.parse.quote(full)
     # a bit taller than 9:16: the cards show the top of the image, so the watermark strip at the bottom is cut off
     params = {"width": 1080, "height": 2040, "nologo": "true", "seed": random.randint(1, 10**6)}

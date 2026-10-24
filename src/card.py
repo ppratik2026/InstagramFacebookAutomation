@@ -395,6 +395,8 @@ def render_card(story: NewsStory, cfg: dict, out_path: Path, background: Path | 
     options = [d for d in designs.MOODS[mood]["designs"] if d in allowed
                and not (d == "split" and len(story.points) < 3) and not (d == "hero" and not background)]
     design = random.choice(options or [d for d in allowed if d != "hero" or background] or ["classic"])
+    if "bulletin" in allowed and random.random() < cfg["card"].get("bulletin_share", 0.6):
+        design = "bulletin"   # the look closest to the Gemini-made posters, so it is picked most often
     print(f"   Mood: {mood}")
     print(f"   Design: {design}")
     fit_script = FIT_SCRIPT
@@ -405,6 +407,10 @@ def render_card(story: NewsStory, cfg: dict, out_path: Path, background: Path | 
         print(f"   Layout: {layout} (text placed away from the picture's subject)")
         page_html = designs.hero_page(story, theme, font, image_url, date, cfg["card"]["handle"], layout)
         fit_script = designs.FIT_SCRIPT
+    elif design == "bulletin":
+        from src.bulletin import FIT, bulletin_page
+        page_html = bulletin_page(story, font, image_url, date, cfg["card"]["handle"], mood)
+        fit_script = FIT
     elif design == "mag":
         page_html = designs.mag_page(story, theme, font, image_url, date, cfg["card"]["handle"], mood)
         fit_script = designs.FIT_SCRIPT
