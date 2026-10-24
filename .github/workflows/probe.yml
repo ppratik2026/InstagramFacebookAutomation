@@ -1,0 +1,19 @@
+name: Probe free image models (temporary)
+on: workflow_dispatch
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - run: |
+          curl -s -m 30 https://image.pollinations.ai/models | head -c 1500; echo
+          curl -s -m 30 https://gen.pollinations.ai/image/models | head -c 1500; echo
+          SHORT=$(python3 -c "import urllib.parse;print(urllib.parse.quote('news poster with Gujarati headline ગુજરાત સમાચાર, 3D illustration'))")
+          LONG=$(python3 -c "import urllib.parse;print(urllib.parse.quote('ગુજરાત સમાચાર '*200))")
+          for m in flux nanobanana gptimage seedream kontext turbo; do
+            echo "== $m short: $(curl -s -m 180 -o /tmp/o -w '%{http_code} %{content_type}' "https://image.pollinations.ai/prompt/$SHORT?model=$m&width=1080&height=1920&nologo=true") $(head -c 150 /tmp/o | tr -dc '[:print:]')"
+            sleep 20
+          done
+          echo "== flux long ($(echo -n $LONG | wc -c) chars): $(curl -s -m 180 -o /tmp/o -w '%{http_code}' "https://image.pollinations.ai/prompt/$LONG?model=flux") $(head -c 150 /tmp/o | tr -dc '[:print:]')"
+          sleep 20
+          echo "== gen.pollinations nanobanana: $(curl -s -m 180 -o /tmp/o -w '%{http_code} %{content_type}' "https://gen.pollinations.ai/image/$SHORT?model=nanobanana") $(head -c 200 /tmp/o | tr -dc '[:print:]')"
