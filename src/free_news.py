@@ -65,6 +65,8 @@ CARD_FORMAT = """Return a JSON object with exactly these keys:
   "summary": "2-3 short, simple Gujarati sentences: what happened, where, who announced/did it, who is affected",
   "facts": [{"label": "2-4 words", "value": "short value"}],   // 1-4 items, only real facts from the text
   "stamp": "1-2 word English or Gujarati stamp for the picture, e.g. CANCELLED, BREAKING, ARRESTED, APPROVED, ALERT",
+  "mood": "breaking" | "money" | "info" | "happy",   // breaking: crime/accident/alert, money: prices/fees/salary,
+                                                     // info: rules/exams/schemes/schedules, happy: good news
   "points": ["short detail line"],                            // 3-5 short self-explanatory lines, each one fact
   "image_prompt": "English prompt for a dramatic 3D illustration of the scene. Show what happened with generic, anonymous
                    characters (e.g. Indian police officers escorting handcuffed men seen from behind with faces hidden,
@@ -352,6 +354,7 @@ Article:
         hashtags=card.get("hashtags", ["ગુજરાત", "GujaratNews"]),
         image_prompt=card.get("image_prompt", ""),
         stamp=card.get("stamp", ""),
+        mood=card.get("mood", ""),
         image_keywords=card.get("image_keywords", ["gujarat"]),
         source_name=item.source,
         source_url=item.link,

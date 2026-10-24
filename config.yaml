@@ -22,9 +22,10 @@ card:
   # template:  fixed HTML design (src/card.py) with an AI/stock background. Also the fallback for ai_poster.
   style: "ai_poster"              # only used with provider "gemini"; "free" always uses the template
   handle: "@aehaalogujarat"
-  # Designs picked at random for each post (template cards): mag, hero, split, paper, classic.
-  # A name listed twice is picked twice as often. hero needs a picture, split needs 3+ points.
-  designs: ["mag", "mag", "hero", "split", "paper"]
+  # Designs that may be used: mag, hero, split, paper (classic is the fallback).
+  # The news mood (breaking / money / info / happy) decides which of these fit; one of them is picked at random.
+  designs: ["mag", "hero", "split", "paper"]
+  stickers: true                  # corner banner, stickers and brush-paint edges on every design
   font: "random"                  # "random" = a different Gujarati font each post, or a Google Font name
 
 video:

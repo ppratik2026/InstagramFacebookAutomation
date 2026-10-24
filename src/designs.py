@@ -406,9 +406,10 @@ def headline_3tone(headline: str) -> str:
     return f'<div class="h3d"><span class="back">{inner}</span><span class="front">{inner}</span></div>'
 
 
-def mag_page(story, theme: dict, font: str, image_url: str | None, date: str, handle: str) -> str:
+def mag_page(story, theme: dict, font: str, image_url: str | None, date: str, handle: str,
+             mood: str | None = None) -> str:
     import random
-    top, top2 = random.choice(MAG_TOPS)
+    top, top2 = random.choice(MOODS[mood]["tops"] if mood in MOODS else MAG_TOPS)
     picture = (f'<div class="img" style="background-image:url({image_url})"></div>{SYMBOLIC}' if image_url
                else f'<div class="emoji">{theme["scene"][0]}</div>')
     cards = ""
@@ -443,3 +444,67 @@ def mag_page(story, theme: dict, font: str, image_url: str | None, date: str, ha
     {bottom}
     <div class="footer"><span>સ્રોત: {esc(story.source_name)} • {date}</span><span>{esc(handle)}</span></div>
   </div></body></html>"""
+
+
+# ---------- mood: picks the design, stickers, corner banner and paint colours ----------
+
+MOODS = {
+    "breaking": {"tops": [("#ff7b00", "#d00000"), ("#ff4d4d", "#9d0208")], "designs": ["hero", "mag"], "sash": "BREAKING", "paint": "#d00000",
+                 "stickers": ["🚨 BREAKING", "🔴 LIVE", "⚠️ ALERT", "🔥 મોટા સમાચાર"], "emoji": ["🚨", "🔥", "⚠️"]},
+    "money": {"tops": [("#ffd000", "#ff9f1c"), ("#ffe14d", "#f59e0b")], "designs": ["mag", "hero"], "sash": "NEW RATE", "paint": "#f59e0b",
+              "stickers": ["💸 મોંઘવારી?", "📈 NEW RATE", "💰 ભાવ જાણો", "🤑 જોરદાર"], "emoji": ["💰", "📈", "💸"]},
+    "info": {"tops": [("#ffb703", "#fb8500"), ("#7dd3fc", "#2563eb")], "designs": ["split", "paper", "mag"], "sash": "NEW RULE", "paint": "#1d4ed8",
+             "stickers": ["📢 NEW RULE", "📌 જાણવા જેવું", "✅ IMPORTANT", "🔔 અપડેટ"], "emoji": ["📢", "📌", "🔔"]},
+    "happy": {"tops": [("#7ae582", "#25a18e"), ("#ffe14d", "#16a34a")], "designs": ["paper", "mag", "hero"], "sash": "GOOD NEWS", "paint": "#16a34a",
+              "stickers": ["🎉 ખુશખબર", "🏆 ગર્વની વાત", "👏 WOW", "🌟 સરસ સમાચાર"], "emoji": ["🎉", "🏆", "🌟"]},
+}
+
+
+def mood_of(story) -> str:
+    """The AI's mood, or a guess from the category and the numbers in the story."""
+    if story.mood in MOODS:
+        return story.mood
+    if story.category == "crime":
+        return "breaking"
+    if story.category == "good_news":
+        return "happy"
+    text = " ".join([story.headline, story.subheadline] + [f["value"] for f in story.facts])
+    return "money" if re.search(r"₹|રૂ\.?\s?\d|ભાવ|ફી|price", text, re.I) else "info"
+
+
+# Rough-edged rectangle used as a mask, so banners and strips look brush-painted.
+BRUSH_MASK = ("url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 100' "
+              "preserveAspectRatio='none'><path d='M6 14 L40 6 L95 10 L150 3 L210 9 L270 4 L330 8 L392 5 L397 30 "
+              "L393 55 L398 80 L390 95 L330 92 L270 97 L205 91 L150 96 L95 92 L40 97 L4 90 L8 68 L2 45 L7 28 Z'/>"
+              "</svg>\")")
+
+DECOR_CSS = """<style>
+  .pill, .banner, .tag, .strip, .ribbon, .kicker {
+    -webkit-mask-image: %(mask)s; -webkit-mask-size: 100%% 100%%; mask-image: %(mask)s; mask-size: 100%% 100%%;
+    border-radius: 0 !important; padding-left: 34px !important; padding-right: 34px !important; }
+  .sash { position: absolute; z-index: 60; top: 52px; left: -92px; width: 400px; transform: rotate(-45deg);
+    background: %(paint)s; color: #fff; text-align: center; font-size: 30px; font-weight: 900; letter-spacing: 2px;
+    padding: 8px 0; border-top: 4px solid #fff; border-bottom: 4px solid #fff; box-shadow: 0 8px 18px rgba(0,0,0,.45);
+    font-family: 'Arial Black', Impact, sans-serif; }
+  .stk { position: absolute; z-index: 60; background: #fff; border-radius: 20px; padding: 6px;
+    box-shadow: 0 10px 22px rgba(0,0,0,.45); }
+  .stk span { display: block; background: %(paint)s; color: #fff; border-radius: 14px; padding: 6px 18px;
+    font-size: 32px; font-weight: 800; white-space: nowrap; }
+  #main > .tag { align-self: center !important; margin-left: 0 !important; }   /* keep clear of the corner sash */
+  .stk.e { border-radius: 50%%; padding: 0; width: 132px; height: 132px; display: flex; align-items: center;
+    justify-content: center; font-size: 82px; border: 6px solid %(paint)s; }
+</style>"""
+
+
+def decor_html(mood: str) -> str:
+    """Corner banner, a text sticker and an emoji sticker for the mood, plus the brush-paint CSS."""
+    import random
+    m = MOODS[mood]
+    text = random.choice(m["stickers"])
+    emoji = random.choice(m["emoji"])
+    corner = random.choice([("top: 26px; right: 22px;", 8), ("top: 26px; right: 22px;", -6)])
+    spot = "bottom: 236px; right: 16px;"   # lower corner: never on top of the headline or the summary
+    css = DECOR_CSS % {"mask": BRUSH_MASK, "paint": m["paint"]}
+    return (css + f'<div class="sash">{esc(m["sash"])}</div>'
+            f'<div class="stk" style="{corner[0]} transform: rotate({corner[1]}deg)"><span>{esc(text)}</span></div>'
+            f'<div class="stk e" style="{spot} transform: rotate({random.randint(-14, 14)}deg)">{emoji}</div>')

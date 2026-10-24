@@ -283,7 +283,8 @@ ANIM_STEPS = [
     [".sub, .strip", "slideL", 1.0, 0.45, 0],
     [".summary", "slideR", 1.1, 0.45, 0],
     [".stamp, .callout", "slam", 1.3, 0.45, 0],
-    [".sticker", "popIn", 1.3, 0.35, 0],
+    [".sticker, .stk", "popIn", 1.45, 0.35, 0.25],
+    [".sash", "slideL", 0.2, 0.4, 0],
     [".bar, .box, .fact, .chip, .card", "slideAlt", 1.5, 0.4, 0.15],
     [".checks .side", "popIn", 1.9, 0.35, 0.2],
     [".glass, .right, .pts, .why, .panel", "fadeIn", 1.9, 0.25, 0],
@@ -388,10 +389,13 @@ def render_card(story: NewsStory, cfg: dict, out_path: Path, background: Path | 
     if font == "random":
         font = random.choice(designs.FONTS)
     # pick one of the designs that suits this story, so the feed doesn't look repetitive
+    # the design follows the news mood (breaking / money / info / happy), picked at random among the fitting ones
+    mood = designs.mood_of(story)
     allowed = cfg["card"].get("designs", ["mag", "hero", "split", "paper"])
-    options = [d for d in allowed
-               if not (d == "split" and len(story.points) < 3) and not (d == "hero" and not background)]
-    design = random.choice(options or ["classic"])
+    options = [d for d in designs.MOODS[mood]["designs"] if d in allowed
+               and not (d == "split" and len(story.points) < 3) and not (d == "hero" and not background)]
+    design = random.choice(options or [d for d in allowed if d != "hero" or background] or ["classic"])
+    print(f"   Mood: {mood}")
     print(f"   Design: {design}")
     fit_script = FIT_SCRIPT
     date = _gujarati_date(datetime.now(IST))
@@ -402,7 +406,7 @@ def render_card(story: NewsStory, cfg: dict, out_path: Path, background: Path | 
         page_html = designs.hero_page(story, theme, font, image_url, date, cfg["card"]["handle"], layout)
         fit_script = designs.FIT_SCRIPT
     elif design == "mag":
-        page_html = designs.mag_page(story, theme, font, image_url, date, cfg["card"]["handle"])
+        page_html = designs.mag_page(story, theme, font, image_url, date, cfg["card"]["handle"], mood)
         fit_script = designs.FIT_SCRIPT
     elif design == "paper":
         page_html = designs.paper_page(story, theme, font, image_url, date, cfg["card"]["handle"])
@@ -418,6 +422,8 @@ def render_card(story: NewsStory, cfg: dict, out_path: Path, background: Path | 
             headline=_two_tone(story.headline), subheadline=esc(story.subheadline), facts=fact_html, cta=esc(story.cta),
             source=esc(story.source_name), date=_gujarati_date(datetime.now(IST)), handle=esc(cfg["card"]["handle"]),
         )
+    if cfg["card"].get("stickers", True):
+        page_html = page_html.replace("</body>", designs.decor_html(mood) + "</body>", 1)
     (out_path.parent / "card.html").write_text(page_html, encoding="utf-8")
 
     with sync_playwright() as p:

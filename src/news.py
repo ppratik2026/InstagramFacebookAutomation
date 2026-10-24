@@ -121,6 +121,7 @@ class NewsStory:
     source_url: str
     stamp: str = ""  # short stamp on the picture, e.g. "CANCELLED"
     summary: str = ""  # 2-3 sentence plain explanation of the story
+    mood: str = ""  # breaking / money / info / happy: picks the design, stickers and colours
 
     def full_caption(self) -> str:
         tags = " ".join(t if t.startswith("#") else f"#{t}" for t in self.hashtags)
