@@ -11,6 +11,7 @@ from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 
+from . import designs
 from .news import IST, NewsStory
 
 WIDTH, HEIGHT = 1080, 1920
@@ -170,6 +171,7 @@ INFO_TEMPLATE = """<!doctype html>
   .strip {{ background: linear-gradient(90deg, #ffc300, #ffe14d, #ffc300); color: #111; border-radius: 22px;
     padding: 16px 24px; text-align: center; font-size: var(--sub, 48px); font-weight: 800; line-height: 1.25;
     box-shadow: 0 10px 26px rgba(0,0,0,.5); border: 4px solid #000; }}
+  .num {{ display: inline-block; background: #d90429; color: #fff; padding: 0 .25em; margin: 0 .08em; border-radius: .18em; }}
   .mid {{ flex: 1; min-height: 0; display: flex; gap: 20px; }}
   .left {{ width: 46%; display: flex; flex-direction: column; gap: 16px; }}
   .pic {{ flex: 1; min-height: 0; position: relative; border-radius: 30px; overflow: hidden; border: 5px solid #fff;
@@ -282,8 +284,8 @@ def _info_page(story: NewsStory, cfg: dict, theme: dict, image: Path | None) -> 
     return INFO_TEMPLATE.format(
         w=WIDTH, h=HEIGHT, font=font, font_url=font.replace(" ", "+"), base=theme["base"], banner=theme["banner"],
         accent=theme["accent"], glow=theme["glow"], bokeh=theme["bokeh"], bokeh_html=_bokeh(), tag=esc(theme["tag"]),
-        kicker=esc(story.kicker), headline=_two_tone(story.headline), subheadline=esc(story.subheadline),
-        picture=picture, stamp=stamp, chips=chips, points=points, cta=esc(story.cta), source=esc(story.source_name),
+        kicker=esc(story.kicker), headline=_two_tone(story.headline),
+        subheadline=designs.highlight_numbers(story.subheadline), picture=picture, stamp=stamp, chips=chips, points=points, cta=esc(story.cta), source=esc(story.source_name),
         date=_gujarati_date(datetime.now(IST)), handle=esc(cfg["card"]["handle"]),
     )
 
@@ -306,8 +308,20 @@ def render_card(story: NewsStory, cfg: dict, out_path: Path, background: Path | 
         background_html = _scene(theme["scene"])
 
     font = cfg["card"]["font"]
+    # pick one of the designs that suits this story, so the feed doesn't look repetitive
+    allowed = cfg["card"].get("designs", ["hero", "split", "paper", "classic"])
+    options = [d for d in allowed
+               if not (d == "split" and len(story.points) < 3) and not (d == "hero" and not background)]
+    design = random.choice(options or ["classic"])
+    print(f"   Design: {design}")
     fit_script = FIT_SCRIPT
-    if len(story.points) >= 3:
+    date = _gujarati_date(datetime.now(IST))
+    if design in ("hero", "paper"):
+        builder = designs.hero_page if design == "hero" else designs.paper_page
+        page_html = builder(story, theme, font, _data_url(background) if background else None,
+                            date, cfg["card"]["handle"])
+        fit_script = designs.FIT_SCRIPT
+    elif design == "split":
         page_html = _info_page(story, cfg, theme, background)
         fit_script = INFO_FIT_SCRIPT
     else:

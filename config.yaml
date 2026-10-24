@@ -22,6 +22,9 @@ card:
   # template:  fixed HTML design (src/card.py) with an AI/stock background. Also the fallback for ai_poster.
   style: "ai_poster"              # only used with provider "gemini"; "free" always uses the template
   handle: "@aehaalogujarat"
+  # Designs picked at random for each post (template cards): hero, split, paper, classic.
+  # hero needs a picture, split needs 3+ points; others are always possible.
+  designs: ["hero", "split", "paper", "classic"]
   font: "Baloo Bhai 2"            # any Google Font that supports Gujarati
 
 video:
