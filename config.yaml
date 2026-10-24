@@ -67,11 +67,12 @@ llm_providers:
     models: ["openai"]
 
 gemini:
-  text_model: "gemini-3.5-flash"        # news search + card text (Google Search grounding)
+  text_model: "gemini-3.8-flash"        # news search + card text (Google Search grounding)
   image_model: "gemini-2.5-flash-image" # background illustration for the template card
+  # Used whenever GEMINI_API_KEY is set (also in free mode); needs billing on the key.
   # Image models for the full poster, tried in order. The Pro model gives the best design and Gujarati text;
   # if it is unavailable or not enabled on your key, the next one is used.
-  poster_models: ["gemini-3-pro-image-preview", "gemini-3.1-flash-image-preview", "gemini-2.5-flash-image"]
+  poster_models: ["gemini-3-pro-image", "gemini-3.1-flash-image", "gemini-2.5-flash-image"]
   poster_attempts: 3                    # regenerate if the proof-read finds mistakes
   ai_background: true                   # false = Pexels photo / theme colours only
 

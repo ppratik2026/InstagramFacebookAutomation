@@ -11,6 +11,7 @@
 """
 import argparse
 import json
+import os
 from datetime import datetime
 from pathlib import Path
 
@@ -52,10 +53,11 @@ def cmd_run(args, cfg):
 
     print("2/4 Designing the news poster...")
     card = None
-    if cfg.get("provider") == "gemini" and cfg["card"].get("style", "ai_poster") == "ai_poster":
+    # Gemini poster whenever there is a key (needs billing on the key: the free tier has no image quota)
+    if os.environ.get("GEMINI_API_KEY") and cfg["card"].get("style", "ai_poster") == "ai_poster":
         card = make_poster(story, cfg, work_dir / "card.png")
         if not card:
-            print("   AI poster not usable, falling back to the template card.")
+            print("   Gemini poster not available, trying the next option.")
     if not card and cfg.get("provider") != "gemini" and cfg["free"].get("ai_poster_models"):
         # the same prompt a person would paste into the Gemini app, sent to free image models
         from src.backgrounds import generate_free_poster

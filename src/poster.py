@@ -228,7 +228,7 @@ def make_poster(story: NewsStory, cfg: dict, out_path: Path) -> Path | None:
             try:
                 image = _generate(client, model, _poster_prompt(story, cfg["card"]["handle"], fix))
             except Exception as e:  # model missing/unavailable: try the next one
-                print(f"   Poster attempt {attempt} with {model} failed: {e}")
+                print(f"   Poster attempt {attempt} with {model} failed: {str(e)[:200]}")
                 continue
             if image:
                 break
@@ -237,7 +237,11 @@ def make_poster(story: NewsStory, cfg: dict, out_path: Path) -> Path | None:
 
         attempt_path = out_path.with_name(f"poster_try{attempt}.png")
         attempt_path.write_bytes(image)
-        ok, problems = _verify(client, gcfg["text_model"], image, story)
+        try:
+            ok, problems = _verify(client, gcfg["text_model"], image, story)
+        except Exception as e:  # proof-reading unavailable: the poster is still the best we have
+            print(f"   Poster proof-read skipped ({str(e)[:120]})")
+            ok, problems = True, []
         if ok:
             out_path.write_bytes(image)
             print(f"   Poster OK on attempt {attempt} ({model})")
