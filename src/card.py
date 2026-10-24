@@ -144,6 +144,92 @@ FIT_SCRIPT = """() => {
 }"""
 
 
+# Infographic layout (like viral Gujarati news posters): headline box, highlight strip, picture with a stamp
+# on the left, a checklist of points on the right, call-to-action strip at the bottom.
+INFO_TEMPLATE = """<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family={font_url}:wght@500;700;800&display=block" rel="stylesheet">
+<style>
+  * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+  html, body {{ width: {w}px; height: {h}px; overflow: hidden; }}
+  body {{ font-family: '{font}', 'Noto Sans Gujarati', 'Noto Color Emoji', sans-serif; color: #fff;
+    background: {base}; position: relative; }}
+  .rays {{ position: absolute; inset: -500px;
+    background: repeating-conic-gradient(from 0deg at 50% 50%, rgba(255,255,255,.06) 0deg 5deg, transparent 5deg 15deg);
+    -webkit-mask: radial-gradient(circle at 50% 50%, #000 0%, transparent 55%); }}
+  .bokeh {{ position: absolute; border-radius: 50%; background: {bokeh}; filter: blur(2px); }}
+  #main {{ position: absolute; inset: 0; padding: 34px 34px 30px; display: flex; flex-direction: column; gap: 20px; }}
+  .head {{ background: linear-gradient(180deg, #0d1b4c, #08112e); border: 5px solid {accent}; border-radius: 34px;
+    padding: 18px 24px 26px; text-align: center; box-shadow: 0 0 40px {glow}, 0 18px 40px rgba(0,0,0,.6); }}
+  .tag {{ display: inline-block; background: {banner}; padding: 6px 28px; border-radius: 30px; font-size: 38px;
+    font-weight: 800; margin-bottom: 8px; }}
+  .headline {{ font-size: var(--hl, 108px); font-weight: 800; line-height: 1.08;
+    -webkit-text-stroke: 5px #000; paint-order: stroke fill; text-shadow: 0 6px 0 #000, 0 0 30px rgba(0,0,0,.7); }}
+  .headline .a {{ color: #fff; }}
+  .headline .b {{ color: #ffd60a; }}
+  .strip {{ background: linear-gradient(90deg, #ffc300, #ffe14d, #ffc300); color: #111; border-radius: 22px;
+    padding: 16px 24px; text-align: center; font-size: var(--sub, 48px); font-weight: 800; line-height: 1.25;
+    box-shadow: 0 10px 26px rgba(0,0,0,.5); border: 4px solid #000; }}
+  .mid {{ flex: 1; min-height: 0; display: flex; gap: 20px; }}
+  .left {{ width: 46%; display: flex; flex-direction: column; gap: 16px; }}
+  .pic {{ flex: 1; min-height: 0; position: relative; border-radius: 30px; overflow: hidden; border: 5px solid #fff;
+    background: radial-gradient(circle at 50% 45%, {glow}, rgba(0,0,0,.35) 70%); box-shadow: 0 16px 34px rgba(0,0,0,.6); }}
+  .pic .img {{ position: absolute; inset: 0; background-size: cover; background-position: center; }}
+  .pic .emoji {{ position: absolute; left: 50%; top: 45%; transform: translate(-50%,-50%); font-size: 220px;
+    filter: drop-shadow(0 20px 30px rgba(0,0,0,.6)); }}
+  .stamp {{ position: absolute; left: 50%; bottom: 14%; transform: translateX(-50%) rotate(-14deg);
+    border: 8px solid #d00000; color: #d00000; background: rgba(255,255,255,.88); border-radius: 14px;
+    padding: 4px 26px; font: 900 64px/1.1 'Arial Black', Impact, sans-serif; letter-spacing: 3px; white-space: nowrap;
+    text-transform: uppercase; box-shadow: 0 8px 24px rgba(0,0,0,.5); }}
+  .chip {{ background: linear-gradient(180deg, #0d1b4c, #08112e); border: 4px solid {accent}; border-radius: 22px;
+    padding: 12px 14px; text-align: center; }}
+  .chip .label {{ font-size: 32px; font-weight: 700; color: #dfe7ff; }}
+  .chip .value {{ font-size: 44px; font-weight: 800; color: #ffd60a; line-height: 1.15; }}
+  .right {{ flex: 1; background: rgba(255,255,255,.95); color: #10183a; border-radius: 30px; padding: 22px 22px;
+    display: flex; flex-direction: column; justify-content: space-evenly; gap: 10px; box-shadow: 0 16px 34px rgba(0,0,0,.55); }}
+  .pt {{ display: flex; gap: 12px; align-items: flex-start; font-size: var(--pt, 36px); font-weight: 700; line-height: 1.3;
+    padding-bottom: 10px; border-bottom: 2px solid #e3e7f2; }}
+  .pt:last-child {{ border-bottom: none; padding-bottom: 0; }}
+  .pt .tick {{ flex: none; width: 1.15em; height: 1.15em; border-radius: 50%; background: #1fa64a; color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: .8em; margin-top: .1em; }}
+  .cta {{ background: linear-gradient(90deg, #9d0208, #e5383b, #9d0208); border-radius: 26px; padding: 18px 24px;
+    text-align: center; font-size: 50px; font-weight: 800; line-height: 1.2; border: 4px solid #ffd60a;
+    box-shadow: 0 12px 30px rgba(0,0,0,.55); text-shadow: 0 3px 0 rgba(0,0,0,.4); }}
+  .footer {{ display: flex; justify-content: space-between; font-size: 30px; font-weight: 700; color: #eef1f6;
+    text-shadow: 0 2px 6px #000; }}
+</style></head>
+<body>
+  <div class="rays"></div>
+  {bokeh_html}
+  <div id="main">
+    <div class="head"><div class="tag">{tag} • {kicker}</div><div class="headline">{headline}</div></div>
+    <div class="strip">{subheadline}</div>
+    <div class="mid">
+      <div class="left"><div class="pic">{picture}{stamp}</div>{chips}</div>
+      <div class="right">{points}</div>
+    </div>
+    <div class="cta">{cta}</div>
+    <div class="footer"><span>સ્રોત: {source} • {date}</span><span>{handle}</span></div>
+  </div>
+</body></html>
+"""
+
+INFO_FIT_SCRIPT = """() => {
+  const main = document.getElementById('main');
+  const right = document.querySelector('.right');
+  const root = document.documentElement.style;
+  let hl = 108, sub = 48, pt = 36;
+  const overflow = () => main.scrollHeight > main.clientHeight + 1 || right.scrollHeight > right.clientHeight + 1;
+  while (overflow() && (hl > 64 || pt > 24)) {
+    if (hl > 64) hl -= 4;
+    if (pt > 24) pt -= 1;
+    sub = Math.max(36, sub - 1);
+    root.setProperty('--hl', hl + 'px'); root.setProperty('--sub', sub + 'px'); root.setProperty('--pt', pt + 'px');
+  }
+  return !overflow();
+}"""
+
+
 def _gujarati_date(now: datetime) -> str:
     return f"{now.day} {GUJARATI_MONTHS[now.month - 1]} {now.year}"
 
@@ -179,6 +265,29 @@ def _scene(icons: list[str]) -> str:
     )
 
 
+def _data_url(path: Path) -> str:
+    mime = "image/png" if path.suffix.lower() == ".png" else "image/jpeg"
+    return f"data:{mime};base64,{base64.b64encode(path.read_bytes()).decode()}"
+
+
+def _info_page(story: NewsStory, cfg: dict, theme: dict, image: Path | None) -> str:
+    esc = html.escape
+    picture = (f'<div class="img" style="background-image:url({_data_url(image)})"></div>' if image
+               else f'<div class="emoji">{theme["scene"][0]}</div>')
+    stamp = f'<div class="stamp">{esc(story.stamp)}</div>' if story.stamp else ""
+    chips = "".join(f'<div class="chip"><div class="label">{esc(f["label"])}</div>'
+                    f'<div class="value">{esc(f["value"])}</div></div>' for f in story.facts[:2])
+    points = "".join(f'<div class="pt"><span class="tick">✓</span><span>{esc(p)}</span></div>' for p in story.points[:7])
+    font = cfg["card"]["font"]
+    return INFO_TEMPLATE.format(
+        w=WIDTH, h=HEIGHT, font=font, font_url=font.replace(" ", "+"), base=theme["base"], banner=theme["banner"],
+        accent=theme["accent"], glow=theme["glow"], bokeh=theme["bokeh"], bokeh_html=_bokeh(), tag=esc(theme["tag"]),
+        kicker=esc(story.kicker), headline=_two_tone(story.headline), subheadline=esc(story.subheadline),
+        picture=picture, stamp=stamp, chips=chips, points=points, cta=esc(story.cta), source=esc(story.source_name),
+        date=_gujarati_date(datetime.now(IST)), handle=esc(cfg["card"]["handle"]),
+    )
+
+
 def render_card(story: NewsStory, cfg: dict, out_path: Path, background: Path | None = None) -> Path:
     theme = random.choice(THEMES.get(story.category, THEMES["government"]))
     esc = html.escape
@@ -197,13 +306,18 @@ def render_card(story: NewsStory, cfg: dict, out_path: Path, background: Path | 
         background_html = _scene(theme["scene"])
 
     font = cfg["card"]["font"]
-    page_html = TEMPLATE.format(
-        w=WIDTH, h=HEIGHT, font=font, font_url=font.replace(" ", "+"),
-        base=theme["base"], banner=theme["banner"], accent=theme["accent"], glow=theme["glow"], bokeh=theme["bokeh"],
-        bokeh_html=_bokeh(), background=background_html, tag=esc(theme["tag"]), kicker=esc(story.kicker),
-        headline=_two_tone(story.headline), subheadline=esc(story.subheadline), facts=fact_html, cta=esc(story.cta),
-        source=esc(story.source_name), date=_gujarati_date(datetime.now(IST)), handle=esc(cfg["card"]["handle"]),
-    )
+    fit_script = FIT_SCRIPT
+    if len(story.points) >= 3:
+        page_html = _info_page(story, cfg, theme, background)
+        fit_script = INFO_FIT_SCRIPT
+    else:
+        page_html = TEMPLATE.format(
+            w=WIDTH, h=HEIGHT, font=font, font_url=font.replace(" ", "+"),
+            base=theme["base"], banner=theme["banner"], accent=theme["accent"], glow=theme["glow"], bokeh=theme["bokeh"],
+            bokeh_html=_bokeh(), background=background_html, tag=esc(theme["tag"]), kicker=esc(story.kicker),
+            headline=_two_tone(story.headline), subheadline=esc(story.subheadline), facts=fact_html, cta=esc(story.cta),
+            source=esc(story.source_name), date=_gujarati_date(datetime.now(IST)), handle=esc(cfg["card"]["handle"]),
+        )
     (out_path.parent / "card.html").write_text(page_html, encoding="utf-8")
 
     with sync_playwright() as p:
@@ -211,7 +325,7 @@ def render_card(story: NewsStory, cfg: dict, out_path: Path, background: Path | 
         page = browser.new_page(viewport={"width": WIDTH, "height": HEIGHT})
         page.set_content(page_html, wait_until="networkidle")
         page.evaluate("document.fonts.ready")
-        if not page.evaluate(FIT_SCRIPT):
+        if not page.evaluate(fit_script):
             print("Warning: card text is too long and may be cut off.")
         page.screenshot(path=str(out_path))
         browser.close()

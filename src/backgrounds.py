@@ -1,6 +1,8 @@
-"""Background image for the news card: Gemini illustration first, then a Pexels photo, else none (theme only)."""
+"""Image for the news card: free AI illustration (Pollinations) or Gemini, then a Pexels photo, else none."""
 import os
 import random
+import time
+import urllib.parse
 from pathlib import Path
 
 import requests
@@ -67,7 +69,38 @@ def fetch_stock_background(keywords: list[str], out_path: Path) -> Path | None:
     return None
 
 
+POLLINATIONS_IMAGE = "https://image.pollinations.ai/prompt/"
+
+
+def generate_free_ai_image(prompt: str, out_path: Path) -> Path | None:
+    """Free AI illustration from Pollinations (no key). None if it fails; never stops the run."""
+    full = (f"{prompt}, cinematic news thumbnail illustration, vivid colours, dramatic lighting, "
+            "highly detailed 3D render, no text, no letters, no watermark")
+    url = POLLINATIONS_IMAGE + urllib.parse.quote(full)
+    params = {"width": 1024, "height": 1280, "nologo": "true", "seed": random.randint(1, 10**6)}
+    for attempt in range(2):
+        try:
+            resp = requests.get(url, params=params, timeout=120)
+        except requests.RequestException as e:
+            print(f"Free AI image failed: {e}")
+            return None
+        if resp.status_code == 200 and resp.headers.get("content-type", "").startswith("image/"):
+            out_path.write_bytes(resp.content)
+            print("Background: free AI illustration (Pollinations)")
+            return out_path
+        print(f"Free AI image failed: HTTP {resp.status_code} {resp.text[:150]!r}")
+        if resp.status_code in (402, 429) and attempt == 0:
+            time.sleep(20)  # anonymous use is rate limited per IP
+            continue
+        return None
+    return None
+
+
 def get_background(story, cfg: dict, work_dir: Path) -> Path | None:
+    if cfg.get("provider") != "gemini" and cfg["free"].get("ai_images", True) and story.image_prompt:
+        path = generate_free_ai_image(story.image_prompt, work_dir / "illustration.jpg")
+        if path:
+            return path
     if cfg.get("provider") == "gemini" and cfg["gemini"].get("ai_background", True):
         path = generate_ai_background(story.image_prompt, cfg["gemini"]["image_model"], work_dir / "background.png")
         if path:

@@ -57,7 +57,9 @@ CARD_FORMAT = """Return a JSON object with exactly these keys:
   "headline": "main headline, max ~7 words, very punchy",
   "subheadline": "one line explaining the headline, max ~12 words",
   "facts": [{"label": "2-4 words", "value": "short value"}],   // 1-4 items, only real facts from the text
-  "points": ["short detail line"],                            // 0-3 items
+  "stamp": "1-2 word English or Gujarati stamp for the picture, e.g. CANCELLED, BREAKING, ARRESTED, APPROVED, ALERT",
+  "points": ["short detail line"],                            // 4-7 short lines, each one fact from the text
+  "image_prompt": "English prompt for a dramatic illustration of the topic (objects/places, no people, no text)",
   "cta": "bottom line asking viewers to comment/share",
   "caption": "Instagram caption in Gujarati, 3-5 short lines, no hashtags",
   "hashtags": ["..."],
@@ -204,6 +206,11 @@ KICKERS = {
     "good_news": "ગુજરાત માટે ખુશખબર",
     "government": "ગુજરાત માટે મોટા સમાચાર",
 }
+IMAGE_PROMPTS = {
+    "crime": "police jeep with flashing red and blue lights at night on a city street in Gujarat, dramatic",
+    "good_news": "Gujarat city skyline at golden sunrise with celebration fireworks, proud and hopeful",
+    "government": "Gujarat government secretariat building with official documents and an announcement megaphone, dramatic light",
+}
 DEFAULT_HASHTAGS = ["ગુજરાત", "ગુજરાતસમાચાર", "GujaratNews", "Gujarat", "GujaratiNews",
                     "News", "BreakingNews", "Ahmedabad", "Surat", "Vadodara", "Rajkot"]
 
@@ -229,7 +236,8 @@ def _plain_card(item: FeedItem, category: str, article: str, hashtags_count: int
         "subheadline": _shorten(rest or (sentences[0] if sentences else ""), 90),
         "facts": [{"label": "સ્રોત", "value": item.source},
                   {"label": "તારીખ", "value": f"{date.day} {GUJARATI_MONTHS[date.month - 1]} {date.year}"}],
-        "points": [],
+        "points": [_shorten(x, 110) for x in sentences[1:6]],
+        "image_prompt": IMAGE_PROMPTS.get(category, IMAGE_PROMPTS["government"]),
         "cta": "તમારો અભિપ્રાય કોમેન્ટમાં જણાવો 👇",
         "caption": _shorten(" ".join([item.title, *sentences[:2]]), 400),
         "hashtags": DEFAULT_HASHTAGS[:hashtags_count],
@@ -307,14 +315,15 @@ Article:
         headline=card.get("headline") or item.title,
         subheadline=card.get("subheadline", ""),
         facts=[f for f in card.get("facts", []) if isinstance(f, dict) and f.get("label") and f.get("value")][:4],
-        points=card.get("points", [])[:3],
+        points=[p for p in card.get("points", []) if isinstance(p, str) and p.strip()][:7],
         note="",
         layout="illustration",
         rows=[],
         cta=card.get("cta", "તમારો અભિપ્રાય કોમેન્ટમાં જણાવો 👇"),
         caption=card.get("caption", item.title),
         hashtags=card.get("hashtags", ["ગુજરાત", "GujaratNews"]),
-        image_prompt="",
+        image_prompt=card.get("image_prompt", ""),
+        stamp=card.get("stamp", ""),
         image_keywords=card.get("image_keywords", ["gujarat"]),
         source_name=item.source,
         source_url=item.link,

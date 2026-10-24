@@ -31,6 +31,7 @@ video:
   music_volume: 0.9               # music from assets/music/*.mp3 (random pick each run)
 
 free:
+  ai_images: true                 # free AI illustration (Pollinations) on the card; false = Pexels / emoji
   # Extra RSS feeds (Gujarati news sites). Google News searches per category are always added.
   # A feed that fails or doesn't exist is skipped, so it's safe to add more.
   feeds:
