@@ -29,6 +29,8 @@ SOURCE_NAMES = {
     "www.divyabhaskar.co.in": "Divya Bhaskar",
     "www.sandesh.com": "Sandesh",
     "www.gujaratsamachar.com": "Gujarat Samachar",
+    "www.gujaratfirst.com": "Gujarat First",
+    "connectgujarat.com": "Connect Gujarat",
 }
 
 # Google News searches (Gujarati edition) per category; "when:2d" keeps them recent.
@@ -47,6 +49,10 @@ Hard rules:
   If the text has few facts, use fewer fact boxes rather than making any up.
 - Crime stories: do not name or describe victims of sexual offences or any minor; call unconvicted people "આરોપી";
   no graphic details; no communal angle.
+- A viewer who knows nothing about the story must understand it from the card alone. The headline must name the
+  specific subject and place (e.g. "ડ્રાઇવિંગ લાયસન્સ", "અમદાવાદ", "GSEB ધોરણ 10"), never a vague word like
+  "લાયસન્સ અપડેટ" or "મોટા સમાચાર". The summary answers: what happened, where, who decided/did it, who is affected.
+  Every point and fact must make sense on its own (say what it is about).
 - Reply with JSON only."""
 
 CARD_FORMAT = """Return a JSON object with exactly these keys:
@@ -54,11 +60,12 @@ CARD_FORMAT = """Return a JSON object with exactly these keys:
   "category": "crime" | "good_news" | "government",
   "title_en": "one-line English summary",
   "kicker": "short top banner, e.g. ગુજરાત માટે મોટા સમાચાર",
-  "headline": "main headline, max ~7 words, very punchy",
+  "headline": "main headline, max ~8 words, punchy, naming the exact subject and place",
   "subheadline": "one line explaining the headline, max ~12 words",
+  "summary": "2-3 short, simple Gujarati sentences: what happened, where, who announced/did it, who is affected",
   "facts": [{"label": "2-4 words", "value": "short value"}],   // 1-4 items, only real facts from the text
   "stamp": "1-2 word English or Gujarati stamp for the picture, e.g. CANCELLED, BREAKING, ARRESTED, APPROVED, ALERT",
-  "points": ["short detail line"],                            // 4-7 short lines, each one fact from the text
+  "points": ["short detail line"],                            // 3-5 short self-explanatory lines, each one fact
   "image_prompt": "English prompt for a dramatic 3D illustration of the scene. Show what happened with generic, anonymous
                    characters (e.g. Indian police officers escorting handcuffed men seen from behind with faces hidden,
                    officials at a podium, happy families), never a real or recognisable person, no text",
@@ -244,7 +251,8 @@ def _plain_card(item: FeedItem, category: str, article: str, hashtags_count: int
         "subheadline": _shorten(rest or (sentences[0] if sentences else ""), 90),
         "facts": [{"label": "સ્રોત", "value": item.source},
                   {"label": "તારીખ", "value": f"{date.day} {GUJARATI_MONTHS[date.month - 1]} {date.year}"}],
-        "points": [_shorten(x, 110) for x in sentences[1:6]],
+        "summary": _shorten(" ".join(sentences[:2]), 220),
+        "points": [_shorten(x, 110) for x in sentences[2:6]],
         "image_prompt": IMAGE_PROMPTS.get(category, IMAGE_PROMPTS["government"]),
         "cta": "તમારો અભિપ્રાય કોમેન્ટમાં જણાવો 👇",
         "caption": _shorten(" ".join([item.title, *sentences[:2]]), 400),
@@ -273,6 +281,8 @@ def find_story(cfg: dict, previous: list[str], category: str | None = None) -> t
     if not items:
         raise RuntimeError("No recent news found in the RSS feeds.")
     items.sort(key=lambda i: i.published, reverse=True)
+    # stories whose full article we have give much clearer cards; offer them first
+    items.sort(key=lambda i: len(i.text) <= 400)
     items = items[:40]
     print(f"   {len(items)} recent headlines found")
 
@@ -285,7 +295,8 @@ def find_story(cfg: dict, previous: list[str], category: str | None = None) -> t
 Pick the ONE headline below that is most useful or interesting for ordinary people in {content['region']}
 (prices, exams, jobs, schemes, weather alerts, safety, big local achievements, major police action).
 It must be about {content['region']} and fit one of these categories: {', '.join(wanted)}.
-Prefer items marked (full text). Pick a single story, never a live blog or a list of several news.
+Strongly prefer items marked (full text): only pick one without it if no (full text) item is worth posting.
+Pick a single story, never a live blog or a list of several news.
 Skip rumours, astrology, gossip, and anything similar to these already-posted stories:
 {chr(10).join('- ' + t for t in previous) or '- (none)'}
 
@@ -327,6 +338,7 @@ Article:
         subheadline=card.get("subheadline", ""),
         facts=[f for f in card.get("facts", []) if isinstance(f, dict) and f.get("label") and f.get("value")][:4],
         points=[p for p in card.get("points", []) if isinstance(p, str) and p.strip()][:7],
+        summary=card.get("summary", ""),
         note="",
         layout="illustration",
         rows=[],

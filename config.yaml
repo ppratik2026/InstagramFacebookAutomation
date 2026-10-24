@@ -25,7 +25,7 @@ card:
   # Designs picked at random for each post (template cards): hero, split, paper, classic.
   # hero needs a picture, split needs 3+ points; others are always possible.
   designs: ["hero", "split", "paper", "classic"]
-  font: "Baloo Bhai 2"            # any Google Font that supports Gujarati
+  font: "random"                  # "random" = a different Gujarati font each post, or a Google Font name
 
 video:
   seconds: 15                     # Instagram needs at least 3s; 12-15s works well for news reels
@@ -41,6 +41,9 @@ free:
   # A feed that fails or doesn't exist is skipped, so it's safe to add more.
   feeds:
     - "https://tv9gujarati.com/feed"
+    - "https://www.gujaratfirst.com/feed"
+    - "https://connectgujarat.com/feed"
+    - "https://www.gujaratsamachar.com/rss/top-stories"
 
 # Free LLMs for the "free" provider, tried in order (OpenAI-compatible chat APIs).
 # If none answers, the card is made from the news headline itself, without AI.

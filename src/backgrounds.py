@@ -79,7 +79,8 @@ def generate_free_ai_image(prompt: str, out_path: Path) -> Path | None:
     full = (f"{prompt}, Pixar style 3D render, cinematic news thumbnail, vivid colours, dramatic rim lighting, "
             "shallow depth of field, anonymous characters, no real person, no text, no letters, no watermark")
     url = POLLINATIONS_IMAGE + urllib.parse.quote(full)
-    params = {"width": 1080, "height": 1920, "nologo": "true", "seed": random.randint(1, 10**6)}
+    # a bit taller than 9:16: the cards show the top of the image, so the watermark strip at the bottom is cut off
+    params = {"width": 1080, "height": 2040, "nologo": "true", "seed": random.randint(1, 10**6)}
     for attempt in range(4):
         try:
             resp = requests.get(url, params=params, timeout=120)

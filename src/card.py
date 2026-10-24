@@ -194,6 +194,7 @@ INFO_TEMPLATE = """<!doctype html>
   .pt {{ display: flex; gap: 12px; align-items: flex-start; font-size: var(--pt, 36px); font-weight: 700; line-height: 1.3;
     padding-bottom: 10px; border-bottom: 2px solid #e3e7f2; }}
   .pt:last-child {{ border-bottom: none; padding-bottom: 0; }}
+  .pt.sum b {{ color: #d90429; }}
   .pt .tick {{ flex: none; width: 1.15em; height: 1.15em; border-radius: 50%; background: #1fa64a; color: #fff;
     display: flex; align-items: center; justify-content: center; font-size: .8em; margin-top: .1em; }}
   .cta {{ background: linear-gradient(90deg, #9d0208, #e5383b, #9d0208); border-radius: 26px; padding: 18px 24px;
@@ -280,6 +281,7 @@ ANIM_STEPS = [
     [".h3d, .headline", "punchIn", 0.3, 0.6, 0],
     [".photo, .img, .fallback, .scene, .icon, .pic", "zoomIn", 0.7, 0.7, 0],
     [".sub, .strip", "slideL", 1.0, 0.45, 0],
+    [".summary", "slideR", 1.1, 0.45, 0],
     [".stamp", "slam", 1.3, 0.45, 0],
     [".sticker", "popIn", 1.3, 0.35, 0],
     [".bar, .box, .fact, .chip", "slideAlt", 1.7, 0.4, 0.15],
@@ -341,7 +343,7 @@ def _data_url(path: Path) -> str:
     return f"data:{mime};base64,{base64.b64encode(path.read_bytes()).decode()}"
 
 
-def _info_page(story: NewsStory, cfg: dict, theme: dict, image: Path | None) -> str:
+def _info_page(story: NewsStory, cfg: dict, theme: dict, image: Path | None, font: str) -> str:
     esc = html.escape
     picture = (f'<div class="img" style="background-image:url({_data_url(image)})"></div>' if image
                else f'<div class="emoji">{theme["scene"][0]}</div>')
@@ -350,8 +352,9 @@ def _info_page(story: NewsStory, cfg: dict, theme: dict, image: Path | None) -> 
         stamp = designs.SYMBOLIC + stamp
     chips = "".join(f'<div class="chip"><div class="label">{esc(f["label"])}</div>'
                     f'<div class="value">{esc(f["value"])}</div></div>' for f in story.facts[:2])
-    points = "".join(f'<div class="pt"><span class="tick">✓</span><span>{esc(p)}</span></div>' for p in story.points[:7])
-    font = cfg["card"]["font"]
+    points = "".join(f'<div class="pt"><span class="tick">✓</span><span>{esc(p)}</span></div>' for p in story.points[:5])
+    if story.summary:
+        points = f'<div class="pt sum"><span><b>શું થયું?</b> {esc(story.summary)}</span></div>' + points
     return INFO_TEMPLATE.format(
         w=WIDTH, h=HEIGHT, font=font, font_url=font.replace(" ", "+"), base=theme["base"], banner=theme["banner"],
         accent=theme["accent"], glow=theme["glow"], bokeh=theme["bokeh"], bokeh_html=_bokeh(), tag=esc(theme["tag"]),
@@ -381,6 +384,8 @@ def render_card(story: NewsStory, cfg: dict, out_path: Path, background: Path | 
         background_html = _scene(theme["scene"])
 
     font = cfg["card"]["font"]
+    if font == "random":
+        font = random.choice(designs.FONTS)
     # pick one of the designs that suits this story, so the feed doesn't look repetitive
     allowed = cfg["card"].get("designs", ["hero", "split", "paper", "classic"])
     options = [d for d in allowed
@@ -389,13 +394,17 @@ def render_card(story: NewsStory, cfg: dict, out_path: Path, background: Path | 
     print(f"   Design: {design}")
     fit_script = FIT_SCRIPT
     date = _gujarati_date(datetime.now(IST))
-    if design in ("hero", "paper"):
-        builder = designs.hero_page if design == "hero" else designs.paper_page
-        page_html = builder(story, theme, font, _data_url(background) if background else None,
-                            date, cfg["card"]["handle"])
+    image_url = _data_url(background) if background else None
+    if design == "hero":
+        layout = designs.hero_layout(background)
+        print(f"   Layout: {layout} (text placed away from the picture's subject)")
+        page_html = designs.hero_page(story, theme, font, image_url, date, cfg["card"]["handle"], layout)
+        fit_script = designs.FIT_SCRIPT
+    elif design == "paper":
+        page_html = designs.paper_page(story, theme, font, image_url, date, cfg["card"]["handle"])
         fit_script = designs.FIT_SCRIPT
     elif design == "split":
-        page_html = _info_page(story, cfg, theme, background)
+        page_html = _info_page(story, cfg, theme, background, font)
         fit_script = INFO_FIT_SCRIPT
     else:
         page_html = TEMPLATE.format(
