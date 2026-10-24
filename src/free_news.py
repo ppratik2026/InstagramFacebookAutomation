@@ -201,6 +201,8 @@ def _chat(cfg: dict, system: str, user: str) -> dict:
     raise RuntimeError("All free LLM providers failed:\n" + "\n".join(errors))
 
 
+ROUNDUP = re.compile(r"\blive\b|મહત્વના સમાચાર|ટોપ ન્યૂઝ|top news|news update|headlines|સમાચાર ફટાફટ", re.I)
+
 KICKERS = {
     "crime": "ગુજરાત ક્રાઇમ ન્યૂઝ",
     "good_news": "ગુજરાત માટે ખુશખબર",
@@ -260,6 +262,8 @@ def find_story(cfg: dict, previous: list[str], category: str | None = None) -> t
                 seen.add(key)
                 item.category = feed_category
                 items.append(item)
+    # live blogs and "today's important news" roundups mix several stories into one page
+    items = [i for i in items if not ROUNDUP.search(i.title)]
     if not items:
         raise RuntimeError("No recent news found in the RSS feeds.")
     items.sort(key=lambda i: i.published, reverse=True)
@@ -275,7 +279,8 @@ def find_story(cfg: dict, previous: list[str], category: str | None = None) -> t
 Pick the ONE headline below that is most useful or interesting for ordinary people in {content['region']}
 (prices, exams, jobs, schemes, weather alerts, safety, big local achievements, major police action).
 It must be about {content['region']} and fit one of these categories: {', '.join(wanted)}.
-Prefer items marked (full text). Skip rumours, astrology, gossip, and anything similar to these already-posted stories:
+Prefer items marked (full text). Pick a single story, never a live blog or a list of several news.
+Skip rumours, astrology, gossip, and anything similar to these already-posted stories:
 {chr(10).join('- ' + t for t in previous) or '- (none)'}
 
 Headlines:
