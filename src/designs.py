@@ -46,6 +46,8 @@ COMMON_CSS = """
     font: 900 74px/1.1 'Arial Black', Impact, sans-serif; letter-spacing: 4px; text-transform: uppercase;
     box-shadow: 0 10px 30px rgba(0,0,0,.55); outline: 3px solid rgba(208,0,0,.5); outline-offset: 6px; }
   .footer { display: flex; justify-content: space-between; font-size: 30px; font-weight: 700; }
+  .symbolic { position: absolute; left: 0; top: 0; z-index: 2; background: #d90429; color: #fff; font-size: 26px;
+    font-weight: 800; padding: 6px 18px; border-bottom-right-radius: 16px; }
   #main > * { flex-shrink: 0; }   /* only the picture area (flex: 1) may shrink; text never gets squeezed */
   #main > .pic, #main > .hero-space { flex-shrink: 1; }
 """
@@ -53,6 +55,9 @@ COMMON_CSS = """
 HEAD = """<!doctype html><html><head><meta charset="utf-8">
 <link href="https://fonts.googleapis.com/css2?family={font_url}:wght@500;700;800&display=block" rel="stylesheet">
 <style>{css}</style></head><body>"""
+
+
+SYMBOLIC = '<div class="symbolic">પ્રતિકાત્મક તસવીર</div>'
 
 
 def headline_3d(headline: str) -> str:
@@ -100,6 +105,7 @@ HERO_CSS = """
   .banner { align-self: center; background: rgba(20,0,0,.6); border: 4px solid %(accent)s; border-radius: 40px;
     padding: 10px 40px; font-size: 52px; font-weight: 800; box-shadow: 0 0 30px %(glow)s; backdrop-filter: blur(6px); }
   .hero-space { flex: 1; min-height: 120px; position: relative; }
+  .hero-space .symbolic { border-radius: 12px; }
   .hero-space .stamp { left: 50%%; top: 50%%; transform: translate(-50%%,-50%%) rotate(-12deg); }
   .bar { background: linear-gradient(90deg, rgba(30,0,5,.9), rgba(60,5,10,.85)); border: 4px solid #ffb703;
     border-radius: 26px; padding: 14px 26px; text-align: center; font-size: var(--val); font-weight: 800; line-height: 1.15;
@@ -136,7 +142,7 @@ def hero_page(story, theme: dict, font: str, image_url: str | None, date: str, h
   <div id="main">
     <div class="banner">{esc(theme["tag"].split(" ", 1)[0])} {esc(story.kicker)}</div>
     {headline_3d(story.headline)}
-    <div class="hero-space">{stamp}</div>
+    <div class="hero-space">{SYMBOLIC if image_url else ""}{stamp}</div>
     {bars}
     {points}
     <div class="ribbon">{highlight_numbers(story.subheadline)}</div>
@@ -195,7 +201,7 @@ def paper_page(story, theme: dict, font: str, image_url: str | None, date: str, 
     <div class="tag">{esc(theme["tag"])} • {esc(story.kicker)}</div>
     {headline_3d(story.headline)}
     <div class="sub">{highlight_numbers(story.subheadline)}</div>
-    <div class="pic">{picture}{stamp}</div>
+    <div class="pic">{picture}{SYMBOLIC if image_url else ""}{stamp}</div>
     <div class="boxes">{boxes}</div>
     {points}
     <div class="cta">{esc(story.cta)}</div>

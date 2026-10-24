@@ -59,7 +59,9 @@ CARD_FORMAT = """Return a JSON object with exactly these keys:
   "facts": [{"label": "2-4 words", "value": "short value"}],   // 1-4 items, only real facts from the text
   "stamp": "1-2 word English or Gujarati stamp for the picture, e.g. CANCELLED, BREAKING, ARRESTED, APPROVED, ALERT",
   "points": ["short detail line"],                            // 4-7 short lines, each one fact from the text
-  "image_prompt": "English prompt for a dramatic illustration of the topic (objects/places, no people, no text)",
+  "image_prompt": "English prompt for a dramatic 3D illustration of the scene. Show what happened with generic, anonymous
+                   characters (e.g. Indian police officers escorting handcuffed men seen from behind with faces hidden,
+                   officials at a podium, happy families), never a real or recognisable person, no text",
   "cta": "bottom line asking viewers to comment/share",
   "caption": "Instagram caption in Gujarati, 3-5 short lines, no hashtags",
   "hashtags": ["..."],
@@ -211,9 +213,11 @@ KICKERS = {
     "government": "ગુજરાત માટે મોટા સમાચાર",
 }
 IMAGE_PROMPTS = {
-    "crime": "police jeep with flashing red and blue lights at night on a city street in Gujarat, dramatic",
-    "good_news": "Gujarat city skyline at golden sunrise with celebration fireworks, proud and hopeful",
-    "government": "Gujarat government secretariat building with official documents and an announcement megaphone, dramatic light",
+    "crime": "Indian police officers in khaki uniform escorting two handcuffed men seen from behind with faces hidden, "
+             "police jeep with flashing red and blue lights at night on a Gujarat city street",
+    "good_news": "happy Gujarati families celebrating with sweets and fireworks in front of a modern Gujarat city at sunrise",
+    "government": "Indian government officials announcing a decision at a podium with microphones, citizens listening, "
+                  "Gujarat secretariat building behind",
 }
 DEFAULT_HASHTAGS = ["ગુજરાત", "ગુજરાતસમાચાર", "GujaratNews", "Gujarat", "GujaratiNews",
                     "News", "BreakingNews", "Ahmedabad", "Surat", "Vadodara", "Rajkot"]

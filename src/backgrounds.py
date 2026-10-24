@@ -74,10 +74,11 @@ POLLINATIONS_IMAGE = "https://image.pollinations.ai/prompt/"
 
 def generate_free_ai_image(prompt: str, out_path: Path) -> Path | None:
     """Free AI illustration from Pollinations (no key). None if it fails; never stops the run."""
-    full = (f"{prompt}, cinematic news thumbnail illustration, vivid colours, dramatic lighting, "
-            "highly detailed 3D render, no text, no letters, no watermark")
+    # stylised 3D characters keep it clearly illustrative: never a real, recognisable person
+    full = (f"{prompt}, Pixar style 3D render, cinematic news thumbnail, vivid colours, dramatic rim lighting, "
+            "shallow depth of field, anonymous characters, no real person, no text, no letters, no watermark")
     url = POLLINATIONS_IMAGE + urllib.parse.quote(full)
-    params = {"width": 1024, "height": 1280, "nologo": "true", "seed": random.randint(1, 10**6)}
+    params = {"width": 1080, "height": 1920, "nologo": "true", "seed": random.randint(1, 10**6)}
     for attempt in range(2):
         try:
             resp = requests.get(url, params=params, timeout=120)

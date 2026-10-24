@@ -179,6 +179,8 @@ INFO_TEMPLATE = """<!doctype html>
   .pic .img {{ position: absolute; inset: 0; background-size: cover; background-position: center; }}
   .pic .emoji {{ position: absolute; left: 50%; top: 45%; transform: translate(-50%,-50%); font-size: 220px;
     filter: drop-shadow(0 20px 30px rgba(0,0,0,.6)); }}
+  .symbolic {{ position: absolute; left: 0; top: 0; z-index: 2; background: #d90429; color: #fff; font-size: 24px;
+    font-weight: 800; padding: 6px 16px; border-bottom-right-radius: 14px; }}
   .stamp {{ position: absolute; left: 50%; bottom: 14%; transform: translateX(-50%) rotate(-14deg);
     border: 8px solid #d00000; color: #d00000; background: rgba(255,255,255,.88); border-radius: 14px;
     padding: 4px 26px; font: 900 64px/1.1 'Arial Black', Impact, sans-serif; letter-spacing: 3px; white-space: nowrap;
@@ -344,6 +346,8 @@ def _info_page(story: NewsStory, cfg: dict, theme: dict, image: Path | None) -> 
     picture = (f'<div class="img" style="background-image:url({_data_url(image)})"></div>' if image
                else f'<div class="emoji">{theme["scene"][0]}</div>')
     stamp = f'<div class="stamp">{esc(story.stamp)}</div>' if story.stamp else ""
+    if image:
+        stamp = designs.SYMBOLIC + stamp
     chips = "".join(f'<div class="chip"><div class="label">{esc(f["label"])}</div>'
                     f'<div class="value">{esc(f["value"])}</div></div>' for f in story.facts[:2])
     points = "".join(f'<div class="pt"><span class="tick">✓</span><span>{esc(p)}</span></div>' for p in story.points[:7])
