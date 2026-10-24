@@ -27,7 +27,7 @@ def cmd_run(args, cfg):
     from src.card import render_card
     from src.history import add_entry, recent_titles
     from src.poster import make_poster
-    from src.video_builder import build_video, pick_music
+    from src.video_builder import build_video, pick_music, style_for
 
     if cfg.get("provider") == "gemini":
         from src.news import find_story
@@ -66,7 +66,9 @@ def cmd_run(args, cfg):
     print("3/4 Making the reel...")
     music = pick_music()
     print(f"   Music: {music.name if music else 'none (add mp3 files to assets/music/)'}")
-    video = build_video(card, cfg["video"], work_dir / "reel.mp4", music, intro_dir)
+    from src.designs import mood_of
+    motion, seconds = style_for(mood_of(story), len(story.points))
+    video = build_video(card, cfg["video"], work_dir / "reel.mp4", music, intro_dir, motion, seconds)
     print(f"   Saved {video.relative_to(ROOT)}")
 
     if args.no_publish:
@@ -113,7 +115,8 @@ def cmd_prepare(args, cfg):
     (work_dir / "research.md").write_text(notes, encoding="utf-8")
     (work_dir / "story.json").write_text(json.dumps(story.__dict__, ensure_ascii=False, indent=2), encoding="utf-8")
     (work_dir / "issue_title.txt").write_text(f"📰 {story.headline}", encoding="utf-8")
-    (work_dir / "issue.md").write_text(issue_body(story, prompt, story.full_caption()), encoding="utf-8")
+    from src.designs import mood_of
+    (work_dir / "issue.md").write_text(issue_body(story, prompt, story.full_caption(), mood_of(story)), encoding="utf-8")
     print(f"Prepared: [{story.category}] {story.title_en}\n   {work_dir.relative_to(ROOT)}/issue.md")
 
 
@@ -122,8 +125,8 @@ def cmd_from_issue(args, cfg):
     import os
 
     from src.history import add_entry
-    from src.issue_flow import caption_from, download, image_url_from, title_from
-    from src.video_builder import build_video, pick_music
+    from src.issue_flow import caption_from, download, image_url_from, style_from, title_from
+    from src.video_builder import build_video, pick_music, style_for
 
     event = json.loads(Path(os.environ["GITHUB_EVENT_PATH"]).read_text(encoding="utf-8"))
     body, comment = event["issue"]["body"] or "", event["comment"]["body"] or ""
@@ -136,7 +139,10 @@ def cmd_from_issue(args, cfg):
     poster = download(url, work_dir / "poster.png", os.environ.get("GITHUB_TOKEN", ""))
     caption = caption_from(body) or event["issue"]["title"]
     (work_dir / "caption.txt").write_text(caption, encoding="utf-8")
-    video = build_video(poster, cfg["video"], work_dir / "reel.mp4", pick_music())
+    mood, n_points = style_from(body)
+    motion, seconds = style_for(mood, n_points)
+    print(f"Mood: {mood or '-'} -> motion: {motion}, {seconds}s")
+    video = build_video(poster, cfg["video"], work_dir / "reel.mp4", pick_music(), motion=motion, seconds=seconds)
     print(f"Reel: {video.relative_to(ROOT)}")
     if args.no_publish:
         return

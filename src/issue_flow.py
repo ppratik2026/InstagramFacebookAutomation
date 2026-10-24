@@ -10,7 +10,7 @@ CAPTION_START, CAPTION_END = "<!-- caption-start -->", "<!-- caption-end -->"
 TITLE_START, TITLE_END = "<!-- title-start -->", "<!-- title-end -->"
 
 
-def issue_body(story, prompt: str, caption: str) -> str:
+def issue_body(story, prompt: str, caption: str, mood: str = "") -> str:
     """Issue text with the Gemini prompt to copy and the caption the reel will be posted with."""
     return f"""## 📰 {story.headline}
 
@@ -37,6 +37,7 @@ Reel આપોઆપ બનીને Instagram પર post થઈ જશે, અ
 </details>
 
 {TITLE_START}{story.title_en}{TITLE_END}
+<!-- mood:{mood} points:{len(story.points)} -->
 """
 
 
@@ -51,6 +52,12 @@ def caption_from(body: str) -> str:
 
 def title_from(body: str) -> str:
     return _between(body, TITLE_START, TITLE_END)
+
+
+def style_from(body: str) -> tuple[str, int]:
+    """Mood and number of points stored in the issue (decide the reel's motion and length)."""
+    match = re.search(r"<!-- mood:(\w*) points:(\d+) -->", body or "")
+    return (match.group(1), int(match.group(2))) if match else ("", 0)
 
 
 def image_url_from(comment: str) -> str | None:
