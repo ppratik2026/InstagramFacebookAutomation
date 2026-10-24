@@ -271,6 +271,42 @@ def _plain_card(item: FeedItem, category: str, article: str, hashtags_count: int
     }
 
 
+# English place names the AI sometimes leaves in the Gujarati text
+PLACES = {
+    "Gujarat": "ગુજરાત", "Ahmedabad": "અમદાવાદ", "Surat": "સુરત", "Vadodara": "વડોદરા", "Baroda": "વડોદરા",
+    "Rajkot": "રાજકોટ", "Gandhinagar": "ગાંધીનગર", "Bhavnagar": "ભાવનગર", "Jamnagar": "જામનગર",
+    "Junagadh": "જૂનાગઢ", "Kutch": "કચ્છ", "Kachchh": "કચ્છ", "Bhuj": "ભુજ", "Anand": "આણંદ", "Mehsana": "મહેસાણા",
+    "Bharuch": "ભરૂચ", "Navsari": "નવસારી", "Valsad": "વલસાડ", "Vapi": "વાપી", "Morbi": "મોરબી", "Patan": "પાટણ",
+    "Porbandar": "પોરબંદર", "Amreli": "અમરેલી", "Dahod": "દાહોદ", "Godhra": "ગોધરા", "Palanpur": "પાલનપુર",
+    "Nadiad": "નડિયાદ", "Kheda": "ખેડા", "Botad": "બોટાદ", "Surendranagar": "સુરેન્દ્રનગર", "Himmatnagar": "હિંમતનગર",
+    "Saurashtra": "સૌરાષ્ટ્ર", "Dwarka": "દ્વારકા", "Somnath": "સોમનાથ", "Gir": "ગીર",
+}
+CARD_TEXT_FIELDS = ("kicker", "headline", "subheadline", "summary", "points", "facts", "cta", "stamp")
+
+
+def _to_gujarati(text: str) -> str:
+    """English place names -> Gujarati, and stray Devanagari (Hindi) letters -> the same Gujarati letters."""
+    for en, gu in PLACES.items():
+        text = re.sub(rf"(?<![A-Za-z]){en}(?![A-Za-z])", gu, text, flags=re.I)   # \b fails next to Gujarati letters
+    # the Gujarati Unicode block mirrors the Devanagari one, 0x180 code points later
+    return "".join(chr(ord(c) + 0x180) if "\u0900" <= c <= "\u097f" and c not in "\u0964\u0965" else c for c in text)
+
+
+def _gujarati_only(card: dict) -> dict:
+    """Clean the text that is printed on the card (the caption keeps the AI's wording)."""
+    out = dict(card)
+    for key in CARD_TEXT_FIELDS:
+        value = out.get(key)
+        if isinstance(value, str):
+            out[key] = _to_gujarati(value)
+        elif key == "points" and isinstance(value, list):
+            out[key] = [_to_gujarati(p) if isinstance(p, str) else p for p in value]
+        elif key == "facts" and isinstance(value, list):
+            out[key] = [{k: _to_gujarati(v) if isinstance(v, str) else v for k, v in f.items()} if isinstance(f, dict) else f
+                        for f in value]
+    return out
+
+
 def find_story(cfg: dict, previous: list[str], category: str | None = None) -> tuple[NewsStory, str]:
     content = cfg["content"]
     wanted = [category] if category else list(content["categories"])
@@ -340,6 +376,7 @@ Article:
         print("   No AI available to write the card, using the headline as it is.")
         card = _plain_card(item, suggested, article, content["hashtags_count"])
 
+    card = _gujarati_only(card)
     story = NewsStory(
         category=card.get("category") if card.get("category") in wanted else wanted[0],
         title_en=card.get("title_en") or item.title,

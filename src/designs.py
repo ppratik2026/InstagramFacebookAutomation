@@ -163,7 +163,7 @@ HERO_CSS = """
   .spark { position: absolute; border-radius: 50%%; }
   .frame { position: absolute; inset: 14px; border: 5px solid %(accent)s; border-radius: 36px;
     box-shadow: 0 0 40px %(glow)s, inset 0 0 40px %(glow)s; pointer-events: none; }
-  #main { position: absolute; inset: 0; padding: 46px 46px 40px; display: flex; flex-direction: column; gap: 22px; }
+  #main { position: absolute; inset: 0; padding: 46px 46px 56px; display: flex; flex-direction: column; gap: 22px; }
   .banner { align-self: center; background: rgba(20,0,0,.6); border: 4px solid %(accent)s; border-radius: 40px;
     padding: 10px 40px; font-size: 52px; font-weight: 800; box-shadow: 0 0 30px %(glow)s; backdrop-filter: blur(6px); }
   .hero-space { flex: 1; min-height: 460px; position: relative; }   /* the picture always stays visible */
