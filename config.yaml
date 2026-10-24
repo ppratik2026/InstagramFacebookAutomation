@@ -31,6 +31,8 @@ video:
   seconds: 15                     # Instagram needs at least 3s; 12-15s works well for news reels
   fps: 30
   zoom: true                      # slow zoom-in on the image
+  intro_animation: true           # first seconds: banner drops, headline punches in, stamp slams, points pop
+  intro_seconds: 3.4
   music_volume: 0.9               # music from assets/music/*.mp3 (random pick each run)
 
 free:

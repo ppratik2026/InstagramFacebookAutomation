@@ -232,6 +232,73 @@ INFO_FIT_SCRIPT = """() => {
 }"""
 
 
+# Intro animation for the reel: elements fly / punch / slam in one after another. Each element keeps its own
+# transform (--t0) so rotated stickers end exactly where the static design has them.
+ANIM_CSS = """<style>
+@keyframes dropIn { from { transform: translateY(-160%) var(--t0); opacity: 0; } to { transform: var(--t0); opacity: 1; } }
+@keyframes punchIn { 0% { transform: scale(2.6) var(--t0); opacity: 0; } 60% { transform: scale(.92) var(--t0); opacity: 1; }
+  100% { transform: var(--t0); } }
+@keyframes zoomIn { from { transform: scale(1.35) var(--t0); opacity: 0; } to { transform: var(--t0); opacity: 1; } }
+@keyframes slam { 0% { transform: var(--t0) scale(4); opacity: 0; } 55% { transform: var(--t0) scale(.88); opacity: 1; }
+  75% { transform: var(--t0) scale(1.08); } 100% { transform: var(--t0); } }
+@keyframes slideL { from { transform: translateX(-130%) var(--t0); } to { transform: var(--t0); } }
+@keyframes slideR { from { transform: translateX(130%) var(--t0); } to { transform: var(--t0); } }
+@keyframes popIn { 0% { transform: scale(0) var(--t0); opacity: 0; } 70% { transform: scale(1.12) var(--t0); opacity: 1; }
+  100% { transform: var(--t0); } }
+@keyframes riseUp { from { transform: translateY(160%) var(--t0); opacity: 0; } to { transform: var(--t0); opacity: 1; } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes flash { from { opacity: .95; } to { opacity: 0; } }
+@keyframes shake { 0%, 100% { translate: 0 0; } 20% { translate: -14px 6px; } 40% { translate: 12px -8px; }
+  60% { translate: -8px 4px; } 80% { translate: 6px -2px; } }
+#flash { position: fixed; inset: 0; background: #fff; z-index: 99; pointer-events: none; }
+</style>"""
+
+# [selector, animation, start s, duration s, stagger s]; each element animates once (first match wins)
+ANIM_JS = """(steps) => {
+  const done = new Set();
+  for (const [sel, name, start, dur, stagger] of steps) {
+    [...document.querySelectorAll(sel)].filter(el => !done.has(el)).forEach((el, i) => {
+      done.add(el);
+      const t0 = getComputedStyle(el).transform;
+      el.style.setProperty('--t0', t0 === 'none' ? 'translate(0)' : t0);
+      const anim = name === 'slideAlt' ? (i % 2 ? 'slideR' : 'slideL') : name;
+      el.style.animation = `${anim} ${dur}s cubic-bezier(.2,.9,.3,1.2) ${start + i * stagger}s both`;
+    });
+  }
+  const flash = document.createElement('div'); flash.id = 'flash';
+  flash.style.animation = 'flash .35s ease-out 0s both'; document.body.appendChild(flash);
+  const main = document.getElementById('main');
+  if (main) main.style.animation = 'shake .3s linear 1.55s both';   // the stamp "hits" the poster
+  document.getAnimations().forEach(a => a.pause());
+}"""
+
+ANIM_STEPS = [
+    [".head", "zoomIn", 0.0, 0.4, 0],
+    [".banner, .tag, .kicker", "dropIn", 0.05, 0.45, 0],
+    [".h3d, .headline", "punchIn", 0.3, 0.6, 0],
+    [".photo, .img, .fallback, .scene, .icon, .pic", "zoomIn", 0.7, 0.7, 0],
+    [".sub, .strip", "slideL", 1.0, 0.45, 0],
+    [".stamp", "slam", 1.3, 0.45, 0],
+    [".sticker", "popIn", 1.3, 0.35, 0],
+    [".bar, .box, .fact, .chip", "slideAlt", 1.7, 0.4, 0.15],
+    [".glass, .right, .pts, .why", "fadeIn", 1.9, 0.25, 0],
+    [".pt", "popIn", 2.0, 0.35, 0.14],
+    [".ribbon", "slideR", 2.6, 0.4, 0],
+    [".cta", "riseUp", 2.8, 0.45, 0],
+    [".footer", "fadeIn", 3.0, 0.3, 0],
+]
+
+
+def _capture_intro(page, frames_dir: Path, seconds: float, fps: int) -> None:
+    """Screenshot the intro animation frame by frame (deterministic, no screen recording)."""
+    frames_dir.mkdir(parents=True, exist_ok=True)
+    page.add_style_tag(content=ANIM_CSS.removeprefix("<style>").removesuffix("</style>"))
+    page.evaluate(ANIM_JS, ANIM_STEPS)
+    for n in range(int(seconds * fps)):
+        page.evaluate("t => document.getAnimations().forEach(a => a.currentTime = t)", n * 1000 / fps)
+        page.screenshot(path=str(frames_dir / f"f{n:04d}.jpg"), type="jpeg", quality=92)
+
+
 def _gujarati_date(now: datetime) -> str:
     return f"{now.day} {GUJARATI_MONTHS[now.month - 1]} {now.year}"
 
@@ -290,7 +357,9 @@ def _info_page(story: NewsStory, cfg: dict, theme: dict, image: Path | None) -> 
     )
 
 
-def render_card(story: NewsStory, cfg: dict, out_path: Path, background: Path | None = None) -> Path:
+def render_card(story: NewsStory, cfg: dict, out_path: Path, background: Path | None = None,
+                intro_dir: Path | None = None) -> Path:
+    """Render the card PNG. With intro_dir, also write the intro animation frames there."""
     theme = random.choice(THEMES.get(story.category, THEMES["government"]))
     esc = html.escape
     facts = story.facts[:4]
@@ -342,5 +411,8 @@ def render_card(story: NewsStory, cfg: dict, out_path: Path, background: Path | 
         if not page.evaluate(fit_script):
             print("Warning: card text is too long and may be cut off.")
         page.screenshot(path=str(out_path))
+        if intro_dir:
+            vcfg = cfg["video"]
+            _capture_intro(page, intro_dir, vcfg.get("intro_seconds", 3.4), vcfg["fps"])
         browser.close()
     return out_path

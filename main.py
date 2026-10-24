@@ -54,14 +54,17 @@ def cmd_run(args, cfg):
         card = make_poster(story, cfg, work_dir / "card.png")
         if not card:
             print("   AI poster not usable, falling back to the template card.")
+    intro_dir = None
     if not card:
         background = get_background(story, cfg, work_dir)
-        card = render_card(story, cfg, work_dir / "card.png", background)
+        if cfg["video"].get("intro_animation", True):
+            intro_dir = work_dir / "intro"
+        card = render_card(story, cfg, work_dir / "card.png", background, intro_dir)
 
     print("3/4 Making the reel...")
     music = pick_music()
     print(f"   Music: {music.name if music else 'none (add mp3 files to assets/music/)'}")
-    video = build_video(card, cfg["video"], work_dir / "reel.mp4", music)
+    video = build_video(card, cfg["video"], work_dir / "reel.mp4", music, intro_dir)
     print(f"   Saved {video.relative_to(ROOT)}")
 
     if args.no_publish:
