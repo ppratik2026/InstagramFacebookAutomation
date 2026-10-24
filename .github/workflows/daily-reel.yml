@@ -72,7 +72,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: reel-${{ github.run_number }}
-          path: output/
+          path: |
+            output/
+            !output/**/intro/
           retention-days: 7
           if-no-files-found: ignore
 

@@ -1,6 +1,7 @@
 """Image for the news card: free AI illustration (Pollinations) or Gemini, then a Pexels photo, else none."""
 import os
 import random
+import re
 import time
 import urllib.parse
 from pathlib import Path
@@ -79,7 +80,7 @@ def generate_free_ai_image(prompt: str, out_path: Path) -> Path | None:
             "shallow depth of field, anonymous characters, no real person, no text, no letters, no watermark")
     url = POLLINATIONS_IMAGE + urllib.parse.quote(full)
     params = {"width": 1080, "height": 1920, "nologo": "true", "seed": random.randint(1, 10**6)}
-    for attempt in range(2):
+    for attempt in range(4):
         try:
             resp = requests.get(url, params=params, timeout=120)
         except requests.RequestException as e:
@@ -90,10 +91,11 @@ def generate_free_ai_image(prompt: str, out_path: Path) -> Path | None:
             print("Background: free AI illustration (Pollinations)")
             return out_path
         print(f"Free AI image failed: HTTP {resp.status_code} {resp.text[:150]!r}")
-        if resp.status_code in (402, 429) and attempt == 0:
-            time.sleep(20)  # anonymous use is rate limited per IP
-            continue
-        return None
+        if resp.status_code not in (402, 429, 500, 502, 503, 504) or attempt == 3:
+            return None
+        # busy or rate limited (anonymous use is limited per IP): wait as asked, then retry
+        match = re.search(r"[Rr]etry after (\d+)", resp.text)
+        time.sleep(min(int(match.group(1)) + 5 if match else 20, 60))
     return None
 
 

@@ -117,7 +117,7 @@ def _read_feed(url: str) -> list[FeedItem]:
         if " - " in title and source and title.endswith(source):  # Google News appends " - Source"
             title = title[: -len(source)].rstrip(" -")
         if title and link:
-            items.append(FeedItem(title, link, source.strip(), published, _strip_html(full)))
+            items.append(FeedItem(title, link, source.strip(" -|"), published, _strip_html(full)))
     return items
 
 
