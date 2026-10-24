@@ -168,7 +168,8 @@ Write ALL of this text on the poster exactly as given (Gujarati script, same spe
         prompt += f'- Small note line at the very bottom: "{story.note}"\n'
     prompt += f"""- Small text in a corner: "સ્રોત: {story.source_name}" and "{handle}"
 
-Rules: Gujarati text must be correctly spelled and correctly shaped. Numbers, ₹ amounts and dates must match
+Rules: Gujarati text must be correctly spelled and correctly shaped. Any section heading you add must be in Gujarati
+(e.g. "મુખ્ય આંકડા", never "Key Facts"); do not invent any other labels, tags or words in any language. Numbers, ₹ amounts and dates must match
 exactly. Do not add any other text, logos or watermarks. No real, recognisable people. Keep a margin of about
 5% on every side so nothing touches the edges."""
     if extra_fix:
