@@ -100,6 +100,31 @@ def generate_free_ai_image(prompt: str, out_path: Path) -> Path | None:
     return None
 
 
+def generate_free_poster(prompt: str, models: list[str], out_path: Path) -> Path | None:
+    """The whole poster (picture + Gujarati text) from the same prompt a person would paste into Gemini,
+    using Pollinations' free image models. Returns None if no model gives an image."""
+    url = POLLINATIONS_IMAGE + urllib.parse.quote(prompt)
+    for model in models:
+        params = {"model": model, "width": 1080, "height": 1920, "nologo": "true", "enhance": "false",
+                  "seed": random.randint(1, 10**6)}
+        for attempt in range(3):
+            try:
+                resp = requests.get(url, params=params, timeout=240)
+            except requests.RequestException as e:
+                print(f"   AI poster ({model}) failed: {e}")
+                break
+            if resp.status_code == 200 and resp.headers.get("content-type", "").startswith("image/"):
+                out_path.write_bytes(resp.content)
+                print(f"   AI poster made with free model '{model}'")
+                return out_path
+            print(f"   AI poster ({model}) failed: HTTP {resp.status_code} {resp.text[:200]!r}")
+            if resp.status_code not in (429, 500, 502, 503, 504):
+                break   # e.g. model not available on the free tier: try the next model
+            match = re.search(r"[Rr]etry after (\d+)", resp.text)
+            time.sleep(min(int(match.group(1)) + 5 if match else 20, 60))
+    return None
+
+
 def get_background(story, cfg: dict, work_dir: Path) -> Path | None:
     if cfg.get("provider") != "gemini" and cfg["free"].get("ai_images", True) and story.image_prompt:
         path = generate_free_ai_image(story.image_prompt, work_dir / "illustration.jpg")

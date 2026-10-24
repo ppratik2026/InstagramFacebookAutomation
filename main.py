@@ -56,6 +56,15 @@ def cmd_run(args, cfg):
         card = make_poster(story, cfg, work_dir / "card.png")
         if not card:
             print("   AI poster not usable, falling back to the template card.")
+    if not card and cfg.get("provider") != "gemini" and cfg["free"].get("ai_poster_models"):
+        # the same prompt a person would paste into the Gemini app, sent to free image models
+        from src.backgrounds import generate_free_poster
+        from src.poster import _poster_prompt
+        prompt = _poster_prompt(story, cfg["card"]["handle"])
+        (work_dir / "poster_prompt.txt").write_text(prompt, encoding="utf-8")
+        card = generate_free_poster(prompt, cfg["free"]["ai_poster_models"], work_dir / "card.png")
+        if not card:
+            print("   Free AI poster not available, using the template design.")
     intro_dir = None
     if not card:
         background = get_background(story, cfg, work_dir)
