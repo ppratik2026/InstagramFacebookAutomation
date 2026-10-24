@@ -87,3 +87,18 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/history.json || true
           git diff --cached --quiet || (git commit -m "Update posted history" && git push)
+
+      - name: Save the poster preview (test runs only)
+        # test runs (publish unticked) also save card.png to the "previews" branch, easy to open in the GitHub app
+        if: success() && github.event_name == 'workflow_dispatch' && !inputs.publish
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          card=$(ls output/*/card.png | head -1)
+          title=$(python -c "import json,glob; print(json.load(open(sorted(glob.glob('output/*/story.json'))[0]))['headline'])")
+          git fetch origin previews:previews 2>/dev/null || true
+          git worktree add -f /tmp/prev previews 2>/dev/null || (git worktree add --detach /tmp/prev && cd /tmp/prev && git checkout --orphan previews && git rm -rfq .)
+          cp "$card" "/tmp/prev/run-${{ github.run_number }}.png"
+          cd /tmp/prev
+          git add . && git commit -qm "Preview run ${{ github.run_number }}: $title" && git push -q origin previews
+          echo "Preview: https://github.com/${{ github.repository }}/blob/previews/run-${{ github.run_number }}.png"
