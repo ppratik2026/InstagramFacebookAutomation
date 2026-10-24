@@ -35,6 +35,11 @@ jobs:
 
       - run: pip install -r requirements.txt
 
+      - name: List stories already in issues
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue list --state all --limit 40 --json title --jq '.[].title' > recent_issues.txt || true
+
       - name: Find news and write the issue
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -43,7 +48,7 @@ jobs:
         run: |
           ARGS=""
           if [ -n "${{ inputs.category }}" ] && [ "${{ inputs.category }}" != "any" ]; then ARGS="--category ${{ inputs.category }}"; fi
-          python main.py prepare $ARGS
+          python main.py prepare --skip-titles recent_issues.txt $ARGS
 
       - name: Open the issue
         env:

@@ -105,7 +105,10 @@ def cmd_prepare(args, cfg):
 
     work_dir = ROOT / "output" / datetime.now().strftime("%Y%m%d-%H%M%S")
     work_dir.mkdir(parents=True, exist_ok=True)
-    story, notes = find_story(cfg, recent_titles(), args.category)
+    previous = recent_titles()
+    if args.skip_titles and Path(args.skip_titles).exists():   # stories already waiting in issues
+        previous += [t.removeprefix("📰").strip() for t in Path(args.skip_titles).read_text(encoding="utf-8").splitlines() if t.strip()]
+    story, notes = find_story(cfg, previous, args.category)
     prompt = _poster_prompt(story, cfg["card"]["handle"])
     (work_dir / "research.md").write_text(notes, encoding="utf-8")
     (work_dir / "story.json").write_text(json.dumps(story.__dict__, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -176,6 +179,7 @@ def main():
 
     prep = sub.add_parser("prepare", help="find news and write a GitHub issue with a Gemini poster prompt")
     prep.add_argument("--category", choices=["crime", "good_news", "government"], help="limit to one category")
+    prep.add_argument("--skip-titles", help="file with headlines to avoid (one per line), e.g. recent issue titles")
     prep.set_defaults(func=cmd_prepare)
 
     iss = sub.add_parser("from-issue", help="make and post the reel from a poster uploaded to an issue")
