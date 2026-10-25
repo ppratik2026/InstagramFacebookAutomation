@@ -66,10 +66,14 @@ free:
 # A provider with key_env is only used when that secret is set. If a model is unknown or its free
 # daily limit is used up, the next model / provider is tried.
 llm_providers:
-  - name: groq                        # free key, no card: https://console.groq.com/keys
+  - name: gemini                      # GEMINI_API_KEY: the free tier includes text models (not images)
+    type: gemini
+    key_env: GEMINI_API_KEY
+    models: ["gemini-3.8-flash", "gemini-3.5-flash", "gemini-3.1-flash-lite"]
+  - name: groq                        # free key, no card: https://console.groq.com/keys; each model has its own daily quota
     url: "https://api.groq.com/openai/v1/chat/completions"
     key_env: GROQ_API_KEY
-    models: ["openai/gpt-oss-120b", "llama-3.3-70b-versatile"]
+    models: ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "qwen/qwen3-32b", "llama-3.1-8b-instant"]
   - name: openrouter                  # free key, no card: https://openrouter.ai/keys
     url: "https://openrouter.ai/api/v1/chat/completions"
     key_env: OPENROUTER_API_KEY

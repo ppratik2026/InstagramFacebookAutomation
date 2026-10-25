@@ -447,6 +447,7 @@ def cmd_scheduler(args, cfg):
             git("pull", "-q", "--rebase", "origin", branch)
 
     max_extra = cfg.get("schedule", {}).get("max_breaking_per_day", 6)
+    checked_hour = ""
     while True:
         now = datetime.now(IST)
         if now.hour >= 10 or now.hour == 0:   # 10:00 ... 23:00 and midnight
@@ -456,7 +457,9 @@ def cmd_scheduler(args, cfg):
                 print(f"\n=== {now:%d %b %H:%M} IST: hourly post ===", flush=True)
                 if subprocess.run([sys.executable, "-u", "main.py", "run"]).returncode == 0:
                     save(stats=now.hour % 3 == 1)
-            elif 15 <= now.minute <= 45 and (now - max(posts)).total_seconds() >= 20 * 60:
+            elif (25 <= now.minute <= 45 and checked_hour != now.strftime("%Y%m%d%H")
+                    and (now - max(posts)).total_seconds() >= 20 * 60):
+                checked_hour = now.strftime("%Y%m%d%H")   # one breaking news check an hour (saves the AI quota)
                 # between the hourly posts: a really big breaking story goes out at once (a few a day at most)
                 today = sum(1 for p in posts if p.date() == now.date())
                 hours_so_far = (now.hour - 9) if now.hour >= 10 else 15

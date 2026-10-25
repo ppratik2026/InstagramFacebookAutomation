@@ -173,10 +173,10 @@ def _article_text(item: FeedItem) -> str:
                 paragraphs = [_strip_html(p) for p in re.findall(r"<p[^>]*>(.*?)</p>", resp.text, flags=re.S | re.I)]
                 body = " ".join(p for p in paragraphs if len(p) > 40)
                 if len(body) > len(item.text):
-                    return body[:6000]
+                    return body[:4000]   # the first part has the facts; keeps AI usage low
         except requests.RequestException:
             pass
-    return item.text[:6000]
+    return item.text[:4000]
 
 
 def _parse_json(text: str) -> dict:
@@ -208,6 +208,27 @@ def _retry_after(resp: requests.Response) -> int:
         return 33
 
 
+def _gemini_chat(model: str, system: str, user: str) -> dict:
+    """One JSON reply from a Gemini text model (free tier); retried once when Google says it is busy."""
+    from google import genai
+    from google.genai import types
+
+    client = genai.Client()
+    for attempt in range(2):
+        try:
+            response = client.models.generate_content(
+                model=model, contents=user,
+                config=types.GenerateContentConfig(system_instruction=system, response_mime_type="application/json"),
+            )
+            return _parse_json(response.text)
+        except Exception as e:
+            if attempt == 0 and ("503" in str(e) or "UNAVAILABLE" in str(e)):
+                time.sleep(6)
+                continue
+            raise RuntimeError(str(e)[:200]) from e
+    raise RuntimeError("Gemini busy")
+
+
 def _chat(cfg: dict, system: str, user: str) -> dict:
     """Ask the first free LLM provider that works. Providers whose key isn't set are skipped."""
     messages = [{"role": "system", "content": system}, {"role": "user", "content": user}]
@@ -216,6 +237,14 @@ def _chat(cfg: dict, system: str, user: str) -> dict:
         key = os.environ.get(provider["key_env"], "").strip() if provider.get("key_env") else ""
         if provider.get("key_env") and not key:
             continue
+        if provider.get("type") == "gemini":
+            for model in provider["models"]:
+                try:
+                    return _gemini_chat(model, system, user)
+                except (RuntimeError, ValueError) as e:
+                    errors.append(f"{provider['name']} {model}: {e}")
+                    print(f"   LLM failed: {errors[-1]}")
+            continue
         for model in provider["models"]:
             for json_mode in (True, False):  # some providers reject response_format; retry without it
                 resp = None
@@ -223,6 +252,9 @@ def _chat(cfg: dict, system: str, user: str) -> dict:
                     resp = _post(provider, key, model, messages, json_mode)
                     for _ in range(3):  # free tiers rate-limit ("1 reply every 30 seconds"): wait and retry
                         if resp.status_code not in (402, 429):
+                            break
+                        daily = re.search(r"per day|TPD|RPD|Insufficient balance", resp.text, re.I)
+                        if daily or _retry_after(resp) > 40:   # the day's quota is used up: next model at once
                             break
                         wait = _retry_after(resp)
                         print(f"   {provider['name']} rate limit, waiting {wait}s...")
@@ -514,6 +546,8 @@ Use exactly {content['hashtags_count']} hashtags (Gujarati and English mix).
 Article:
 {notes}""")
     except RuntimeError:
+        if not cfg["free"].get("allow_plain_card", False):   # an unfinished poster would hurt the page
+            raise RuntimeError("No AI available to write the card; not posting this time.")
         print("   No AI available to write the card, using the headline as it is.")
         card = _plain_card(item, suggested, article, content["hashtags_count"])
 
