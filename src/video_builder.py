@@ -73,7 +73,12 @@ def build_video(image: Path, vcfg: dict, out_path: Path, music: Path | None = No
         video_filter += ",format=yuv420p"   # last, so every player (and Instagram) accepts the video
         args = ["ffmpeg", "-y", "-i", str(image)]
     else:
-        video_filter = "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,format=yuv420p"
+        # the whole poster, never cut or zoomed: fitted into 1080x1920, with a blurred copy behind any gaps
+        video_filter = (
+            "split[a][b];[a]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=30[bg];"
+            "[b]scale=1080:1920:force_original_aspect_ratio=decrease[fg];"
+            "[bg][fg]overlay=(W-w)/2:(H-h)/2,format=yuv420p"
+        )
         args = ["ffmpeg", "-y", "-loop", "1", "-framerate", str(fps), "-i", str(image)]
 
     video_inputs = 1
