@@ -54,8 +54,9 @@ Hard rules:
   specific subject and place (e.g. "ડ્રાઇવિંગ લાયસન્સ", "અમદાવાદ", "GSEB ધોરણ 10"), never a vague word like
   "લાયસન્સ અપડેટ" or "મોટા સમાચાર". The summary answers: what happened, where, who decided/did it, who is affected.
   Every point and fact must make sense on its own (say what it is about).
-- Write everything in Gujarati script. No English words except names, acronyms and numbers
-  (never "additionally", "update", "news" written in English letters inside Gujarati sentences).
+- Write everything in Gujarati script. No English words except short acronyms (UPI, RBI, GSEB) and numbers.
+  English terms are written in Gujarati letters: "Gold Hallmarking Center" -> "ગોલ્ડ હોલમાર્કિંગ સેન્ટર",
+  "update" -> "અપડેટ". Never leave English words in Latin letters in the headline, points or facts.
 - Keep it short: kicker max 4 words, summary max 2 sentences, each point max 10 words.
 - Every fact value must be complete on its own: dates with month (and year if the article has it), amounts with
   ₹ and unit, counts with what they count ("21 માંગણીઓ", not "21"). Leave a fact out rather than write half of it.
@@ -336,6 +337,11 @@ VISUALS = ("table", "compare", "reasons", "timeline", "checklist")
 MONTHS = r"જાન્યુ|ફેબ્રુ|માર્ચ|એપ્રિલ|મે|જૂન|જુલાઈ|ઓગસ્ટ|સપ્ટે|ઓક્ટો|નવે|ડિસે|આજે|આવતીકાલે|કાલે|ગઈકાલે|સોમ|મંગળ|બુધ|ગુરુ|શુક્ર|શનિ|રવિ"
 
 
+def _latin_words(text: str) -> list[str]:
+    """English words in Latin letters, apart from short all-caps acronyms (UPI, RBI, DGVCL)."""
+    return [w for w in re.findall(r"[A-Za-z]{2,}", text or "") if not (w.isupper() and len(w) <= 6)]
+
+
 def _incomplete(fact: dict) -> bool:
     """A date fact without month or day name, e.g. "બેઠક તારીખ: 23", says nothing on its own."""
     return bool(re.search(r"તારીખ|દિવસ|date", fact["label"], re.I)) and not re.search(MONTHS, fact["value"])
@@ -411,6 +417,19 @@ Article:
         card = _plain_card(item, suggested, article, content["hashtags_count"])
 
     card = _gujarati_only(card)
+    if _latin_words(card.get("headline", "")):
+        try:   # the headline is the biggest text on the card: get it fully in Gujarati script
+            fixed = _chat(cfg, "You rewrite Gujarati news headlines. Reply with JSON only.", f"""
+Rewrite this headline fully in Gujarati script: write English words in Gujarati letters (e.g. "Gold Hallmarking
+Center" -> "ગોલ્ડ હોલમાર્કિંગ સેન્ટર"). Keep short acronyms like UPI, RBI, GSEB and all numbers as they are.
+Keep the meaning and length. Also give the same for the highlight word.
+Headline: {card.get("headline")}
+Highlight: {card.get("highlight", "")}
+Return {{"headline": "...", "highlight": "..."}}.""")
+            if fixed.get("headline") and not _latin_words(fixed["headline"]):
+                card["headline"], card["highlight"] = fixed["headline"], fixed.get("highlight", "")
+        except RuntimeError:
+            pass
     visual = card.get("visual") if card.get("visual") in VISUALS else "checklist"
     rows = [r for r in card.get("rows") or [] if isinstance(r, dict) and r.get("left") and r.get("right")][:6]
     compare = card.get("compare") if isinstance(card.get("compare"), dict) else {}
