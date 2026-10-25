@@ -297,6 +297,11 @@ PLACES = {
     "Porbandar": "પોરબંદર", "Amreli": "અમરેલી", "Dahod": "દાહોદ", "Godhra": "ગોધરા", "Palanpur": "પાલનપુર",
     "Nadiad": "નડિયાદ", "Kheda": "ખેડા", "Botad": "બોટાદ", "Surendranagar": "સુરેન્દ્રનગર", "Himmatnagar": "હિંમતનગર",
     "Saurashtra": "સૌરાષ્ટ્ર", "Dwarka": "દ્વારકા", "Somnath": "સોમનાથ", "Gir": "ગીર",
+    # months (full names first, so "September" is not read as "Sep" + "tember")
+    "January": "જાન્યુઆરી", "February": "ફેબ્રુઆરી", "March": "માર્ચ", "April": "એપ્રિલ", "June": "જૂન",
+    "July": "જુલાઈ", "August": "ઓગસ્ટ", "September": "સપ્ટેમ્બર", "October": "ઓક્ટોબર", "November": "નવેમ્બર",
+    "December": "ડિસેમ્બર", "Jan": "જાન્યુ.", "Feb": "ફેબ્રુ.", "Mar": "માર્ચ", "Apr": "એપ્રિલ", "Jun": "જૂન",
+    "Jul": "જુલાઈ", "Aug": "ઓગસ્ટ", "Sep": "સપ્ટે.", "Sept": "સપ્ટે.", "Oct": "ઓક્ટો.", "Nov": "નવે.", "Dec": "ડિસે.",
 }
 CARD_TEXT_FIELDS = ("kicker", "headline", "subheadline", "summary", "points", "facts", "cta", "stamp", "highlight",
                     "rows", "compare", "reasons")

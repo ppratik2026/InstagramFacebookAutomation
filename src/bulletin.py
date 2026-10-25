@@ -115,7 +115,7 @@ CSS = """
   .panel td { font-size: var(--pt); font-weight: 700; padding: 10px 18px; border-bottom: 2px solid rgba(0,0,0,.08);
     line-height: 1.25; }
   .panel tr:nth-child(even) td { background: rgba(0,0,0,.035); }
-  .panel td.r { text-align: right; font-weight: 800; color: %(big)s; font-size: calc(var(--pt) * 1.25); white-space: nowrap;
+  .panel td.r { width: 1%%; text-align: right; font-weight: 800; color: %(big)s; font-size: calc(var(--pt) * 1.25); white-space: nowrap;
     border-left: 2px solid rgba(0,0,0,.08); }
   .panel .tl { list-style: none; padding: 14px 20px 14px 34px; display: flex; flex-direction: column;
     justify-content: space-evenly; flex: 1; position: relative; }
