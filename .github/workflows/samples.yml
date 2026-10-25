@@ -1,0 +1,61 @@
+name: Poster samples
+
+# Many different posters in one run (no reels, nothing is posted). They are saved to the
+# "previews" branch in samples-<run number>/ with contact sheets of 10 posters each.
+on:
+  workflow_dispatch:
+    inputs:
+      count:
+        description: "How many posters"
+        default: "50"
+
+permissions:
+  contents: write
+  models: read
+
+jobs:
+  samples:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install system packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-core fonts-noto-color-emoji
+
+      - name: Install Python packages
+        run: |
+          pip install -r requirements.txt
+          python -m playwright install --with-deps chromium
+
+      - name: Make the posters
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          POLLINATIONS_API_KEY: ${{ secrets.POLLINATIONS_API_KEY }}
+        run: python main.py samples --count "${{ inputs.count }}"
+
+      - name: Save them to the previews branch
+        if: always()
+        run: |
+          [ -d samples ] || exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          dir="samples-${{ github.run_number }}"
+          git fetch origin previews:previews 2>/dev/null || true
+          git worktree add -f /tmp/prev previews 2>/dev/null || (git worktree add --detach /tmp/prev && cd /tmp/prev && git checkout --orphan previews && git rm -rfq .)
+          mkdir -p "/tmp/prev/$dir"
+          for d in samples/*/; do [ -f "$d/card.png" ] && cp "$d/card.png" "/tmp/prev/$dir/$(basename "$d").png"; done
+          cp samples/sheet-*.jpg "/tmp/prev/$dir/" 2>/dev/null || true
+          cd /tmp/prev
+          git add . && git commit -qm "Samples run ${{ github.run_number }}" && git push -q origin previews
+          echo "Samples: https://github.com/${{ github.repository }}/tree/previews/$dir"

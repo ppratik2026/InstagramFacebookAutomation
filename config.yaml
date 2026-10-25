@@ -64,6 +64,10 @@ llm_providers:
     url: "https://openrouter.ai/api/v1/chat/completions"
     key_env: OPENROUTER_API_KEY
     models: ["openai/gpt-oss-120b:free", "meta-llama/llama-3.3-70b-instruct:free"]
+  - name: pollinations-key            # the free POLLINATIONS_API_KEY (also used for the pictures)
+    url: "https://gen.pollinations.ai/v1/chat/completions"
+    key_env: POLLINATIONS_API_KEY
+    models: ["openai-large", "openai"]
   - name: pollinations                # free, no key at all (rate limited)
     url: "https://text.pollinations.ai/openai"
     models: ["openai"]

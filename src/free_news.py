@@ -356,9 +356,9 @@ def _incomplete(fact: dict) -> bool:
     return bool(re.search(r"તારીખ|દિવસ|date", fact["label"], re.I)) and not re.search(MONTHS, fact["value"])
 
 
-def find_story(cfg: dict, previous: list[str], category: str | None = None) -> tuple[NewsStory, str]:
+def gather_items(cfg: dict, previous: list[str], wanted: list[str], limit: int = 40) -> list[FeedItem]:
+    """Recent, distinct, single-story headlines from the feeds, Gujarat stories and full-text ones first."""
     content = cfg["content"]
-    wanted = [category] if category else list(content["categories"])
     cutoff = datetime.now(timezone.utc) - timedelta(hours=content["max_news_age_hours"])
 
     sources = [(url, None) for url in cfg["free"].get("feeds", [])]
@@ -381,8 +381,15 @@ def find_story(cfg: dict, previous: list[str], category: str | None = None) -> t
     items.sort(key=lambda i: i.published, reverse=True)
     # stories whose full article we have give much clearer cards; offer them first
     items.sort(key=lambda i: len(i.text) <= 400)
-    items = items[:40]
+    items = items[:limit]
     print(f"   {len(items)} recent headlines found")
+    return items
+
+
+def find_story(cfg: dict, previous: list[str], category: str | None = None) -> tuple[NewsStory, str]:
+    content = cfg["content"]
+    wanted = [category] if category else list(content["categories"])
+    items = gather_items(cfg, previous, wanted)
 
     # 1) let the model pick the best story
     listing = "\n".join(
@@ -409,12 +416,15 @@ Return {{"index": <number>, "category": "<category>"}}.""")
         pick = {}
         item = next((i for i in items if len(i.text) > 400), items[0])
     print(f"   Picked: [{item.source}] {item.title}")
+    return write_card(cfg, item, pick.get("category") or item.category or wanted[0], wanted)
 
-    # 2) write the card from the article text only
+
+def write_card(cfg: dict, item: FeedItem, suggested: str, wanted: list[str]) -> tuple[NewsStory, str]:
+    """The card text for one story, written from the article text only."""
+    content = cfg["content"]
     article = _article_text(item)
     notes = (f"Source: {item.source}\nLink: {item.link}\nPublished: {item.published.astimezone(IST):%d %b %Y %H:%M} IST\n"
              f"Headline: {item.title}\n\nText:\n{article}")
-    suggested = pick.get("category") or item.category or wanted[0]
     try:
         card = _chat(cfg, CARD_RULES, f"""{CARD_FORMAT}
 

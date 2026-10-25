@@ -173,6 +173,70 @@ def cmd_from_issue(args, cfg):
     print(f"Published: {result.get('permalink') or result['media_id']}")
 
 
+def cmd_samples(args, cfg):
+    """Many different posters in one go (no reels, nothing posted): a different story for each, walking
+    through the designs, colour looks and fonts so no two look the same. Writes samples/NN.png and sheets."""
+    from PIL import Image
+
+    from src import designs
+    from src.backgrounds import generate_cutout, get_background
+    from src.bulletin import PALETTES
+    from src.card import render_card
+    from src.free_news import gather_items, write_card
+
+    out_dir = ROOT / "samples"
+    out_dir.mkdir(exist_ok=True)
+    items = gather_items(cfg, [], list(cfg["content"]["categories"]), limit=200)
+    # half bulletin (each colour look in turn), half the other designs in turn
+    others = ["mag", "hero", "split", "paper", "classic"]
+    looks = [("bulletin", pal) for pal in PALETTES] * 50
+    plan = [looks[i // 2] if i % 2 == 0 else (others[(i // 2) % len(others)], "") for i in range(args.count)]
+    made, seen, titles = [], set(), []
+    for item in items:
+        if len(made) >= args.count:
+            break
+        words = set(item.title.split())
+        if any(len(words & t) / max(1, len(words | t)) > 0.4 for t in titles):
+            continue   # the same story from another site
+        titles.append(words)
+        n = len(made) + 1
+        design, palette = plan[len(made)]
+        print(f"\n[{n}/{args.count}] {design} {palette} - {item.title[:70]}")
+        try:
+            story, _ = write_card(cfg, item, item.category or "government", list(cfg["content"]["categories"]))
+        except Exception as e:   # one bad story never stops the batch
+            print(f"   skipped: {e}")
+            continue
+        if story.headline in seen:
+            continue
+        seen.add(story.headline)
+        work = out_dir / f"{n:02d}"
+        work.mkdir(exist_ok=True)
+        cfg["card"]["font"] = designs.FONTS[n % len(designs.FONTS)]
+        os.environ["CARD_PALETTE"] = palette
+        background = cutout = None
+        if design == "bulletin":
+            cutout = generate_cutout(story.object_prompt, work / "cutout.png")
+        if not cutout:
+            background = get_background(story, cfg, work)
+        if design == "hero" and not background:
+            design = "mag"
+        try:
+            card = render_card(story, cfg, work / "card.png", background, None, design, cutout)
+        except Exception as e:
+            print(f"   render failed: {e}")
+            continue
+        made.append(card)
+        (work / "story.json").write_text(json.dumps(story.__dict__, ensure_ascii=False, indent=2), encoding="utf-8")
+    # contact sheets, 10 posters each, to look at them quickly
+    for start in range(0, len(made), 10):
+        sheet = Image.new("RGB", (5 * 432, 2 * 768), "white")
+        for i, path in enumerate(made[start:start + 10]):
+            sheet.paste(Image.open(path).convert("RGB").resize((432, 768)), ((i % 5) * 432, (i // 5) * 768))
+        sheet.save(out_dir / f"sheet-{start // 10 + 1}.jpg", quality=88)
+    print(f"\n{len(made)} samples in {out_dir.relative_to(ROOT)}/")
+
+
 def cmd_check(args, cfg):
     me = instagram(cfg).me()
     print(f"Token OK: @{me['username']} ({me['account_type']}), user_id={me['user_id']}")
@@ -213,6 +277,10 @@ def main():
     iss = sub.add_parser("from-issue", help="make and post the reel from a poster uploaded to an issue")
     iss.add_argument("--no-publish", action="store_true")
     iss.set_defaults(func=cmd_from_issue)
+
+    smp = sub.add_parser("samples", help="many different posters from different stories (nothing is posted)")
+    smp.add_argument("--count", type=int, default=50)
+    smp.set_defaults(func=cmd_samples)
 
     sub.add_parser("check", help="verify the Instagram token").set_defaults(func=cmd_check)
     sub.add_parser("refresh-token", help="extend the Instagram token by 60 days").set_defaults(func=cmd_refresh)
