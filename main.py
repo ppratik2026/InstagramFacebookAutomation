@@ -142,7 +142,7 @@ def cmd_run(args, cfg):
             design = "brand"
             background = (generate_gemini_cartoon(story.image_prompt, cfg["gemini"].get("cartoon_models", []),
                                                   work_dir / "scene.png")
-                          or generate_free_ai_image(story.image_prompt, work_dir / "scene.jpg", "cartoon"))
+                          or generate_free_ai_image(story.image_prompt, work_dir / "scene.jpg", "cartoon", keyless=False))
             if not background:   # no picture service: the story's objects as a cut-out, else an icon
                 cutout = generate_cutout(story.object_prompt, work_dir / "cutout.png")
         elif cfg["card"].get("picture", "cutout") == "cutout":

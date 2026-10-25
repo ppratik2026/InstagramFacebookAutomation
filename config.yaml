@@ -28,10 +28,11 @@ card:
   handle: "@aehaalogujarat"
   # Designs that may be used: bulletin, mag, hero, split, paper (classic is the fallback).
   # The news mood (breaking / money / info / happy) decides which of these fit; one of them is picked at random.
-  designs: ["bulletin"]           # brand = one fixed layout on every post (only the category colour changes), so
+  designs: ["brand"]              # brand = one fixed layout on every post (only the category colour changes), so
                                   # the profile grid looks like one page; others: bulletin, mag, hero, split, paper
-  picture: "cutout"               # cutout = only 3D object cut-outs, never a person (no AI faces, no real photos);
-                                  # scene = AI scene pictures and real photos of public figures allowed
+  picture: "cartoon"              # cartoon = a flat 2D cartoon scene of the story (Gemini first; generic characters,
+                                  # never a real person's likeness), else a 3D cut-out, else a big 3D icon;
+                                  # cutout = only 3D object cut-outs; scene = AI scenes and real photos allowed
   stamps: false                   # true = "ARRESTED" / "APPROVED" style stamps when the story says so
   bulletin_share: 0.6             # how often the bulletin design (closest to the Gemini posters) is used
   stickers: false                 # true = corner banner ("NEW RULE") and tag stickers ("IMPORTANT") ...

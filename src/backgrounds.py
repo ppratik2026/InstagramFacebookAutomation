@@ -132,7 +132,7 @@ def generate_gemini_cartoon(prompt: str, models: list[str], out_path: Path) -> P
     return None
 
 
-def generate_free_ai_image(prompt: str, out_path: Path, style: str = "3d") -> Path | None:
+def generate_free_ai_image(prompt: str, out_path: Path, style: str = "3d", keyless: bool = True) -> Path | None:
     """Free AI illustration from Pollinations. style "cartoon": a landscape flat 2D cartoon scene (for the
     brand template); "3d": a tall 3D scene. None if it fails; never stops the run."""
     if style == "cartoon":
@@ -147,6 +147,8 @@ def generate_free_ai_image(prompt: str, out_path: Path, style: str = "3d") -> Pa
     if _keyed_image(full, out_path, size):   # with the free account key: a better model than keyless
         print(f"Background: AI {style} illustration (Pollinations key)")
         return out_path
+    if not keyless:   # the keyless model's pictures are too weak for this use
+        return None
     url = POLLINATIONS_IMAGE + urllib.parse.quote(full)
     params |= {"nologo": "true", "seed": random.randint(1, 10**6)}
     for attempt in range(4):
