@@ -4,7 +4,6 @@ painted call-to-action strip at the bottom. The picture comes from the image AI 
 Gujarati word is real text in a real font, so it is always spelled right.
 """
 import os
-import random
 import re
 
 from src.designs import BRUSH_MASK, FIT_SCRIPT, esc, highlight_numbers
@@ -248,7 +247,10 @@ def bulletin_page(story, font: str, image_url: str | None, date: str, handle: st
                   cutout_url: str | None = None) -> str:
     labels, palettes = MOOD_LOOK.get(mood, MOOD_LOOK["info"])
     forced = os.environ.get("CARD_PALETTE", "")   # samples: walk through every colour look
-    pal = PALETTES[forced if forced in PALETTES else random.choice(palettes)]
+    from src.analytics import weighted_choice
+    name = forced if forced in PALETTES else weighted_choice(palettes, "palette")
+    story.style.update({"palette": name, "visual": story.visual or "checklist"})
+    pal = PALETTES[name]
     panel = _visual_panel(story)
     cols = "1.3fr 1fr" if panel else "1fr"
     chg = "#d00000" if story.compare.get("direction") == "down" else "#2b9348"

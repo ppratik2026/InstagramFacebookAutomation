@@ -68,15 +68,23 @@ def cmd_run(args, cfg):
     previous = recent_titles()
     if args.skip_titles and Path(args.skip_titles).exists():   # e.g. stories already shown in test previews
         previous += [t.strip() for t in Path(args.skip_titles).read_text(encoding="utf-8").splitlines() if t.strip()]
-    if args.category:
+    from src.history import is_repeat
+    story = None
+    if getattr(args, "breaking", False):   # between the hourly posts: only a really big story, else nothing
+        from src.free_news import find_breaking
+        found = find_breaking(cfg, previous)
+        if not found or is_repeat(found[0].title_en, recent_titles()):
+            print("   No big breaking story right now.")
+            raise SystemExit(3)
+        order = []
+        story, notes = found
+    elif args.category:
         order = [args.category]
     else:   # categories in turn: the one after the last post's category first, the others as fallbacks
         names = list(cfg["content"]["categories"])
         last = last_category()
         first = (names.index(last) + 1) % len(names) if last in names else 0
         order = names[first:] + names[:first]
-    from src.history import is_repeat
-    story = None
     for n, category in enumerate(order):
         print(f"   Category: {category}")
         for _ in range(3):   # the same story from another site is skipped and another one picked
@@ -139,10 +147,12 @@ def cmd_run(args, cfg):
         if cfg["video"].get("intro_animation", True):
             intro_dir = work_dir / "intro"
         card = render_card(story, cfg, work_dir / "card.png", background, intro_dir, design, cutout)
+        card = _checked_card(story, cfg, card, background, intro_dir, design, cutout)
 
     print("3/4 Making the reel...")
     from src.designs import mood_of
     music = pick_music(mood_of(story))
+    story.style["music"] = music.stem if music else ""
     print(f"   Music: {music.name if music else 'none (add mp3 files to assets/music/)'}")
     seconds = reel_seconds(mood_of(story), len(story.points))
     video = build_video(card, cfg["video"], work_dir / "reel.mp4", music, intro_dir, seconds)
@@ -155,8 +165,47 @@ def cmd_run(args, cfg):
 
     print("4/4 Publishing to Instagram...")
     result = post_reel(cfg, video, caption, ig)
-    add_entry(story.title_en, result["media_id"], result.get("permalink"), story.category)
+    add_entry(story.title_en, result["media_id"], result.get("permalink"), story.category, story.style)
     print(f"Published: {result.get('permalink') or result['media_id']}")
+
+
+def _checked_card(story, cfg, card: Path, background, intro_dir, design: str, cutout) -> Path:
+    """Let the AI look at the poster; if it finds problems, make it again in other designs (without stickers)
+    and keep the best one. Without an image-reading AI the poster is used as it is."""
+    import shutil
+
+    from src.card import render_card
+    from src.qa import review
+
+    result = review(card, story)
+    if result is None:
+        print("   Poster check not available; posting as made.")
+        return card
+    best_score, best, best_style = result[0], card, dict(story.style)
+    print(f"   Poster check: {best_score}/10 {'; '.join(result[1])[:300]}")
+    tried = {design}
+    for other in ["bulletin", "split", "paper", "mag"]:
+        if best_score >= cfg["card"].get("min_check_score", 7) or len(tried) >= 3:
+            break
+        if other in tried or (other != "bulletin" and cutout and not background):
+            continue
+        tried.add(other)
+        sticker_share = cfg["card"].get("sticker_share", 0.3)
+        cfg["card"]["sticker_share"] = 0   # a second try is kept plain
+        attempt = render_card(story, cfg, card.with_name(f"card-{other}.png"), background, None, other, cutout)
+        cfg["card"]["sticker_share"] = sticker_share
+        again = review(attempt, story)
+        if again is None:
+            break
+        print(f"   {other}: {again[0]}/10 {'; '.join(again[1])[:300]}")
+        if again[0] > best_score:
+            best_score, best, best_style = again[0], attempt, dict(story.style)
+    if best != card:
+        shutil.copy(best, card)
+        if intro_dir:   # the intro animation belongs to the first design: the reel starts on the poster instead
+            shutil.rmtree(intro_dir, ignore_errors=True)
+    story.style = {**best_style, "check_score": best_score}   # the analytics learn from the look that was posted
+    return card
 
 
 def cmd_publish(args, cfg):
@@ -314,33 +363,67 @@ def cmd_scheduler(args, cfg):
     def git(*a):
         return subprocess.run(["git", *a], capture_output=True, text=True)
 
-    def posted_this_hour(now) -> bool:
+    def sync():
         if branch:
             git("pull", "-q", "--rebase", "origin", branch)   # posts made by other runs
-        last = load_history()[-1:] or [{}]
-        when = last[0].get("date")
-        return bool(when) and datetime.fromisoformat(when).astimezone(IST).strftime("%Y%m%d%H") == now.strftime("%Y%m%d%H")
 
+    def posts_ist() -> list[datetime]:
+        return [datetime.fromisoformat(p["date"]).astimezone(IST) for p in load_history() if p.get("date")]
+
+    def save(stats: bool):
+        if not branch:
+            return
+        if stats:   # every few hours: fetch the reels' views and update the page report
+            try:
+                from src.analytics import update_stats
+                update_stats(os.environ["IG_ACCESS_TOKEN"].strip(), cfg["instagram"]["api_version"])
+            except Exception as e:   # the analytics never stop the posting
+                print(f"   Stats update failed: {e}", flush=True)
+        for name in ("data/history.json", "data/stats.json", "data/report.md"):
+            if (ROOT / name).exists():
+                git("add", name)
+        git("-c", "user.name=github-actions[bot]",
+            "-c", "user.email=41898282+github-actions[bot]@users.noreply.github.com",
+            "commit", "-qm", "Update posted history and stats")
+        for _ in range(3):
+            if git("push", "-q", "origin", f"HEAD:{branch}").returncode == 0:
+                break
+            git("pull", "-q", "--rebase", "origin", branch)
+
+    max_extra = cfg.get("schedule", {}).get("max_breaking_per_day", 6)
     while True:
         now = datetime.now(IST)
-        if (now.hour >= 10 or now.hour == 0) and not posted_this_hour(now):   # 10:00 ... 23:00 and midnight
-            print(f"\n=== {now:%d %b %H:%M} IST: posting ===", flush=True)
-            if subprocess.run([sys.executable, "-u", "main.py", "run"]).returncode == 0 and branch:
-                git("add", "data/history.json")
-                git("-c", "user.name=github-actions[bot]",
-                    "-c", "user.email=41898282+github-actions[bot]@users.noreply.github.com",
-                    "commit", "-qm", "Update posted history")
-                for _ in range(3):
-                    if git("push", "-q", "origin", f"HEAD:{branch}").returncode == 0:
-                        break
-                    git("pull", "-q", "--rebase", "origin", branch)
+        if now.hour >= 10 or now.hour == 0:   # 10:00 ... 23:00 and midnight
+            sync()
+            posts = posts_ist()
+            if not any(p.strftime("%Y%m%d%H") == now.strftime("%Y%m%d%H") for p in posts):
+                print(f"\n=== {now:%d %b %H:%M} IST: hourly post ===", flush=True)
+                if subprocess.run([sys.executable, "-u", "main.py", "run"]).returncode == 0:
+                    save(stats=now.hour % 3 == 1)
+            elif 15 <= now.minute <= 45 and (now - max(posts)).total_seconds() >= 20 * 60:
+                # between the hourly posts: a really big breaking story goes out at once (a few a day at most)
+                today = sum(1 for p in posts if p.date() == now.date())
+                hours_so_far = (now.hour - 9) if now.hour >= 10 else 15
+                if today - hours_so_far < max_extra:
+                    print(f"\n=== {now:%d %b %H:%M} IST: breaking news check ===", flush=True)
+                    if subprocess.run([sys.executable, "-u", "main.py", "run", "--breaking"]).returncode == 0:
+                        save(stats=False)
+        # wake at the next hour, or in 20 minutes for the breaking news check
         next_hour = now.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1)
-        wait = (next_hour - datetime.now(IST)).total_seconds() + 20
+        wake = min(next_hour + timedelta(seconds=20), datetime.now(IST) + timedelta(minutes=20))
+        wait = (wake - datetime.now(IST)).total_seconds()
         if time.time() + wait > stop_at:
             print("Time is up for this run; the next scheduler run takes over.", flush=True)
             return
-        print(f"Next check at {next_hour:%H:%M} IST", flush=True)
+        print(f"Next check at {wake:%H:%M} IST", flush=True)
         time.sleep(max(wait, 1))
+
+
+def cmd_stats(args, cfg):
+    """Fetch the reels' Instagram insights and write data/report.md."""
+    from src.analytics import REPORT_FILE, update_stats
+    stats = update_stats(require_env("IG_ACCESS_TOKEN"), cfg["instagram"]["api_version"])
+    print(f"Insights for {len(stats)} reels; report: {REPORT_FILE.relative_to(ROOT)}")
 
 
 def cmd_check(args, cfg):
@@ -367,6 +450,7 @@ def main():
     run.add_argument("--no-publish", action="store_true", help="only make the video")
     run.add_argument("--category", choices=["crime", "good_news", "government"], help="limit to one category")
     run.add_argument("--skip-titles", help="file with headlines to avoid (one per line)")
+    run.add_argument("--breaking", action="store_true", help="post only if there is a really big breaking story")
     run.set_defaults(func=cmd_run)
 
     pub = sub.add_parser("publish", help="publish an existing video file")
@@ -392,6 +476,7 @@ def main():
     sch.add_argument("--hours", type=float, default=5.5)
     sch.set_defaults(func=cmd_scheduler)
 
+    sub.add_parser("stats", help="fetch the reels' views and write data/report.md").set_defaults(func=cmd_stats)
     sub.add_parser("check", help="verify the Instagram token").set_defaults(func=cmd_check)
     sub.add_parser("refresh-token", help="extend the Instagram token by 60 days").set_defaults(func=cmd_refresh)
 

@@ -462,6 +462,39 @@ Return {{"index": <number>, "category": "<category>"}}.""")
     return write_card(cfg, item, pick.get("category") or item.category or wanted[0], wanted)
 
 
+def find_breaking(cfg: dict, previous: list[str], hours: int = 3) -> tuple[NewsStory, str] | None:
+    """A really big story from the last few hours that should go out now, between the hourly posts; None on
+    an ordinary hour (most of the time)."""
+    wanted = list(cfg["content"]["categories"])
+    items = gather_items(cfg, previous, wanted)
+    fresh = [i for i in items if i.published >= datetime.now(timezone.utc) - timedelta(hours=hours)]
+    if not fresh:
+        return None
+    listing = "\n".join(f"{n}. [{i.source}] {i.title}" for n, i in enumerate(fresh))
+    try:
+        pick = _chat(cfg, "You are the editor of a Gujarati Instagram news page. Reply with JSON only.", f"""
+Is one of these headlines from the last {hours} hours an exceptionally big BREAKING story that the page must post
+right now, without waiting for the next hourly post? Only things everyone will talk about today: a major accident
+or disaster with deaths, a big weather alert, a political statement or fight that is on every channel, a major
+court verdict, a huge sports win, a big government decision for all of Gujarat or India.
+Most of the time the answer is none: return index -1. Never pick something like these already-posted stories:
+{chr(10).join('- ' + t for t in previous[-30:]) or '- (none)'}
+
+Headlines:
+{listing}
+
+Return {{"index": <number or -1>, "category": "<one of: {', '.join(wanted)}>"}}.""")
+    except RuntimeError:
+        return None
+    index = int(pick.get("index", -1))
+    if not 0 <= index < len(fresh):
+        return None
+    item = fresh[index]
+    print(f"   Breaking: [{item.source}] {item.title}")
+    category = pick.get("category") if pick.get("category") in wanted else (item.category or wanted[0])
+    return write_card(cfg, item, category, wanted)
+
+
 def write_card(cfg: dict, item: FeedItem, suggested: str, wanted: list[str]) -> tuple[NewsStory, str]:
     """The card text for one story, written from the article text only."""
     content = cfg["content"]

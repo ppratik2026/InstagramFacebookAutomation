@@ -1,6 +1,6 @@
 import json
 import re
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from .config import ROOT
 
@@ -22,12 +22,16 @@ def last_category() -> str | None:
     return next((item["category"] for item in reversed(load_history()) if item.get("category")), None)
 
 
-def add_entry(title: str, media_id: str | None, permalink: str | None, category: str | None = None) -> None:
+def add_entry(title: str, media_id: str | None, permalink: str | None, category: str | None = None,
+              style: dict | None = None) -> None:
     history = load_history()
+    now = datetime.now(timezone.utc)
     history.append({
-        "date": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "date": now.isoformat(timespec="seconds"),
+        "hour": (now + timedelta(hours=5, minutes=30)).strftime("%H"),   # IST hour, for the analytics
         "title": title,
         "category": category,
+        "style": style or {},
         "media_id": media_id,
         "permalink": permalink,
     })

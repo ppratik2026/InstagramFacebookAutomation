@@ -36,6 +36,14 @@ free:   RSS news → GitHub Models (Gujarati text) → Card image (HTML → PNG)
 
 Purana semi-automatic tareeka (Issue mein Gemini prompt → aap Gemini app se poster banao → comment karo) ab bhi haath se chal sakta hai: **Actions → Prepare post (Gemini prompt) → Run workflow**.
 
+### Har post se pehle aur baad (automatic)
+
+- **5 categories baari-baari se:** sarkari jaherat → rajneeti → crime → trending → good news. Rajneeti aur trending mein poore Bharat ki news chalti hai. Rajneeti ke bayaan hamesha bolne wale ke naam se aur nishpaksh likhe jaate hain.
+- **Breaking news turant:** har 20 minute pe taaza khabrein dekhi jaati hain. Sach mein badi news ho to ghante ka intezaar nahi hota (din mein zyada se zyada 6 extra, `config.yaml` → `schedule.max_breaking_per_day`).
+- **Poster ki jaanch:** Gemini poster ki image dekh ke 10 mein se number deta hai: kata text, toote akshar, khaali jagah, galat stamp ya sticker. 7 se kam aaye to doosre design mein dobara banta hai.
+- **Stamp/stickers:** "ARRESTED / APPROVED" jaisa stamp sirf tab lagta hai jab news mein wahi baat ho. Stickers lagbhag har 3 mein se 1 reel pe, asli photo pe kabhi nahi.
+- **Page analysis:** har 3 ghante pe Instagram se har reel ke views, reach, shares, saves aate hain (`data/stats.json`). **`data/report.md`** mein top reels aur kaunsa design, rang, category aur ghanta chal raha hai, sab likha hota hai. Naye posters mein jo chal raha hai woh zyada aata hai, aur naye look bhi aazmaye jaate rehte hain.
+
 ## 1. Zaroori keys
 
 | Key | Kahan se milegi |

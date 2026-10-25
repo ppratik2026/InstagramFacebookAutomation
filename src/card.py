@@ -375,13 +375,17 @@ def choose_design(story: NewsStory, cfg: dict, has_background: bool = True) -> s
     forced = os.environ.get("CARD_DESIGN", "").strip()   # e.g. from the workflow's "design" choice
     if forced and forced != "auto" and (forced != "hero" or has_background):
         return forced
+    from src.analytics import performance, weighted_choice
     mood = designs.mood_of(story)
     allowed = cfg["card"].get("designs", ["mag", "hero", "split", "paper"])
+    fitting = [d for d in allowed if not (d == "split" and len(story.points) < 3) and not (d == "hero" and not has_background)]
+    tested = {d for d, (_, n) in performance().get("design", {}).items() if n >= 3}
+    if len(tested & set(fitting)) >= 2:   # enough of the page's own numbers: favour the designs that get views
+        return weighted_choice(fitting, "design")
     if "bulletin" in allowed and random.random() < cfg["card"].get("bulletin_share", 0.6):
         return "bulletin"   # the look closest to the Gemini-made posters, so it is picked most often
-    options = [d for d in designs.MOODS[mood]["designs"] if d in allowed
-               and not (d == "split" and len(story.points) < 3) and not (d == "hero" and not has_background)]
-    return random.choice(options or [d for d in allowed if d not in ("hero", "bulletin") or has_background] or ["classic"])
+    options = [d for d in designs.MOODS[mood]["designs"] if d in fitting]
+    return random.choice(options or [d for d in fitting if d != "bulletin"] or ["classic"])
 
 
 def render_card(story: NewsStory, cfg: dict, out_path: Path, background: Path | None = None,
@@ -414,6 +418,7 @@ def render_card(story: NewsStory, cfg: dict, out_path: Path, background: Path | 
         design = choose_design(story, cfg, False)
     print(f"   Mood: {mood}")
     print(f"   Design: {design}")
+    story.style.update({"design": design, "font": font, "mood": mood})
     fit_script = FIT_SCRIPT
     date = _gujarati_date(datetime.now(IST))
     image_url = _data_url(background) if background else None
@@ -449,6 +454,7 @@ def render_card(story: NewsStory, cfg: dict, out_path: Path, background: Path | 
     # corner banner and stickers now and then, not on every reel, and never over a real person's photo
     if (cfg["card"].get("stickers", True) and not story.photo_credit
             and random.random() < cfg["card"].get("sticker_share", 0.3)):
+        story.style["stickers"] = True
         page_html = page_html.replace("</body>", designs.decor_html(mood) + "</body>", 1)
     (out_path.parent / "card.html").write_text(page_html, encoding="utf-8")
 

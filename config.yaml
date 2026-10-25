@@ -32,6 +32,7 @@ card:
   bulletin_share: 0.6             # how often the bulletin design (closest to the Gemini posters) is used
   stickers: true                  # corner banner and stickers ...
   sticker_share: 0.3              # ... on about this share of the reels (never on a real person's photo)
+  min_check_score: 7              # the AI checks each poster (1-10); below this it is made again in another design
   font: "random"                  # "random" = a different Gujarati font each post, or a Google Font name
 
 video:
@@ -85,6 +86,9 @@ gemini:
   poster_models: ["gemini-3-pro-image", "gemini-3.1-flash-image", "gemini-2.5-flash-image"]
   poster_attempts: 3                    # regenerate if the proof-read finds mistakes
   ai_background: true                   # false = Pexels photo / theme colours only
+
+schedule:
+  max_breaking_per_day: 6         # extra posts for really big breaking news, between the hourly posts
 
 instagram:
   api_version: "v21.0"
