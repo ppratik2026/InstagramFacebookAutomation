@@ -86,6 +86,9 @@ CARD_FORMAT = """Return a JSON object with exactly these keys:
               "change": "difference, e.g. ₹12,599 ઘટાડો", "direction": "up" | "down"},   // compare only, else {}
   "reasons": [{"icon": "one of: ICON_KEYS", "text": "max 5 words"}],   // reasons: exactly 3, else []
   "highlight": "the single most striking word or number of the headline, copied exactly from it",
+  "person": "English Wikipedia name of the ONE well-known public figure the story is mainly about (a minister,
+             sportsperson, actor, official), e.g. 'Harmanpreet Kaur', 'Bhupendra Patel'; their real photo is shown.
+             Empty for crime stories, accused, victims, private people, or when no single public figure leads",
   "object_prompt": "English: the 1-2 main OBJECTS of the story for a cut-out 3D sticker, e.g. 'a burlap pension
                     money sack with gold coins and a calculator', 'a stack of silver bars and coins', 'a glowing light
                     bulb and an electricity tower', 'a police car with flashing lights'. Objects only, no people, no text",
@@ -487,6 +490,8 @@ Return {{"headline": "...", "highlight": "..."}}.""")
         reasons=reasons,
         highlight=card.get("highlight", "") if card.get("highlight", "") in (card.get("headline") or "") else "",
         object_prompt=card.get("object_prompt", ""),
+        # never a real face on crime news (accused / victims), whatever the AI says
+        person="" if suggested == "crime" or card.get("category") == "crime" else str(card.get("person") or "").strip(),
         cta=card.get("cta", "તમારો અભિપ્રાય કોમેન્ટમાં જણાવો 👇"),
         caption=card.get("caption", item.title),
         hashtags=card.get("hashtags", ["ગુજરાત", "GujaratNews"]),

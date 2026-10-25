@@ -127,6 +127,8 @@ class NewsStory:
     reasons: list = field(default_factory=list)  # [{"icon": key, "text": ...}] for the reasons row
     highlight: str = ""  # the one word or number of the headline printed extra big
     object_prompt: str = ""  # main object(s) of the story, drawn as a cut-out for the bulletin design
+    person: str = ""  # English Wikipedia name of the public figure the story is about (their real photo is used)
+    photo_credit: str = ""  # set when a real photo is used: shown instead of "symbolic picture"
 
     def full_caption(self) -> str:
         tags = " ".join(t if t.startswith("#") else f"#{t}" for t in self.hashtags)

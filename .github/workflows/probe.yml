@@ -1,0 +1,19 @@
+name: Probe Wikipedia photos (temporary)
+on: workflow_dispatch
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip -q install -r requirements.txt
+      - run: |
+          python - <<'PY'
+          from pathlib import Path
+          from src.people import person_photo
+          for name in ["Harmanpreet Kaur", "Bhupendra Patel", "Narendra Modi", "Smriti Mandhana", "Tiger Shroff",
+                       "Gujarat", "Rajkot", "Kaur", "Xyzabc Notaperson"]:
+              print(name, "->", person_photo(name, Path(f"/tmp/{name.replace(' ', '_')}.jpg")))
+          PY

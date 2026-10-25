@@ -122,11 +122,19 @@ def cmd_run(args, cfg):
     if not card:
         from src.backgrounds import generate_cutout
         from src.card import choose_design
+        from src.people import person_photo
         design = choose_design(story, cfg)
         background = cutout = None
-        if design == "bulletin":   # the story's objects as a 3D cut-out breaking out of the layout
+        photo = person_photo(story.person, work_dir / "person.jpg") if story.person else None
+        if photo:   # a story about a public figure shows their real photo, never an AI-made face
+            background, story.photo_credit = photo
+            story.stamp = ""   # no "ARRESTED" / "APPROVED" stamp across a real person's photo
+        elif design == "bulletin" or story.person:   # the story's objects as a 3D cut-out (no people)
             cutout = generate_cutout(story.object_prompt, work_dir / "cutout.png")
-        if not cutout:
+            if story.person:
+                design = "bulletin"
+        # an AI scene would put a made-up face on a real person's story: then only the cut-out or an icon
+        if not cutout and not background and not story.person:
             background = get_background(story, cfg, work_dir)
         if cfg["video"].get("intro_animation", True):
             intro_dir = work_dir / "intro"
