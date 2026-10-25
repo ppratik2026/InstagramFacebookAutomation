@@ -8,10 +8,13 @@ content:
   region: "Gujarat"
   language: "Gujarati"
   # Categories to look for. Remove any you don't want.
-  # Posts take the categories in turn, in this order (government, then crime, then good news, again ...).
+  # Posts take the categories in turn, in this order (government, politics, crime, trending, good news, again ...).
+  # politics and trending may be national news; the others prefer Gujarat stories.
   categories:
     government: "સરકારી જાહેરાત (government announcements, schemes, exam dates, rules, prices)"
+    politics: "રાજકારણ (political statements and fights: BJP, Congress, AAP leaders, elections, Gujarat or national)"
     crime: "ક્રાઇમ ન્યૂઝ (crime and police news)"
+    trending: "ટ્રેન્ડિંગ (the news everyone is talking about today: viral, cricket and sport, weather, films, India)"
     good_news: "સારા સમાચાર (positive stories, achievements, development)"
   max_news_age_hours: 48
   hashtags_count: 10
@@ -27,7 +30,8 @@ card:
   # The news mood (breaking / money / info / happy) decides which of these fit; one of them is picked at random.
   designs: ["bulletin", "mag", "hero", "split", "paper"]
   bulletin_share: 0.6             # how often the bulletin design (closest to the Gemini posters) is used
-  stickers: true                  # corner banner, stickers and brush-paint edges on every design
+  stickers: true                  # corner banner and stickers ...
+  sticker_share: 0.3              # ... on about this share of the reels (never on a real person's photo)
   font: "random"                  # "random" = a different Gujarati font each post, or a Google Font name
 
 video:

@@ -446,7 +446,9 @@ def render_card(story: NewsStory, cfg: dict, out_path: Path, background: Path | 
         )
     if story.photo_credit:   # a real photo: credit it instead of calling it a symbolic picture
         page_html = page_html.replace("પ્રતિકાત્મક તસવીર", html.escape(story.photo_credit))
-    if cfg["card"].get("stickers", True):
+    # corner banner and stickers now and then, not on every reel, and never over a real person's photo
+    if (cfg["card"].get("stickers", True) and not story.photo_credit
+            and random.random() < cfg["card"].get("sticker_share", 0.3)):
         page_html = page_html.replace("</body>", designs.decor_html(mood) + "</body>", 1)
     (out_path.parent / "card.html").write_text(page_html, encoding="utf-8")
 

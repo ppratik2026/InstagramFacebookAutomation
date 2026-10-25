@@ -465,7 +465,7 @@ def mood_of(story) -> str:
     """The AI's mood, or a guess from the category and the numbers in the story."""
     if story.mood in MOODS:
         return story.mood
-    if story.category == "crime":
+    if story.category in ("crime", "politics", "trending"):
         return "breaking"
     if story.category == "good_news":
         return "happy"

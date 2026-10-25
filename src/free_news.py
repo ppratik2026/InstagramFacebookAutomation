@@ -39,7 +39,11 @@ GOOGLE_NEWS_QUERIES = {
     "crime": "ગુજરાત પોલીસ ધરપકડ",
     "good_news": "ગુજરાત ગૌરવ સિદ્ધિ",
     "government": "ગુજરાત સરકાર જાહેરાત",
+    "politics": "ભાજપ કોંગ્રેસ નિવેદન",
+    "trending": "ટ્રેન્ડિંગ સમાચાર ભારત",
 }
+# categories that may be national news; the others prefer stories from Gujarat
+NATIONAL = {"politics", "trending"}
 
 CARD_RULES = """You write the text of one Gujarati Instagram news card for a Gujarati news page.
 Write natural, simple Gujarati (Gujarati script) the way popular Gujarati news pages do: punchy and clear,
@@ -50,6 +54,8 @@ Hard rules:
   If the text has few facts, use fewer fact boxes rather than making any up.
 - Crime stories: do not name or describe victims of sexual offences or any minor; call unconvicted people "આરોપી";
   no graphic details; no communal angle.
+- Political stories: report who said what, always attributed ("X એ કહ્યું", "X નો આક્ષેપ"), neutral, both sides
+  fairly; never insult anyone in the page's own voice, never present an allegation as a fact.
 - A viewer who knows nothing about the story must understand it from the card alone. The headline must name the
   specific subject and place (e.g. "ડ્રાઇવિંગ લાયસન્સ", "અમદાવાદ", "GSEB ધોરણ 10"), never a vague word like
   "લાયસન્સ અપડેટ" or "મોટા સમાચાર". The summary answers: what happened, where, who decided/did it, who is affected.
@@ -69,14 +75,14 @@ Hard rules:
 
 CARD_FORMAT = """Return a JSON object with exactly these keys:
 {
-  "category": "crime" | "good_news" | "government",
+  "category": "government" | "politics" | "crime" | "trending" | "good_news",
   "title_en": "one-line English summary",
   "kicker": "short top banner, e.g. ગુજરાત માટે મોટા સમાચાર",
   "headline": "main headline, max ~8 words, punchy, naming the exact subject and place",
   "subheadline": "one line explaining the headline, max ~12 words",
   "summary": "2-3 short, simple Gujarati sentences: what happened, where, who announced/did it, who is affected",
   "facts": [{"label": "2-4 words", "value": "short value"}],   // 2-4 items (aim for 3), only real facts from the text
-  "stamp": "1-2 word English or Gujarati stamp for the picture, e.g. CANCELLED, BREAKING, ARRESTED, APPROVED, ALERT",
+  "stamp": "only if the story is exactly that: ARRESTED, CANCELLED, APPROVED, ALERT, BANNED, SEIZED, RESULT or RECORD; else \"\"",
   "mood": "breaking" | "money" | "info" | "happy",   // breaking: crime/accident/alert, money: prices/fees/salary,
                                                      // info: rules/exams/schemes/schedules, happy: good news
   "points": ["short detail line"],                            // 4-6 short self-explanatory lines, each one fact
@@ -249,11 +255,16 @@ NOT_NEWS = re.compile(r"રાશિ|રાશિફળ|ભવિષ્યવા
 ROUNDUP = re.compile(r"\blive\b|મહત્વના સમાચાર|ટોપ ન્યૂઝ|top news|news update|headlines|સમાચાર ફટાફટ", re.I)
 
 KICKERS = {
+    "politics": "રાજકારણ ગરમાયું",
+    "trending": "ટ્રેન્ડિંગ ન્યૂઝ",
     "crime": "ગુજરાત ક્રાઇમ ન્યૂઝ",
     "good_news": "ગુજરાત માટે ખુશખબર",
     "government": "ગુજરાત માટે મોટા સમાચાર",
 }
 IMAGE_PROMPTS = {
+    "politics": "an Indian parliament-style podium with microphones and party flags in soft focus, dramatic lighting, "
+                "no people",
+    "trending": "a glowing smartphone showing a trending news feed with fire and rising-arrow icons, studio lighting",
     "crime": "Indian police officers in khaki uniform escorting two handcuffed men seen from behind with faces hidden, "
              "police jeep with flashing red and blue lights at night on a Gujarat city street",
     "good_news": "happy Gujarati families celebrating with sweets and fireworks in front of a modern Gujarat city at sunrise",
@@ -360,6 +371,21 @@ def _in_gujarat(text: str) -> bool:
     return any(p.lower() in text.lower() for p in places + extra)
 
 
+# a stamp across the picture only when the story really says it (no "APPROVED" on every reel)
+STAMP_WORDS = {
+    "ARRESTED": r"ધરપકડ|ઝડપાય|ઝડપી પાડ|પકડાય|પકડી પાડ|arrest", "CANCELLED": r"રદ|કેન્સલ|cancel",
+    "APPROVED": r"મંજૂર|approv", "ALERT": r"એલર્ટ|ચેતવણી|alert|warning", "BANNED": r"પ્રતિબંધ|ban",
+    "SEIZED": r"જપ્ત|seiz", "RESULT": r"પરિણામ|result", "RECORD": r"રેકોર્ડ|record",
+}
+
+
+def _fitting_stamp(card: dict) -> str:
+    stamp = str(card.get("stamp") or "").strip().upper()
+    text = " ".join(str(card.get(k) or "") for k in ("headline", "subheadline", "summary"))
+    pattern = STAMP_WORDS.get(stamp)
+    return stamp if pattern and re.search(pattern, text, re.I) else ""
+
+
 def _incomplete(fact: dict) -> bool:
     """A date fact without month or day name, e.g. "બેઠક તારીખ: 23", says nothing on its own."""
     return bool(re.search(r"તારીખ|દિવસ|date", fact["label"], re.I)) and not re.search(MONTHS, fact["value"])
@@ -383,7 +409,7 @@ def gather_items(cfg: dict, previous: list[str], wanted: list[str], limit: int =
     # live blogs and "today's important news" roundups mix several stories into one page
     items = [i for i in items if not ROUNDUP.search(i.title)]
     # national feeds carry other states' news too: keep the stories that name a place in Gujarat
-    local = [i for i in items if _in_gujarat(f"{i.title} {i.text[:300]}")]
+    local = [] if set(wanted) <= NATIONAL else [i for i in items if _in_gujarat(f"{i.title} {i.text[:300]}")]
     # horoscopes, TV gossip, recipes and tips are not news for this page
     items = [i for i in items if not NOT_NEWS.search(i.title)]
     local = [i for i in local if not NOT_NEWS.search(i.title)]
@@ -402,6 +428,8 @@ def find_story(cfg: dict, previous: list[str], category: str | None = None) -> t
     content = cfg["content"]
     wanted = [category] if category else list(content["categories"])
     items = gather_items(cfg, previous, wanted)
+    where = (f"It may be national news, as long as people in {content['region']} care about it."
+             if set(wanted) <= NATIONAL else f"It must be about {content['region']}.")
 
     # 1) let the model pick the best story
     listing = "\n".join(
@@ -409,9 +437,12 @@ def find_story(cfg: dict, previous: list[str], category: str | None = None) -> t
     )
     try:
         pick = _chat(cfg, "You are the editor of a Gujarati Instagram news page. Reply with JSON only.", f"""
-Pick the ONE headline below that is most useful or interesting for ordinary people in {content['region']}
-(prices, exams, jobs, schemes, weather alerts, safety, big local achievements, major police action).
-It must be about {content['region']} and fit one of these categories: {', '.join(wanted)}.
+Pick the ONE headline below that most people in {content['region']} will want to watch and share right now:
+the hottest, most talked-about story (prices, exams, jobs, schemes, weather alerts, safety, big achievements,
+major police action, political fights, viral moments, cricket).
+{where}
+It must fit one of these categories:
+{chr(10).join(f'- {c}: {content["categories"][c]}' for c in wanted)}
 Strongly prefer items marked (full text): only pick one without it if no (full text) item is worth posting.
 Pick a single story, never a live blog or a list of several news.
 Skip rumours, astrology, gossip, and anything similar to these already-posted stories:
@@ -496,7 +527,7 @@ Return {{"headline": "...", "highlight": "..."}}.""")
         caption=card.get("caption", item.title),
         hashtags=card.get("hashtags", ["ગુજરાત", "GujaratNews"]),
         image_prompt=card.get("image_prompt", ""),
-        stamp=card.get("stamp", ""),
+        stamp=_fitting_stamp(card),
         mood=card.get("mood", ""),
         image_keywords=card.get("image_keywords", ["gujarat"]),
         source_name=item.source,
