@@ -510,7 +510,7 @@ def decor_html(mood: str) -> str:
     css = DECOR_CSS % {"mask": BRUSH_MASK, "paint": m["paint"]}
     # called by card.py after the text has been fitted, when the picture's final position is known
     place = """<script>window.__placeStickers = (() => {
-  const pic = document.querySelector('.photo, .pic, .hero-space');
+  const pic = document.querySelector('.photo, .pic, .hero-space, .objcell');
   const [t, e] = document.querySelectorAll('.stk');
   if (!pic) { t.remove(); e.remove(); return; }
   const r = pic.getBoundingClientRect();

@@ -277,15 +277,18 @@ ANIM_JS = """(steps) => {
 
 ANIM_STEPS = [
     [".head", "zoomIn", 0.0, 0.4, 0],
-    [".banner, .pill, .tag, .kicker", "dropIn", 0.05, 0.45, 0],
+    [".banner, .pill, .tag, .kicker, .label", "dropIn", 0.05, 0.45, 0],
     [".h3d, .headline", "punchIn", 0.3, 0.6, 0],
+    [".hl div", "punchIn", 0.3, 0.45, 0.15],
     [".photo, .img, .fallback, .scene, .icon, .pic", "zoomIn", 0.7, 0.7, 0],
+    [".objcell", "popIn", 1.2, 0.5, 0],
     [".sub, .strip", "slideL", 1.0, 0.45, 0],
     [".summary", "slideR", 1.1, 0.45, 0],
     [".stamp, .callout", "slam", 1.3, 0.45, 0],
     [".sticker, .stk", "popIn", 1.45, 0.35, 0.25],
     [".sash", "slideL", 0.2, 0.4, 0],
-    [".bar, .box, .fact, .chip, .card", "slideAlt", 1.5, 0.4, 0.15],
+    [".reason", "popIn", 1.5, 0.35, 0.22],
+    [".bar, .box, .fact, .chip, .card, .cmp", "slideAlt", 1.5, 0.4, 0.15],
     [".checks .side", "popIn", 1.9, 0.35, 0.2],
     [".glass, .right, .pts, .why, .panel", "fadeIn", 1.9, 0.25, 0],
     [".pt", "popIn", 2.0, 0.35, 0.14],
@@ -366,9 +369,22 @@ def _info_page(story: NewsStory, cfg: dict, theme: dict, image: Path | None, fon
     )
 
 
+def choose_design(story: NewsStory, cfg: dict, has_background: bool = True) -> str:
+    """One of the designs that suits this story (by its mood), so the feed doesn't look repetitive."""
+    mood = designs.mood_of(story)
+    allowed = cfg["card"].get("designs", ["mag", "hero", "split", "paper"])
+    if "bulletin" in allowed and random.random() < cfg["card"].get("bulletin_share", 0.6):
+        return "bulletin"   # the look closest to the Gemini-made posters, so it is picked most often
+    options = [d for d in designs.MOODS[mood]["designs"] if d in allowed
+               and not (d == "split" and len(story.points) < 3) and not (d == "hero" and not has_background)]
+    return random.choice(options or [d for d in allowed if d not in ("hero", "bulletin") or has_background] or ["classic"])
+
+
 def render_card(story: NewsStory, cfg: dict, out_path: Path, background: Path | None = None,
-                intro_dir: Path | None = None) -> Path:
-    """Render the card PNG. With intro_dir, also write the intro animation frames there."""
+                intro_dir: Path | None = None, design: str | None = None, cutout: Path | None = None) -> Path:
+    """Render the card PNG. With intro_dir, also write the intro animation frames there.
+    design: one of choose_design()'s names (picked here if not given); cutout: transparent object picture
+    for the bulletin design."""
     theme = random.choice(THEMES.get(story.category, THEMES["government"]))
     esc = html.escape
     facts = story.facts[:4]
@@ -388,15 +404,10 @@ def render_card(story: NewsStory, cfg: dict, out_path: Path, background: Path | 
     font = cfg["card"]["font"]
     if font == "random":
         font = random.choice(designs.FONTS)
-    # pick one of the designs that suits this story, so the feed doesn't look repetitive
-    # the design follows the news mood (breaking / money / info / happy), picked at random among the fitting ones
     mood = designs.mood_of(story)
-    allowed = cfg["card"].get("designs", ["mag", "hero", "split", "paper"])
-    options = [d for d in designs.MOODS[mood]["designs"] if d in allowed
-               and not (d == "split" and len(story.points) < 3) and not (d == "hero" and not background)]
-    design = random.choice(options or [d for d in allowed if d != "hero" or background] or ["classic"])
-    if "bulletin" in allowed and random.random() < cfg["card"].get("bulletin_share", 0.6):
-        design = "bulletin"   # the look closest to the Gemini-made posters, so it is picked most often
+    design = design or choose_design(story, cfg, bool(background))
+    if design == "hero" and not background:
+        design = choose_design(story, cfg, False)
     print(f"   Mood: {mood}")
     print(f"   Design: {design}")
     fit_script = FIT_SCRIPT
@@ -409,7 +420,8 @@ def render_card(story: NewsStory, cfg: dict, out_path: Path, background: Path | 
         fit_script = designs.FIT_SCRIPT
     elif design == "bulletin":
         from src.bulletin import FIT, bulletin_page
-        page_html = bulletin_page(story, font, image_url, date, cfg["card"]["handle"], mood)
+        page_html = bulletin_page(story, font, image_url, date, cfg["card"]["handle"], mood,
+                                  _data_url(cutout) if cutout else None)
         fit_script = FIT
     elif design == "mag":
         page_html = designs.mag_page(story, theme, font, image_url, date, cfg["card"]["handle"], mood)

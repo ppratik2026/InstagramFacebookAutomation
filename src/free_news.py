@@ -17,6 +17,7 @@ from email.utils import parsedate_to_datetime
 import requests
 
 from .card import GUJARATI_MONTHS
+from .icons import available
 from .news import IST, NewsStory
 
 CONTENT_NS = "{http://purl.org/rss/1.0/modules/content/}encoded"
@@ -56,6 +57,13 @@ Hard rules:
 - Write everything in Gujarati script. No English words except names, acronyms and numbers
   (never "additionally", "update", "news" written in English letters inside Gujarati sentences).
 - Keep it short: kicker max 4 words, summary max 2 sentences, each point max 10 words.
+- Every fact value must be complete on its own: dates with month (and year if the article has it), amounts with
+  ₹ and unit, counts with what they count ("21 માંગણીઓ", not "21"). Leave a fact out rather than write half of it.
+- Choose the "visual" that shows this story best, like a good infographic designer:
+  table = several dates/items each with a value (rates by date, district-wise numbers, schedule),
+  compare = something went from one value to another (old price -> new price, before -> after),
+  reasons = the story is about 3 causes / effects / benefits,
+  timeline = steps or events in order, checklist = otherwise (key points).
 - Reply with JSON only."""
 
 CARD_FORMAT = """Return a JSON object with exactly these keys:
@@ -71,6 +79,15 @@ CARD_FORMAT = """Return a JSON object with exactly these keys:
   "mood": "breaking" | "money" | "info" | "happy",   // breaking: crime/accident/alert, money: prices/fees/salary,
                                                      // info: rules/exams/schemes/schedules, happy: good news
   "points": ["short detail line"],                            // 4-6 short self-explanatory lines, each one fact
+  "visual": "table" | "compare" | "reasons" | "timeline" | "checklist",
+  "rows": [{"left": "label / date", "right": "value"}],     // table or timeline: 3-6 rows, else []
+  "compare": {"label": "what changed", "before": "old value", "after": "new value",
+              "change": "difference, e.g. ₹12,599 ઘટાડો", "direction": "up" | "down"},   // compare only, else {}
+  "reasons": [{"icon": "one of: ICON_KEYS", "text": "max 5 words"}],   // reasons: exactly 3, else []
+  "highlight": "the single most striking word or number of the headline, copied exactly from it",
+  "object_prompt": "English: the 1-2 main OBJECTS of the story for a cut-out 3D sticker, e.g. 'a burlap pension
+                    money sack with gold coins and a calculator', 'a stack of silver bars and coins', 'a glowing light
+                    bulb and an electricity tower', 'a police car with flashing lights'. Objects only, no people, no text",
   "image_prompt": "English prompt for a dramatic 3D illustration of the scene. Show what happened with generic, anonymous
                    characters (e.g. Indian police officers escorting handcuffed men seen from behind with faces hidden,
                    officials at a podium, happy families), never a real or recognisable person, no text",
@@ -78,7 +95,7 @@ CARD_FORMAT = """Return a JSON object with exactly these keys:
   "caption": "Instagram caption in Gujarati, 3-5 short lines, no hashtags",
   "hashtags": ["..."],
   "image_keywords": ["2-3 English stock-photo searches: places/objects, never real people"]
-}"""
+}""".replace("ICON_KEYS", ", ".join(sorted(available())))
 
 
 @dataclass
@@ -281,7 +298,8 @@ PLACES = {
     "Nadiad": "નડિયાદ", "Kheda": "ખેડા", "Botad": "બોટાદ", "Surendranagar": "સુરેન્દ્રનગર", "Himmatnagar": "હિંમતનગર",
     "Saurashtra": "સૌરાષ્ટ્ર", "Dwarka": "દ્વારકા", "Somnath": "સોમનાથ", "Gir": "ગીર",
 }
-CARD_TEXT_FIELDS = ("kicker", "headline", "subheadline", "summary", "points", "facts", "cta", "stamp")
+CARD_TEXT_FIELDS = ("kicker", "headline", "subheadline", "summary", "points", "facts", "cta", "stamp", "highlight",
+                    "rows", "compare", "reasons")
 
 
 def _to_gujarati(text: str) -> str:
@@ -301,10 +319,21 @@ def _gujarati_only(card: dict) -> dict:
             out[key] = _to_gujarati(value)
         elif key == "points" and isinstance(value, list):
             out[key] = [_to_gujarati(p) if isinstance(p, str) else p for p in value]
-        elif key == "facts" and isinstance(value, list):
-            out[key] = [{k: _to_gujarati(v) if isinstance(v, str) else v for k, v in f.items()} if isinstance(f, dict) else f
-                        for f in value]
+        elif key in ("facts", "rows", "reasons") and isinstance(value, list):
+            out[key] = [{k: _to_gujarati(v) if isinstance(v, str) and k != "icon" else v for k, v in f.items()}
+                        if isinstance(f, dict) else f for f in value]
+        elif key == "compare" and isinstance(value, dict):
+            out[key] = {k: _to_gujarati(v) if isinstance(v, str) and k != "direction" else v for k, v in value.items()}
     return out
+
+
+VISUALS = ("table", "compare", "reasons", "timeline", "checklist")
+MONTHS = r"જાન્યુ|ફેબ્રુ|માર્ચ|એપ્રિલ|મે|જૂન|જુલાઈ|ઓગસ્ટ|સપ્ટે|ઓક્ટો|નવે|ડિસે|આજે|આવતીકાલે|કાલે|ગઈકાલે|સોમ|મંગળ|બુધ|ગુરુ|શુક્ર|શનિ|રવિ"
+
+
+def _incomplete(fact: dict) -> bool:
+    """A date fact without month or day name, e.g. "બેઠક તારીખ: 23", says nothing on its own."""
+    return bool(re.search(r"તારીખ|દિવસ|date", fact["label"], re.I)) and not re.search(MONTHS, fact["value"])
 
 
 def find_story(cfg: dict, previous: list[str], category: str | None = None) -> tuple[NewsStory, str]:
@@ -377,18 +406,32 @@ Article:
         card = _plain_card(item, suggested, article, content["hashtags_count"])
 
     card = _gujarati_only(card)
+    visual = card.get("visual") if card.get("visual") in VISUALS else "checklist"
+    rows = [r for r in card.get("rows") or [] if isinstance(r, dict) and r.get("left") and r.get("right")][:6]
+    compare = card.get("compare") if isinstance(card.get("compare"), dict) else {}
+    reasons = [r for r in card.get("reasons") or [] if isinstance(r, dict) and r.get("text")][:3]
+    # a layout without the data it needs falls back to the checklist
+    if (visual in ("table", "timeline") and len(rows) < 2) or (visual == "compare" and not (
+            compare.get("before") and compare.get("after"))) or (visual == "reasons" and len(reasons) < 3):
+        visual = "checklist"
     story = NewsStory(
         category=card.get("category") if card.get("category") in wanted else wanted[0],
         title_en=card.get("title_en") or item.title,
         kicker=card.get("kicker", ""),
         headline=card.get("headline") or item.title,
         subheadline=card.get("subheadline", ""),
-        facts=[f for f in card.get("facts", []) if isinstance(f, dict) and f.get("label") and f.get("value")][:4],
+        facts=[f for f in card.get("facts", []) if isinstance(f, dict) and f.get("label") and f.get("value")
+               and not _incomplete(f)][:4],
         points=[p for p in card.get("points", []) if isinstance(p, str) and p.strip()][:7],
         summary=card.get("summary", ""),
         note="",
         layout="illustration",
-        rows=[],
+        rows=rows,
+        visual=visual,
+        compare=compare,
+        reasons=reasons,
+        highlight=card.get("highlight", "") if card.get("highlight", "") in (card.get("headline") or "") else "",
+        object_prompt=card.get("object_prompt", ""),
         cta=card.get("cta", "તમારો અભિપ્રાય કોમેન્ટમાં જણાવો 👇"),
         caption=card.get("caption", item.title),
         hashtags=card.get("hashtags", ["ગુજરાત", "GujaratNews"]),

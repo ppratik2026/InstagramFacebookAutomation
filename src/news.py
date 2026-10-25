@@ -1,6 +1,6 @@
 """Find a real, recent Gujarat news story with Gemini + Google Search, then turn it into card content."""
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 
 from google import genai
@@ -122,6 +122,11 @@ class NewsStory:
     stamp: str = ""  # short stamp on the picture, e.g. "CANCELLED"
     summary: str = ""  # 2-3 sentence plain explanation of the story
     mood: str = ""  # breaking / money / info / happy: picks the design, stickers and colours
+    visual: str = ""  # bulletin layout: table / compare / reasons / timeline / checklist
+    compare: dict = field(default_factory=dict)  # before -> after: label, before, after, change, direction
+    reasons: list = field(default_factory=list)  # [{"icon": key, "text": ...}] for the reasons row
+    highlight: str = ""  # the one word or number of the headline printed extra big
+    object_prompt: str = ""  # main object(s) of the story, drawn as a cut-out for the bulletin design
 
     def full_caption(self) -> str:
         tags = " ".join(t if t.startswith("#") else f"#{t}" for t in self.hashtags)

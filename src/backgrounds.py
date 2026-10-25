@@ -73,6 +73,32 @@ def fetch_stock_background(keywords: list[str], out_path: Path) -> Path | None:
 POLLINATIONS_IMAGE = "https://image.pollinations.ai/prompt/"
 
 
+def _keyed_image(prompt: str, out_path: Path, size: str) -> Path | None:
+    """One picture from Pollinations' images API with the free account key (POLLINATIONS_API_KEY), or None."""
+    key = os.environ.get("POLLINATIONS_API_KEY", "").strip()
+    if not key:
+        return None
+    model = os.environ.get("POLLINATIONS_IMAGE_MODEL", "gptimage")
+    try:
+        resp = requests.post(POLLINATIONS_IMAGES_API, headers={"Authorization": f"Bearer {key}"},
+                             json={"model": model, "prompt": prompt, "size": size, "n": 1}, timeout=300)
+        if resp.status_code != 200:
+            print(f"AI image ({model}) failed: HTTP {resp.status_code} {resp.text[:150]!r}")
+            return None
+        item = resp.json()["data"][0]
+        if item.get("b64_json"):
+            import base64
+            out_path.write_bytes(base64.b64decode(item["b64_json"]))
+        else:
+            with requests.get(item["url"], timeout=120) as dl:
+                dl.raise_for_status()
+                out_path.write_bytes(dl.content)
+        return out_path
+    except (requests.RequestException, ValueError, KeyError, IndexError) as e:
+        print(f"AI image ({model}) failed: {e}")
+        return None
+
+
 def generate_free_ai_image(prompt: str, out_path: Path) -> Path | None:
     """Free AI illustration from Pollinations (no key). None if it fails; never stops the run."""
     # stylised 3D characters keep it clearly illustrative: never a real, recognisable person
@@ -80,26 +106,9 @@ def generate_free_ai_image(prompt: str, out_path: Path) -> Path | None:
             "shallow depth of field, anonymous characters, no real person. "
             "IMPORTANT: absolutely no text anywhere in the image - no letters, numbers, words, signs, sign boards, "
             "banners, posters, labels, logos, stamps, price tags or watermarks; any board or screen must be blank")
-    key = os.environ.get("POLLINATIONS_API_KEY", "").strip()
-    if key:   # with the free account key: a better model (gptimage) than the keyless one
-        model = os.environ.get("POLLINATIONS_IMAGE_MODEL", "gptimage")
-        try:
-            resp = requests.post(POLLINATIONS_IMAGES_API, headers={"Authorization": f"Bearer {key}"},
-                                 json={"model": model, "prompt": full, "size": "1024x1536", "n": 1}, timeout=300)
-            if resp.status_code == 200:
-                item = resp.json()["data"][0]
-                if item.get("b64_json"):
-                    import base64
-                    out_path.write_bytes(base64.b64decode(item["b64_json"]))
-                else:
-                    with requests.get(item["url"], timeout=120) as dl:
-                        dl.raise_for_status()
-                        out_path.write_bytes(dl.content)
-                print(f"Background: AI illustration ({model}, Pollinations key)")
-                return out_path
-            print(f"AI illustration with key failed: HTTP {resp.status_code} {resp.text[:150]!r}; trying keyless")
-        except (requests.RequestException, ValueError, KeyError, IndexError) as e:
-            print(f"AI illustration with key failed: {e}; trying keyless")
+    if _keyed_image(full, out_path, "1024x1536"):   # with the free account key: a better model than keyless
+        print("Background: AI illustration (Pollinations key)")
+        return out_path
     url = POLLINATIONS_IMAGE + urllib.parse.quote(full)
     # a bit taller than 9:16: the cards show the top of the image, so the watermark strip at the bottom is cut off
     params = {"width": 1080, "height": 2040, "nologo": "true", "seed": random.randint(1, 10**6)}
@@ -177,6 +186,51 @@ def generate_free_poster(prompt: str, models: list[str], out_path: Path) -> Path
                 break   # e.g. out of free credits or model unavailable: try the next model
             time.sleep(20)
     return None
+
+
+def remove_white_background(path: Path, out_path: Path) -> Path | None:
+    """Make the plain light background of an object picture transparent (flood fill from the edges, so white
+    parts inside the object stay). Returns None if the picture has no plain background to remove."""
+    from PIL import Image, ImageChops, ImageDraw, ImageFilter
+
+    img = Image.open(path).convert("RGB")
+    img.thumbnail((1200, 1200))
+    key = (255, 0, 255)
+    filled = img.copy()
+    w, h = filled.size
+    for xy in [(0, 0), (w - 1, 0), (0, h - 1), (w - 1, h - 1), (w // 2, 0), (w // 2, h - 1), (0, h // 2), (w - 1, h // 2)]:
+        if sum(filled.getpixel(xy)) > 600:          # only light corners/edges are background
+            ImageDraw.floodfill(filled, xy, key, thresh=38)
+    diff = ImageChops.difference(filled, Image.new("RGB", filled.size, key)).convert("L")
+    mask = diff.point(lambda v: 255 if v > 8 else 0).filter(ImageFilter.MinFilter(3)).filter(ImageFilter.GaussianBlur(1.2))
+    box = mask.getbbox()
+    if not box:
+        return None
+    kept = sum(1 for v in mask.getdata() if v > 128) / (w * h)
+    if not 0.05 < kept < 0.92:                      # nothing removed, or the object was eaten: not usable
+        print(f"   Cut-out not usable ({kept:.0%} of the picture kept)")
+        return None
+    out = img.convert("RGBA")
+    out.putalpha(mask)
+    out.crop(box).save(out_path)
+    return out_path
+
+
+def generate_cutout(object_prompt: str, out_path: Path) -> Path | None:
+    """The story's main objects as a transparent 3D sticker (needs POLLINATIONS_API_KEY for a good model)."""
+    if not object_prompt or not os.environ.get("POLLINATIONS_API_KEY", "").strip():
+        return None
+    prompt = (f"{object_prompt}. Glossy 3D render like a premium news infographic sticker, vivid colours, soft studio "
+              "lighting, the objects grouped together in the centre, filling most of the frame, isolated on a plain "
+              "pure white background, no floor, no shadow on the background, nothing else in the picture. "
+              "IMPORTANT: absolutely no text, letters, numbers, labels, logos or currency symbols anywhere.")
+    raw = out_path.with_name("cutout_raw.png")
+    if not _keyed_image(prompt, raw, "1024x1024"):
+        return None
+    path = remove_white_background(raw, out_path)
+    if path:
+        print("Cut-out: 3D object sticker made")
+    return path
 
 
 def get_background(story, cfg: dict, work_dir: Path) -> Path | None:

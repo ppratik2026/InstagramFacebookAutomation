@@ -72,10 +72,17 @@ def cmd_run(args, cfg):
             print("   Free AI poster not available, using the template design.")
     intro_dir = None
     if not card:
-        background = get_background(story, cfg, work_dir)
+        from src.backgrounds import generate_cutout
+        from src.card import choose_design
+        design = choose_design(story, cfg)
+        background = cutout = None
+        if design == "bulletin":   # the story's objects as a 3D cut-out breaking out of the layout
+            cutout = generate_cutout(story.object_prompt, work_dir / "cutout.png")
+        if not cutout:
+            background = get_background(story, cfg, work_dir)
         if cfg["video"].get("intro_animation", True):
             intro_dir = work_dir / "intro"
-        card = render_card(story, cfg, work_dir / "card.png", background, intro_dir)
+        card = render_card(story, cfg, work_dir / "card.png", background, intro_dir, design, cutout)
 
     print("3/4 Making the reel...")
     music = pick_music()
