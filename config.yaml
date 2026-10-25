@@ -8,10 +8,11 @@ content:
   region: "Gujarat"
   language: "Gujarati"
   # Categories to look for. Remove any you don't want.
+  # Posts take the categories in turn, in this order (government, then crime, then good news, again ...).
   categories:
+    government: "સરકારી જાહેરાત (government announcements, schemes, exam dates, rules, prices)"
     crime: "ક્રાઇમ ન્યૂઝ (crime and police news)"
     good_news: "સારા સમાચાર (positive stories, achievements, development)"
-    government: "સરકારી જાહેરાત (government announcements, schemes, exam dates, rules, prices)"
   max_news_age_hours: 48
   hashtags_count: 10
   extra_instructions: ""
@@ -32,7 +33,6 @@ card:
 video:
   seconds: 15                     # Instagram needs at least 3s; 12-15s works well for news reels
   fps: 30
-  zoom: false                     # true = zoom/pan over the poster (crops its edges on phones); false = whole poster
   intro_animation: true           # first seconds: banner drops, headline punches in, stamp slams, points pop
   intro_seconds: 3.4
   music_volume: 0.9               # music from assets/music/*.mp3 (random pick each run)

@@ -16,11 +16,17 @@ def recent_titles(limit: int = 60) -> list[str]:
     return [item["title"] for item in load_history()[-limit:]]
 
 
-def add_entry(title: str, media_id: str | None, permalink: str | None) -> None:
+def last_category() -> str | None:
+    """Category of the latest post that recorded one."""
+    return next((item["category"] for item in reversed(load_history()) if item.get("category")), None)
+
+
+def add_entry(title: str, media_id: str | None, permalink: str | None, category: str | None = None) -> None:
     history = load_history()
     history.append({
         "date": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "title": title,
+        "category": category,
         "media_id": media_id,
         "permalink": permalink,
     })

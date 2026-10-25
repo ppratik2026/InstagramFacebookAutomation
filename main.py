@@ -48,9 +48,9 @@ def instagram(cfg: dict):
 def cmd_run(args, cfg):
     from src.backgrounds import get_background
     from src.card import render_card
-    from src.history import add_entry, recent_titles
+    from src.history import add_entry, last_category, recent_titles
     from src.poster import make_poster
-    from src.video_builder import build_video, pick_music, style_for
+    from src.video_builder import build_video, pick_music, reel_seconds
 
     if cfg.get("provider") == "gemini":
         from src.news import find_story
@@ -68,7 +68,22 @@ def cmd_run(args, cfg):
     previous = recent_titles()
     if args.skip_titles and Path(args.skip_titles).exists():   # e.g. stories already shown in test previews
         previous += [t.strip() for t in Path(args.skip_titles).read_text(encoding="utf-8").splitlines() if t.strip()]
-    story, notes = find_story(cfg, previous, args.category)
+    if args.category:
+        order = [args.category]
+    else:   # categories in turn: the one after the last post's category first, the others as fallbacks
+        names = list(cfg["content"]["categories"])
+        last = last_category()
+        first = (names.index(last) + 1) % len(names) if last in names else 0
+        order = names[first:] + names[:first]
+    for n, category in enumerate(order):
+        print(f"   Category: {category}")
+        try:
+            story, notes = find_story(cfg, previous, category)
+            break
+        except RuntimeError as e:   # no fresh story in this category: take the next one
+            if n == len(order) - 1:
+                raise
+            print(f"   No story for {category} ({e}); trying the next category.")
     caption = story.full_caption()
     (work_dir / "research.md").write_text(notes, encoding="utf-8")
     (work_dir / "story.json").write_text(json.dumps(story.__dict__, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -110,8 +125,8 @@ def cmd_run(args, cfg):
     from src.designs import mood_of
     music = pick_music(mood_of(story))
     print(f"   Music: {music.name if music else 'none (add mp3 files to assets/music/)'}")
-    motion, seconds = style_for(mood_of(story), len(story.points))
-    video = build_video(card, cfg["video"], work_dir / "reel.mp4", music, intro_dir, motion, seconds)
+    seconds = reel_seconds(mood_of(story), len(story.points))
+    video = build_video(card, cfg["video"], work_dir / "reel.mp4", music, intro_dir, seconds)
     print(f"   Saved {video.relative_to(ROOT)}")
 
     if args.no_publish:
@@ -121,7 +136,7 @@ def cmd_run(args, cfg):
 
     print("4/4 Publishing to Instagram...")
     result = post_reel(cfg, video, caption, ig)
-    add_entry(story.title_en, result["media_id"], result.get("permalink"))
+    add_entry(story.title_en, result["media_id"], result.get("permalink"), story.category)
     print(f"Published: {result.get('permalink') or result['media_id']}")
 
 
@@ -169,7 +184,7 @@ def cmd_from_issue(args, cfg):
 
     from src.history import add_entry
     from src.issue_flow import caption_from, download, image_url_from, style_from, title_from
-    from src.video_builder import build_video, pick_music, style_for
+    from src.video_builder import build_video, pick_music, reel_seconds
 
     event = json.loads(Path(os.environ["GITHUB_EVENT_PATH"]).read_text(encoding="utf-8"))
     body, comment = event["issue"]["body"] or "", event["comment"]["body"] or ""
@@ -183,9 +198,9 @@ def cmd_from_issue(args, cfg):
     caption = caption_from(body) or event["issue"]["title"]
     (work_dir / "caption.txt").write_text(caption, encoding="utf-8")
     mood, n_points = style_from(body)
-    motion, seconds = style_for(mood, n_points)
-    print(f"Mood: {mood or '-'} -> motion: {motion}, {seconds}s")
-    video = build_video(poster, cfg["video"], work_dir / "reel.mp4", pick_music(mood), motion=motion, seconds=seconds)
+    seconds = reel_seconds(mood, n_points)
+    print(f"Mood: {mood or '-'} -> {seconds}s")
+    video = build_video(poster, cfg["video"], work_dir / "reel.mp4", pick_music(mood), seconds=seconds)
     print(f"Reel: {video.relative_to(ROOT)}")
     if args.no_publish:
         return

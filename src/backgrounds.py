@@ -135,17 +135,12 @@ POLLINATIONS_IMAGES_API = "https://gen.pollinations.ai/v1/images/generations"
 
 
 def fit_to_reel(path: Path) -> Path:
-    """Make a poster 1080x1920 without cutting it: the whole poster in the middle on a blurred copy of itself."""
-    from PIL import Image, ImageFilter
+    """Make a poster exactly 1080x1920 (9:16), filling the frame (an image of another shape is cropped)."""
+    from PIL import Image, ImageOps
 
     img = Image.open(path).convert("RGB")
-    if abs(img.width / img.height - 9 / 16) < 0.01:
-        return path
-    back = img.resize((1080, 1920)).filter(ImageFilter.GaussianBlur(40))
-    scale = min(1080 / img.width, 1920 / img.height)
-    front = img.resize((round(img.width * scale), round(img.height * scale)), Image.LANCZOS)
-    back.paste(front, ((1080 - front.width) // 2, (1920 - front.height) // 2))
-    back.save(path)
+    if img.size != (1080, 1920):
+        ImageOps.fit(img, (1080, 1920), Image.LANCZOS).save(path)
     return path
 
 

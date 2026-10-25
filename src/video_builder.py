@@ -1,4 +1,4 @@
-"""Turn the news card image into a Reel (MP4) with a slow zoom and background music."""
+"""Turn the news card image into a Reel (MP4): the whole poster, full 9:16, with background music."""
 import subprocess
 from pathlib import Path
 
@@ -27,63 +27,27 @@ def pick_music(mood: str = "") -> Path | None:
     return pick_track(mood)
 
 
-# How the picture moves, by news mood: (motion, seconds)
-MOOD_STYLE = {
-    "breaking": ("punch", 12),   # white flash and a fast punch-in, then a slow push
-    "money": ("pulse", 14),      # gentle heartbeat zoom
-    "info": ("pan", 18),         # slow pan from top to bottom so people can read
-    "happy": ("reveal", 12),     # starts close, zooms out to show the whole poster
-}
+# Reel length by news mood (seconds): longer for posts with more to read
+MOOD_SECONDS = {"breaking": 12, "money": 14, "info": 18, "happy": 12}
 
 
-def style_for(mood: str, n_points: int = 0) -> tuple[str, float]:
-    """Motion and length for a story: longer when there is more to read."""
-    motion, seconds = MOOD_STYLE.get(mood, ("zoom", 15))
-    return motion, seconds + (3 if n_points > 4 else 0)
-
-
-def _motion_filter(motion: str, frames: int, fps: int) -> str:
-    """zoompan expression for a motion; 'on' is the output frame number."""
-    center = "x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'"
-    z, xy = {
-        "punch": (f"if(lt(on,{fps // 2}),1.3-0.3*on/{fps // 2},1+0.04*(on-{fps // 2})/{frames})", center),
-        "pulse": (f"1.03+0.025*sin(2*PI*on/{fps})", center),
-        "pan": ("1.12", f"x='iw/2-(iw/zoom/2)':y='(ih-ih/zoom)*on/{frames}'"),
-        "reveal": (f"1.2-0.2*on/{frames}", center),
-    }.get(motion, (f"1+0.04*on/{frames}", center))
-    return f"zoompan=z='{z}':{xy}:d={frames}:s=1080x1920:fps={fps}"
+def reel_seconds(mood: str, n_points: int = 0) -> float:
+    """Length of the reel: longer when there is more to read."""
+    return MOOD_SECONDS.get(mood, 15) + (3 if n_points > 4 else 0)
 
 
 def build_video(image: Path, vcfg: dict, out_path: Path, music: Path | None = None,
-                intro_dir: Path | None = None, motion: str = "zoom", seconds: float | None = None) -> Path:
-    """Reel from the card image; with intro_dir, the animated intro frames play first."""
+                intro_dir: Path | None = None, seconds: float | None = None) -> Path:
+    """Reel from the card image; with intro_dir, the animated intro frames play first. The poster fills the
+    whole 9:16 frame as it is: no zoom, no pan, no borders (an image of another shape is cropped to fill)."""
     seconds, fps = float(seconds or vcfg["seconds"]), int(vcfg["fps"])
     intro_frames = sorted(intro_dir.glob("f*.jpg")) if intro_dir else []
-    intro_seconds = len(intro_frames) / fps
-    frames = int((seconds - intro_seconds) * fps)
-
-    if vcfg.get("zoom", True):
-        # upscale first so the motion is smooth, then move the picture (gentle, so edge text stays in frame)
-        video_filter = (
-            "scale=2160:3840:force_original_aspect_ratio=increase,crop=2160:3840,"
-            f"{_motion_filter(motion, frames, fps)}"
-        )
-        if motion == "punch" and not intro_frames:
-            video_filter += ",fade=t=in:st=0:d=0.35:color=white"
-        video_filter += ",format=yuv420p"   # last, so every player (and Instagram) accepts the video
-        args = ["ffmpeg", "-y", "-i", str(image)]
-    else:
-        # the whole poster, never cut or zoomed: fitted into 1080x1920, with a blurred copy behind any gaps
-        video_filter = (
-            "split[a][b];[a]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=30[bg];"
-            "[b]scale=1080:1920:force_original_aspect_ratio=decrease[fg];"
-            "[bg][fg]overlay=(W-w)/2:(H-h)/2,format=yuv420p"
-        )
-        args = ["ffmpeg", "-y", "-loop", "1", "-framerate", str(fps), "-i", str(image)]
+    video_filter = "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,format=yuv420p"
+    args = ["ffmpeg", "-y", "-loop", "1", "-framerate", str(fps), "-i", str(image)]
 
     video_inputs = 1
     if intro_frames:
-        # intro frames first, then the zoom on the finished card, joined into one stream
+        # intro frames first, then the finished card, joined into one stream
         args += ["-framerate", str(fps), "-i", str(intro_dir / "f%04d.jpg")]
         video_inputs = 2
         video_filter = f"{video_filter}[z];[1:v]scale=1080:1920,format=yuv420p,setsar=1[i];[i][z]concat=n=2:v=1:a=0"

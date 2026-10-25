@@ -4,7 +4,7 @@ Yeh tool roz apne aap:
 
 1. Gujarat ki asli, taaza news dhundta hai (crime, sara samachar, sarkari jaherat)
 2. Us news ka ek **colourful Gujarati news card** (1080×1920 image) banata hai
-3. Image ko **15 second ki Reel** mein badalta hai (slow zoom + music)
+3. Image ko **12–21 second ki Reel** mein badalta hai (poora 9:16 poster, intro animation + music, koi zoom nahi)
 4. **Instagram pe Reel post** karta hai (official Instagram API, password ki zaroorat nahi)
 
 Do mode hain (`config.yaml` → `provider`):
@@ -29,7 +29,8 @@ free:   RSS news → GitHub Models (Gujarati text) → Card image (HTML → PNG)
    - **Picture** AI banata hai, bina text ke. Free **`POLLINATIONS_API_KEY`** secret ho to behtar model (gptimage) use hota hai: [enter.pollinations.ai](https://enter.pollinations.ai) pe GitHub se login karo → key banao. Card nahi lagta.
    - **Gujarati text** hamara code asli font mein likhta hai, isliye spelling hamesha sahi rehti hai. Free image AI Gujarati akshar tod deta hai, isliye poster ka text AI se nahi likhwaya jaata.
    - `GEMINI_API_KEY` pe billing chalu ho to poora poster Gemini banata hai (sabse best quality).
-3. 12–18 sec ki reel (mood ke hisaab se motion) banake **Instagram pe post** karta hai.
+3. 12–21 sec ki reel (poora 9:16 poster, intro animation, mood ke hisaab se gaana) banake **Instagram pe post** karta hai.
+   Category baari-baari se aati hai: sarkari jaherat → crime → good news → phir se sarkari …
 
 > Shuru ke kuch din `publish` ka tick hata ke chalao aur Artifacts mein poster check karo.
 
@@ -120,7 +121,6 @@ Har run ka folder `output/<date-time>/` mein banta hai, usmein yeh files hoti ha
 - `gemini.ai_background`: `false` karoge to AI image nahi banegi, sirf Pexels photo ya theme colours
 - Colours/themes badalne hain to `src/card.py` mein `THEMES` dekho
 - `video.seconds`: reel ki length (12–15 achha hai)
-- `video.zoom`: slow zoom on/off
 
 ## 7. News ke niyam (built-in)
 
