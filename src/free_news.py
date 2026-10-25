@@ -560,7 +560,7 @@ Return {{"headline": "...", "highlight": "..."}}.""")
         caption=card.get("caption", item.title),
         hashtags=card.get("hashtags", ["ગુજરાત", "GujaratNews"]),
         image_prompt=card.get("image_prompt", ""),
-        stamp=_fitting_stamp(card),
+        stamp=_fitting_stamp(card) if cfg["card"].get("stamps", False) else "",
         mood=card.get("mood", ""),
         image_keywords=card.get("image_keywords", ["gujarat"]),
         source_name=item.source,

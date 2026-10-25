@@ -218,7 +218,8 @@ def generate_cutout(object_prompt: str, out_path: Path) -> Path | None:
     prompt = (f"{object_prompt}. Glossy 3D render like a premium news infographic sticker, vivid colours, soft studio "
               "lighting, the objects grouped together in the centre, filling most of the frame, isolated on a plain "
               "pure white background, no floor, no shadow on the background, nothing else in the picture. "
-              "IMPORTANT: absolutely no text, letters, numbers, labels, logos or currency symbols anywhere.")
+              "IMPORTANT: absolutely no text, letters, numbers, labels, logos or currency symbols anywhere, and no people: "
+              "no person, face, hand or human figure - objects only.")
     raw = out_path.with_name("cutout_raw.png")
     if not _keyed_image(prompt, raw, "1024x1024"):
         return None

@@ -113,7 +113,9 @@ def cmd_run(args, cfg):
     print("2/4 Designing the news poster...")
     card = None
     # Gemini poster whenever there is a key (needs billing on the key: the free tier has no image quota)
-    if os.environ.get("GEMINI_API_KEY") and cfg["card"].get("style", "ai_poster") == "ai_poster":
+    # the whole AI poster can draw people, so it is only used when scene pictures are allowed
+    if (os.environ.get("GEMINI_API_KEY") and cfg["card"].get("style", "ai_poster") == "ai_poster"
+            and cfg["card"].get("picture", "cutout") != "cutout"):
         card = make_poster(story, cfg, work_dir / "card.png")
         if not card:
             print("   Gemini poster not available, trying the next option.")
@@ -130,20 +132,28 @@ def cmd_run(args, cfg):
     if not card:
         from src.backgrounds import generate_cutout
         from src.card import choose_design
-        from src.people import person_photo
         design = choose_design(story, cfg)
         background = cutout = None
-        photo = person_photo(story.person, work_dir / "person.jpg") if story.person else None
-        if photo:   # a story about a public figure shows their real photo, never an AI-made face
-            background, story.photo_credit = photo
-            story.stamp = ""   # no "ARRESTED" / "APPROVED" stamp across a real person's photo
-        elif design == "bulletin" or story.person:   # the story's objects as a 3D cut-out (no people)
+        story.stamp = "" if not cfg["card"].get("stamps", False) else story.stamp
+        if cfg["card"].get("picture", "cutout") == "cutout":
+            # only the story's objects as a 3D cut-out: never a person (no AI faces, no real photos); without
+            # a cut-out the design shows a big 3D icon
+            story.person = ""
+            design = "bulletin"
             cutout = generate_cutout(story.object_prompt, work_dir / "cutout.png")
-            if story.person:
-                design = "bulletin"
-        # an AI scene would put a made-up face on a real person's story: then only the cut-out or an icon
-        if not cutout and not background and not story.person:
-            background = get_background(story, cfg, work_dir)
+        else:
+            from src.people import person_photo
+            photo = person_photo(story.person, work_dir / "person.jpg") if story.person else None
+            if photo:   # a story about a public figure shows their real photo, never an AI-made face
+                background, story.photo_credit = photo
+                story.stamp = ""
+            elif design == "bulletin" or story.person:   # the story's objects as a 3D cut-out (no people)
+                cutout = generate_cutout(story.object_prompt, work_dir / "cutout.png")
+                if story.person:
+                    design = "bulletin"
+            # an AI scene would put a made-up face on a real person's story: then only the cut-out or an icon
+            if not cutout and not background and not story.person:
+                background = get_background(story, cfg, work_dir)
         if cfg["video"].get("intro_animation", True):
             intro_dir = work_dir / "intro"
         card = render_card(story, cfg, work_dir / "card.png", background, intro_dir, design, cutout)
@@ -183,16 +193,18 @@ def _checked_card(story, cfg, card: Path, background, intro_dir, design: str, cu
         return card
     best_score, best, best_style = result[0], card, dict(story.style)
     print(f"   Poster check: {best_score}/10 {'; '.join(result[1])[:300]}")
-    tried = {design}
-    for other in ["bulletin", "split", "paper", "mag"]:
-        if best_score >= cfg["card"].get("min_check_score", 7) or len(tried) >= 3:
+    allowed = cfg["card"].get("designs", ["bulletin"])
+    others = [d for d in ["bulletin", "split", "paper", "mag"] if d in allowed and d != design]
+    # other designs first; with only one design allowed it is made again (another colour look and font)
+    for n, other in enumerate((others + [design, design])[:2]):
+        if best_score >= cfg["card"].get("min_check_score", 7):
             break
-        if other in tried or (other != "bulletin" and cutout and not background):
+        if other != "bulletin" and cutout and not background:
             continue
-        tried.add(other)
+        other_name = f"{other}{n}"
         sticker_share = cfg["card"].get("sticker_share", 0.3)
         cfg["card"]["sticker_share"] = 0   # a second try is kept plain
-        attempt = render_card(story, cfg, card.with_name(f"card-{other}.png"), background, None, other, cutout)
+        attempt = render_card(story, cfg, card.with_name(f"card-{other_name}.png"), background, None, other, cutout)
         cfg["card"]["sticker_share"] = sticker_share
         again = review(attempt, story)
         if again is None:

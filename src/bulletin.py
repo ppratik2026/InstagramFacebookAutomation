@@ -99,6 +99,7 @@ CSS = """
     padding: 16px 26px; font-size: var(--pt); font-weight: 700; line-height: 1.35; border: 4px solid #fff;
     box-shadow: 0 12px 26px rgba(0,0,0,.28); }
   .strip .num { color: %(hl2)s; }
+  .strip b { color: %(hl2)s; }
   .lower { flex: 1; min-height: 420px; display: grid; grid-template-columns: %(cols)s; gap: 20px; }
   .panel { background: %(panel)s; border-radius: 28px; overflow: hidden; box-shadow: 0 14px 30px rgba(0,0,0,.28);
     display: flex; flex-direction: column; border: 4px solid #fff; }
@@ -258,8 +259,8 @@ def bulletin_page(story, font: str, image_url: str | None, date: str, handle: st
 
     top = _compare(story) if story.visual == "compare" else _cards(story)
     # with the compare box the facts are already shown; a short summary strip explains the story
-    strip = (f'<div class="strip fit">{highlight_numbers(story.summary)}</div>'
-             if story.visual in ("compare", "reasons") and story.summary else "")
+    # the short "what happened" explanation on every poster, so the whole story is there
+    strip = f'<div class="strip fit"><b>શું થયું?</b> {highlight_numbers(story.summary)}</div>' if story.summary else ""
     if cutout_url:
         pic = f'<div class="objcell"><div class="burst"></div><img class="obj" src="{cutout_url}" alt=""></div>'
     elif image_url:
