@@ -281,6 +281,13 @@ ANIM_STEPS = [
     [".banner, .pill, .tag, .kicker, .label", "dropIn", 0.05, 0.45, 0],
     [".h3d, .headline", "punchIn", 0.3, 0.6, 0],
     [".hl div", "punchIn", 0.3, 0.45, 0.15],
+    [".bar", "dropIn", 0.0, 0.4, 0],
+    [".hl", "punchIn", 0.25, 0.5, 0],
+    [".sum", "slideL", 0.7, 0.4, 0],
+    [".hero .obj, .hero .icon-big", "popIn", 0.9, 0.5, 0],
+    [".badge", "slam", 1.3, 0.4, 0],
+    [".row", "slideAlt", 1.5, 0.35, 0.15],
+    [".foot", "fadeIn", 2.0, 0.3, 0],
     [".photo, .img, .fallback, .scene, .icon, .pic", "zoomIn", 0.7, 0.7, 0],
     [".objcell", "popIn", 1.2, 0.5, 0],
     [".sub, .strip", "slideL", 1.0, 0.45, 0],
@@ -427,6 +434,10 @@ def render_card(story: NewsStory, cfg: dict, out_path: Path, background: Path | 
         print(f"   Layout: {layout} (text placed away from the picture's subject)")
         page_html = designs.hero_page(story, theme, font, image_url, date, cfg["card"]["handle"], layout)
         fit_script = designs.FIT_SCRIPT
+    elif design == "brand":
+        from src import brand
+        page_html = brand.brand_page(story, date, cfg["card"]["handle"], _data_url(cutout) if cutout else None)
+        fit_script = brand.FIT
     elif design == "bulletin":
         from src.bulletin import FIT, bulletin_page
         page_html = bulletin_page(story, font, image_url, date, cfg["card"]["handle"], mood,

@@ -139,7 +139,8 @@ def cmd_run(args, cfg):
             # only the story's objects as a 3D cut-out: never a person (no AI faces, no real photos); without
             # a cut-out the design shows a big 3D icon
             story.person = ""
-            design = "bulletin"
+            allowed = cfg["card"].get("designs", ["brand"])
+            design = design if design in ("brand", "bulletin") else ("brand" if "brand" in allowed else "bulletin")
             cutout = generate_cutout(story.object_prompt, work_dir / "cutout.png")
         else:
             from src.people import person_photo
@@ -196,7 +197,9 @@ def _checked_card(story, cfg, card: Path, background, intro_dir, design: str, cu
     allowed = cfg["card"].get("designs", ["bulletin"])
     others = [d for d in ["bulletin", "split", "paper", "mag"] if d in allowed and d != design]
     # other designs first; with only one design allowed it is made again (another colour look and font)
-    for n, other in enumerate((others + [design, design])[:2]):
+    # the brand template looks the same every time: a low score is only logged (nothing to vary)
+    retries = [] if design == "brand" and not others else (others + [design, design])[:2]
+    for n, other in enumerate(retries):
         if best_score >= cfg["card"].get("min_check_score", 7):
             break
         if other != "bulletin" and cutout and not background:

@@ -28,7 +28,8 @@ card:
   handle: "@aehaalogujarat"
   # Designs that may be used: bulletin, mag, hero, split, paper (classic is the fallback).
   # The news mood (breaking / money / info / happy) decides which of these fit; one of them is picked at random.
-  designs: ["bulletin"]           # the cut-out design; others: mag, hero, split, paper (they show scene pictures)
+  designs: ["bulletin"]           # brand = one fixed layout on every post (only the category colour changes), so
+                                  # the profile grid looks like one page; others: bulletin, mag, hero, split, paper
   picture: "cutout"               # cutout = only 3D object cut-outs, never a person (no AI faces, no real photos);
                                   # scene = AI scene pictures and real photos of public figures allowed
   stamps: false                   # true = "ARRESTED" / "APPROVED" style stamps when the story says so
