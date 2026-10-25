@@ -137,10 +137,12 @@ def cmd_run(args, cfg):
         story.stamp = "" if not cfg["card"].get("stamps", False) else story.stamp
         if cfg["card"].get("picture", "cutout") == "cartoon":
             # a flat 2D cartoon scene of the story (generic characters, never a real person's likeness)
-            from src.backgrounds import generate_free_ai_image
+            from src.backgrounds import generate_free_ai_image, generate_gemini_cartoon
             story.person = ""
             design = "brand"
-            background = generate_free_ai_image(story.image_prompt, work_dir / "scene.jpg", "cartoon")
+            background = (generate_gemini_cartoon(story.image_prompt, cfg["gemini"].get("cartoon_models", []),
+                                                  work_dir / "scene.png")
+                          or generate_free_ai_image(story.image_prompt, work_dir / "scene.jpg", "cartoon"))
             if not background:   # no picture service: the story's objects as a cut-out, else an icon
                 cutout = generate_cutout(story.object_prompt, work_dir / "cutout.png")
         elif cfg["card"].get("picture", "cutout") == "cutout":
@@ -314,7 +316,7 @@ def cmd_samples(args, cfg):
     out_dir = ROOT / "samples"
     out_dir.mkdir(exist_ok=True)
     if args.style == "cartoon":   # the brand template with a cartoon scene, one story per category in turn
-        from src.backgrounds import generate_free_ai_image
+        from src.backgrounds import generate_free_ai_image, generate_gemini_cartoon
         from src.free_news import find_story
         from src.history import is_repeat
         made, previous, done = [], [], []
@@ -333,7 +335,8 @@ def cmd_samples(args, cfg):
             done.append(story.title_en)
             work = out_dir / f"{n:02d}"
             work.mkdir(exist_ok=True)
-            scene = generate_free_ai_image(story.image_prompt, work / "scene.jpg", "cartoon")
+            scene = (generate_gemini_cartoon(story.image_prompt, cfg["gemini"].get("cartoon_models", []), work / "scene.png")
+                     or generate_free_ai_image(story.image_prompt, work / "scene.jpg", "cartoon"))
             made.append(render_card(story, cfg, work / "card.png", scene, None, "brand", None))
             (work / "story.json").write_text(json.dumps(story.__dict__, ensure_ascii=False, indent=2), encoding="utf-8")
         _sheets(made, out_dir)

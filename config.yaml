@@ -90,6 +90,8 @@ gemini:
   poster_models: ["gemini-3-pro-image", "gemini-3.1-flash-image", "gemini-2.5-flash-image"]
   poster_attempts: 3                    # regenerate if the proof-read finds mistakes
   ai_background: true                   # false = Pexels photo / theme colours only
+  # cartoon scenes for the brand template (picture: cartoon), tried in order before the free services
+  cartoon_models: ["gemini-3.1-flash-image", "gemini-2.5-flash-image", "gemini-3-pro-image"]
 
 schedule:
   max_breaking_per_day: 6         # extra posts for really big breaking news, between the hourly posts

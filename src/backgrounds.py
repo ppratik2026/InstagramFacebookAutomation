@@ -106,6 +106,32 @@ CARTOON_STYLE = ("flat 2D cartoon illustration, clean vector art with bold outli
                  "editorial news illustration style")
 
 
+def generate_gemini_cartoon(prompt: str, models: list[str], out_path: Path) -> Path | None:
+    """A landscape flat 2D cartoon scene from a Gemini image model (needs billing on the key: the free tier has
+    no image quota). None if no model gives one."""
+    if not os.environ.get("GEMINI_API_KEY") or not prompt:
+        return None
+    full = f"{prompt}. {CARTOON_STYLE}. {NO_TEXT}"
+    client = genai.Client()
+    for model in models:
+        try:
+            response = client.models.generate_content(
+                model=model, contents=full,
+                config=types.GenerateContentConfig(response_modalities=["IMAGE"],
+                                                   image_config=types.ImageConfig(aspect_ratio="16:9")),
+            )
+        except Exception as e:   # quota (free tier), busy or unknown model: try the next one
+            print(f"   Gemini cartoon with {model} failed: {str(e)[:140]}")
+            continue
+        for candidate in response.candidates or []:
+            for part in (candidate.content.parts if candidate.content else None) or []:
+                if part.inline_data and part.inline_data.data:
+                    out_path.write_bytes(part.inline_data.data)
+                    print(f"Background: Gemini cartoon ({model})")
+                    return out_path
+    return None
+
+
 def generate_free_ai_image(prompt: str, out_path: Path, style: str = "3d") -> Path | None:
     """Free AI illustration from Pollinations. style "cartoon": a landscape flat 2D cartoon scene (for the
     brand template); "3d": a tall 3D scene. None if it fails; never stops the run."""

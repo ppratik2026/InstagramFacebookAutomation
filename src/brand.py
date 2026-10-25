@@ -73,13 +73,34 @@ body::before { content: ""; position: absolute; inset: 0; opacity: .07;
 .badge small { display: block; font: 700 32px/1.15 '%(body)s', sans-serif; }
 .badge b { display: block; font: 800 84px/1 '%(font)s', sans-serif; white-space: nowrap; }
 
-.rows { top: 1278px; height: 392px; display: flex; flex-direction: column; overflow: hidden; }
-.row { flex: 1 1 0; min-height: 0; overflow: hidden; margin: 7px 0; display: flex; align-items: center; gap: 18px; background: #fff; color: #161616;
-  border-radius: 24px; padding: 0 22px 0 14px; box-shadow: 0 10px 22px rgba(0,0,0,.3); }
-.row .ic { width: 84px; height: 84px; flex-shrink: 0; }
-.row .txt { flex: 1; height: 100%%; padding: 8px 0; display: flex; flex-direction: column; justify-content: center; line-height: 1.2; }
-.row small { display: block; color: #666; font-weight: 700; }
-.row strong { display: block; color: %(value)s; font-weight: 800; }
+.rows { top: 1278px; height: 392px; overflow: visible; }
+/* short facts: three tiles side by side, a round icon popping out of each */
+.tiles { height: 100%%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; align-items: end;
+  padding-bottom: 8px; }
+.tile { position: relative; height: 300px; border-radius: 34px; background: linear-gradient(170deg, #fff 55%%, #f3f3f3);
+  border-bottom: 12px solid %(accent)s; box-shadow: 0 18px 30px rgba(0,0,0,.35); padding: 72px 14px 12px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: #161616; }
+.tile:nth-child(1) { transform: rotate(-3deg); }
+.tile:nth-child(2) { transform: translateY(-26px); }
+.tile:nth-child(3) { transform: rotate(3deg); }
+.tile .ic { position: absolute; top: -56px; left: 50%%; margin-left: -60px; width: 120px; height: 120px; padding: 14px;
+  border-radius: 50%%; background: radial-gradient(circle at 35%% 30%%, #fff, %(accent)s); border: 6px solid #fff;
+  box-shadow: 0 10px 20px rgba(0,0,0,.3); }
+.tile .txt { width: 100%%; height: 190px; display: flex; flex-direction: column; justify-content: center; line-height: 1.12; }
+.tile strong { color: %(value)s; font-family: '%(font)s', sans-serif; font-weight: 800; }
+.tile small { display: block; color: #555; font-weight: 700; font-size: .55em; margin-top: 6px; }
+/* longer lines: speech-bubble pills, left and right in turn */
+.pills { height: 100%%; display: flex; flex-direction: column; justify-content: space-evenly; }
+.pill { align-self: flex-start; max-width: 92%%; height: 108px; display: flex; align-items: center; gap: 16px;
+  background: #fff; color: #161616; border-radius: 60px 26px 26px 60px; padding: 8px 32px 8px 8px;
+  box-shadow: 0 12px 24px rgba(0,0,0,.32); border-right: 10px solid %(accent)s; }
+.pill:nth-child(2) { align-self: flex-end; flex-direction: row-reverse; border-radius: 26px 60px 60px 26px;
+  padding: 8px 8px 8px 32px; border-right: 0; border-left: 10px solid %(accent)s; }
+.pill .ic { width: 92px; height: 92px; flex-shrink: 0; padding: 10px; border-radius: 50%%;
+  background: radial-gradient(circle at 35%% 30%%, #fff, %(accent)s); }
+.pill .txt { max-width: 800px; height: 92px; display: flex; flex-direction: column; justify-content: center; line-height: 1.15; }
+.pill strong { color: %(value)s; font-weight: 800; }
+.pill small { display: block; color: #666; font-weight: 700; font-size: .62em; }
 
 .foot { top: 1700px; height: 190px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .cta { background: %(accent)s; color: #111; border-radius: 50px; padding: 10px 40px; font: 800 40px/1.2 '%(font)s', sans-serif; }
@@ -149,6 +170,21 @@ def _rows(story) -> list[tuple[str, str, str]]:
     return unique[:3]
 
 
+def _rows_html(rows: list[tuple[str, str, str]]) -> str:
+    """Short facts as three tiles side by side; longer lines as pills, left and right in turn."""
+    def icon(key: str) -> str:
+        return icon_img(key if key in available() else icon_key(key, "check"))
+    if len(rows) == 3 and all(len(value) <= 18 for _, _, value in rows):
+        return '<div class="tiles">' + "".join(
+            f'<div class="tile">{icon(key)}<div class="txt" data-fit data-max="76" data-min="34">'
+            f'<strong>{esc(value)}</strong>{f"<small>{esc(label)}</small>" if label else ""}</div></div>'
+            for key, label, value in rows) + "</div>"
+    return '<div class="pills">' + "".join(
+        f'<div class="pill">{icon(key)}<div class="txt" data-fit data-max="50" data-min="26">'
+        f'{f"<small>{esc(label)}</small>" if label else ""}<strong>{esc(value)}</strong></div></div>'
+        for key, label, value in rows) + "</div>"
+
+
 def brand_page(story, date: str, handle: str, cutout_url: str | None = None, scene_url: str | None = None) -> str:
     """scene_url: a landscape cartoon scene for the picture zone; else the cut-out, else a big 3D icon."""
     label, icon, top, bottom, accent, value = LOOKS.get(story.category, LOOKS["government"])
@@ -161,10 +197,7 @@ def brand_page(story, date: str, handle: str, cutout_url: str | None = None, sce
         picture = f'<div class="glow"></div><img class="obj" src="{cutout_url}" alt="">'
     else:
         picture = f'<div class="glow"></div>{icon_img(story.headline, "icon-big")}'
-    rows = "".join(
-        f'<div class="row">{icon_img(key if key in available() else icon_key(key, "check"))}<div class="txt" data-fit data-max="54" data-min="26">'
-        f'{f"<small>{esc(lab)}</small>" if lab else ""}<strong>{esc(val)}</strong></div></div>'
-        for key, lab, val in _rows(story))
+    rows = _rows_html(_rows(story))
     fonts = f"{FONT.replace(' ', '+')}:wght@600;700;800&family={BODY_FONT.replace(' ', '+')}:wght@600;700"
     return f"""<!doctype html><html><head><meta charset="utf-8">
 <link href="https://fonts.googleapis.com/css2?family={fonts}&display=block" rel="stylesheet">
