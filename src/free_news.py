@@ -240,6 +240,9 @@ def _chat(cfg: dict, system: str, user: str) -> dict:
 NOISE = re.compile(r"^\s*(big\s+)?(breaking\s+)?news\s*[:\-–|]\s*|^\s*big\s+breaking\s*[:\-–|]?\s*"
                    r"|[,|:\-–]?\s*(જુઓ|watch)\s+(video|વીડિયો|વિડીયો)\s*$|\|\s*video\s*$", re.I)
 
+NOT_NEWS = re.compile(r"રાશિ|રાશિફળ|ભવિષ્યવાણી|horoscope|zodiac|ગોચર|નક્ષત્ર|nakshatra|transit|જ્યોતિષ|astrolog"
+                      r"|bigg boss|બિગ બોસ|ઘરે બનાવો|રેસિપી|recipe|ટિપ્સ|tips|ઉપાય|વાસ્તુ|vastu", re.I)
+
 ROUNDUP = re.compile(r"\blive\b|મહત્વના સમાચાર|ટોપ ન્યૂઝ|top news|news update|headlines|સમાચાર ફટાફટ", re.I)
 
 KICKERS = {
@@ -312,6 +315,9 @@ def _to_gujarati(text: str) -> str:
     """English place names -> Gujarati, and stray Devanagari (Hindi) letters -> the same Gujarati letters."""
     for en, gu in PLACES.items():
         text = re.sub(rf"(?<![A-Za-z]){en}(?![A-Za-z])", gu, text, flags=re.I)   # \b fails next to Gujarati letters
+    text = re.sub(r"[\u0600-\u06ff\u0750-\u077f\u1100-\u11ff\u3040-\u30ff\u3130-\u318f\u4e00-\u9fff\uac00-\ud7af]+",
+                  "", text)
+    text = re.sub(r"  +", " ", text)
     # the Gujarati Unicode block mirrors the Devanagari one, 0x180 code points later
     return "".join(chr(ord(c) + 0x180) if "\u0900" <= c <= "\u097f" and c not in "\u0964\u0965" else c for c in text)
 
@@ -374,7 +380,10 @@ def gather_items(cfg: dict, previous: list[str], wanted: list[str], limit: int =
     # live blogs and "today's important news" roundups mix several stories into one page
     items = [i for i in items if not ROUNDUP.search(i.title)]
     # national feeds carry other states' news too: keep the stories that name a place in Gujarat
-    local = [i for i in items if _in_gujarat(f"{i.title} {i.text}")]
+    local = [i for i in items if _in_gujarat(f"{i.title} {i.text[:300]}")]
+    # horoscopes, TV gossip, recipes and tips are not news for this page
+    items = [i for i in items if not NOT_NEWS.search(i.title)]
+    local = [i for i in local if not NOT_NEWS.search(i.title)]
     items = local or items
     if not items:
         raise RuntimeError("No recent news found in the RSS feeds.")

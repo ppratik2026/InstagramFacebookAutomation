@@ -12,6 +12,7 @@
 import argparse
 import json
 import os
+import re
 from datetime import datetime
 from pathlib import Path
 
@@ -191,7 +192,7 @@ def cmd_samples(args, cfg):
     others = ["mag", "hero", "split", "paper", "classic"]
     looks = [("bulletin", pal) for pal in PALETTES] * 50
     plan = [looks[i // 2] if i % 2 == 0 else (others[(i // 2) % len(others)], "") for i in range(args.count)]
-    made, seen, titles = [], set(), []
+    made, seen, titles = [], [], []
     for item in items:
         if len(made) >= args.count:
             break
@@ -207,9 +208,12 @@ def cmd_samples(args, cfg):
         except Exception as e:   # one bad story never stops the batch
             print(f"   skipped: {e}")
             continue
-        if story.headline in seen:
+        # the same story again in other words (another site's take): compare the main words of the English title
+        key = {w for w in re.findall(r"[a-z0-9]+", story.title_en.lower()) if len(w) > 3}
+        if any(len(key & k) / max(1, min(len(key), len(k))) >= 0.5 for k in seen):
+            print("   skipped: same story as an earlier sample")
             continue
-        seen.add(story.headline)
+        seen.append(key)
         work = out_dir / f"{n:02d}"
         work.mkdir(exist_ok=True)
         cfg["card"]["font"] = designs.FONTS[n % len(designs.FONTS)]
