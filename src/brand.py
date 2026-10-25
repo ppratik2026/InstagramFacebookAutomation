@@ -58,9 +58,14 @@ body::before { content: ""; position: absolute; inset: 0; opacity: .07;
   background: radial-gradient(circle, rgba(255,255,255,.55) 0%%, %(accent)s55 35%%, transparent 70%%); }
 .hero .obj { position: relative; max-width: 78%%; max-height: 100%%; object-fit: contain;
   filter: drop-shadow(0 30px 30px rgba(0,0,0,.55)); }
-.hero .scene { position: relative; width: 100%%; height: 100%%; border-radius: 34px; background: center/cover no-repeat;
-  border: 6px solid rgba(255,255,255,.92); box-shadow: 0 22px 40px rgba(0,0,0,.5); }
-.hero .scene ~ .badge { left: -12px; bottom: -16px; }
+/* the scene has no frame: it spans the full width and fades into the background at every edge */
+.hero.has-scene { left: 0; right: 0; top: 700px; height: 640px; z-index: 0; }
+.hero .scene { position: absolute; inset: 0; background: center/cover no-repeat;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%%, #000 22%%, #000 72%%, transparent 100%%),
+                      linear-gradient(to right, transparent 0%%, #000 9%%, #000 91%%, transparent 100%%);
+  -webkit-mask-composite: source-in; mask-composite: intersect; }
+.hero.has-scene .badge { left: 44px; bottom: 96px; z-index: 2; }
+.sum, .rows, .hl { z-index: 1; }
 .hero .icon-big { position: relative; width: 420px; height: 420px; filter: drop-shadow(0 30px 30px rgba(0,0,0,.5)); }
 .badge { position: absolute; left: 0; bottom: 18px; max-width: 470px; background: %(accent)s; color: #111;
   border-radius: 24px; padding: 12px 28px 16px; transform: rotate(-4deg); box-shadow: 0 16px 30px rgba(0,0,0,.45);
@@ -167,7 +172,7 @@ def brand_page(story, date: str, handle: str, cutout_url: str | None = None, sce
   <div class="zone bar"><div class="chip">{icon_img(icon)}{esc(label)}</div><div class="date">{date}</div></div>
   <div class="zone hl" data-fit data-max="124" data-min="64"><div>{_headline(story)}</div></div>
   {f'<div class="zone sum" data-fit data-max="40" data-min="26"><div><b>શું થયું?</b>{highlight_numbers(summary)}</div></div>' if summary else ''}
-  <div class="zone hero">{picture}{_badge(story)}</div>
+  <div class="zone hero{' has-scene' if scene_url else ''}">{picture}{_badge(story)}</div>
   <div class="zone rows">{rows}</div>
   <div class="zone foot"><div class="cta">👉 આવા સમાચાર માટે ફોલો કરો {esc(handle)}</div>
     <div class="src">સ્રોત: {esc(story.source_name)}</div></div>
