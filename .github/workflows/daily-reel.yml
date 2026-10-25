@@ -3,11 +3,11 @@ name: Gujarat news reel
 # Fully automatic: news -> poster (AI poster from the Gemini-style prompt, else the template design) -> reel -> post.
 on:
   schedule:
-    # every hour from 10:00 to 20:00 IST (11 posts a day). Cron is UTC (IST - 5:30). GitHub can drop scheduled
+    # every hour from 10:00 to 24:00 IST (15 posts a day). Cron is UTC (IST - 5:30). GitHub can drop scheduled
     # runs when it is busy, so each hour has two triggers (~09:56 and ~10:16 IST, ...); the second one is
     # skipped when the first already posted (see "Already posted" below).
-    - cron: "26 4-14 * * *"
-    - cron: "46 4-14 * * *"
+    - cron: "26 4-18 * * *"
+    - cron: "46 4-18 * * *"
   workflow_dispatch:
     inputs:
       category:
