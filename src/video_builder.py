@@ -1,5 +1,4 @@
 """Turn the news card image into a Reel (MP4) with a slow zoom and background music."""
-import random
 import subprocess
 from pathlib import Path
 
@@ -22,9 +21,10 @@ def media_duration(path: Path) -> float:
     return float(out.stdout.strip())
 
 
-def pick_music() -> Path | None:
-    tracks = sorted(p for p in MUSIC_DIR.glob("*") if p.suffix.lower() in (".mp3", ".m4a", ".wav", ".aac"))
-    return random.choice(tracks) if tracks else None
+def pick_music(mood: str = "") -> Path | None:
+    """A track from assets/music that suits the news mood (see src/music.py)."""
+    from src.music import pick_track
+    return pick_track(mood)
 
 
 # How the picture moves, by news mood: (motion, seconds)
@@ -85,11 +85,10 @@ def build_video(image: Path, vcfg: dict, out_path: Path, music: Path | None = No
     audio_in = video_inputs
 
     if music:
-        # start somewhere in the first part of the song so it doesn't always open with the intro
-        start = 0.0
-        length = media_duration(music)
-        if length > seconds + 20:
-            start = random.uniform(0, min(60.0, length - seconds - 5))
+        # the strongest stretch from the middle of the song (chorus / drop), not its intro
+        from src.music import best_start
+        start = best_start(music, seconds)
+        print(f"   Music from {int(start // 60)}:{start % 60:04.1f}")
         args += ["-ss", f"{start:.2f}", "-i", str(music)]
         audio_filter = (
             f"[{audio_in}:a]volume={vcfg['music_volume']},afade=t=in:d=0.5,"

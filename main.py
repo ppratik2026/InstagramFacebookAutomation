@@ -19,25 +19,25 @@ from pathlib import Path
 from src.config import ROOT, load_config, require_env
 
 
-def post_reel(cfg: dict, video: Path, caption: str, cover: Path | None = None, ig=None) -> dict:
-    """Publish the reel. The poster image is the cover (else a frame near the end, never the white intro flash)."""
-    from PIL import Image
+def post_reel(cfg: dict, video: Path, caption: str, ig=None) -> dict:
+    """Publish the reel. Its cover is the frame 2.5 s before the end (the finished poster), never the first
+    frame, which is the white flash of the intro."""
+    import subprocess
 
     from src.hosting import video_urls
     from src.video_builder import media_duration
 
-    cover_jpg = None
-    if cover and cover.exists():   # Instagram wants a JPEG cover
-        cover_jpg = video.with_name("cover.jpg")
-        Image.open(cover).convert("RGB").save(cover_jpg, quality=92)
+    at = max(0.0, media_duration(video) - 2.5)
+    cover = video.with_name("cover.jpg")
+    subprocess.run(["ffmpeg", "-y", "-v", "error", "-ss", f"{at:.2f}", "-i", str(video), "-frames:v", "1",
+                    "-q:v", "2", str(cover)], check=True)
     try:
-        sources = video_urls(video, cover_jpg)
+        sources = video_urls(video, cover)
     except Exception as e:   # hosting is best effort: the direct upload is still tried
         print(f"   Could not host the video: {e}")
         sources = []
-    offset = int(max(0.0, media_duration(video) - 1.5) * 1000)
     return (ig or instagram(cfg)).publish_reel(video, caption, cfg["instagram"]["share_to_feed"],
-                                               sources=sources, thumb_offset_ms=offset)
+                                               sources=sources, thumb_offset_ms=int(at * 1000))
 
 
 def instagram(cfg: dict):
@@ -107,9 +107,9 @@ def cmd_run(args, cfg):
         card = render_card(story, cfg, work_dir / "card.png", background, intro_dir, design, cutout)
 
     print("3/4 Making the reel...")
-    music = pick_music()
-    print(f"   Music: {music.name if music else 'none (add mp3 files to assets/music/)'}")
     from src.designs import mood_of
+    music = pick_music(mood_of(story))
+    print(f"   Music: {music.name if music else 'none (add mp3 files to assets/music/)'}")
     motion, seconds = style_for(mood_of(story), len(story.points))
     video = build_video(card, cfg["video"], work_dir / "reel.mp4", music, intro_dir, motion, seconds)
     print(f"   Saved {video.relative_to(ROOT)}")
@@ -120,7 +120,7 @@ def cmd_run(args, cfg):
         return
 
     print("4/4 Publishing to Instagram...")
-    result = post_reel(cfg, video, caption, card, ig)
+    result = post_reel(cfg, video, caption, ig)
     add_entry(story.title_en, result["media_id"], result.get("permalink"))
     print(f"Published: {result.get('permalink') or result['media_id']}")
 
@@ -130,7 +130,7 @@ def cmd_publish(args, cfg):
 
     video = Path(args.video)
     caption = Path(args.caption_file).read_text(encoding="utf-8") if args.caption_file else (args.caption or "")
-    result = post_reel(cfg, video, caption, video.parent / "card.png")
+    result = post_reel(cfg, video, caption)
     story_file = video.parent / "story.json"
     title = json.loads(story_file.read_text(encoding="utf-8"))["title_en"] if story_file.exists() else video.stem
     add_entry(title, result["media_id"], result.get("permalink"))
@@ -185,11 +185,11 @@ def cmd_from_issue(args, cfg):
     mood, n_points = style_from(body)
     motion, seconds = style_for(mood, n_points)
     print(f"Mood: {mood or '-'} -> motion: {motion}, {seconds}s")
-    video = build_video(poster, cfg["video"], work_dir / "reel.mp4", pick_music(), motion=motion, seconds=seconds)
+    video = build_video(poster, cfg["video"], work_dir / "reel.mp4", pick_music(mood), motion=motion, seconds=seconds)
     print(f"Reel: {video.relative_to(ROOT)}")
     if args.no_publish:
         return
-    result = post_reel(cfg, video, caption, poster)
+    result = post_reel(cfg, video, caption)
     add_entry(title_from(body) or event["issue"]["title"], result["media_id"], result.get("permalink"))
     (ROOT / "output" / "result.txt").write_text(result.get("permalink") or result["media_id"], encoding="utf-8")
     print(f"Published: {result.get('permalink') or result['media_id']}")
