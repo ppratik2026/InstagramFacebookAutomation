@@ -1,4 +1,5 @@
 import json
+import re
 from datetime import datetime, timezone
 
 from .config import ROOT
@@ -32,3 +33,13 @@ def add_entry(title: str, media_id: str | None, permalink: str | None, category:
     })
     HISTORY_FILE.parent.mkdir(parents=True, exist_ok=True)
     HISTORY_FILE.write_text(json.dumps(history, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def _key(title: str) -> set[str]:
+    return {w for w in re.findall(r"[a-z0-9]+", (title or "").lower()) if len(w) > 3}
+
+
+def is_repeat(title_en: str, recent: list[str]) -> bool:
+    """True when a story with mostly the same main words (English title) was posted recently."""
+    key = _key(title_en)
+    return bool(key) and any(len(key & k) / max(1, min(len(key), len(k))) >= 0.5 for k in map(_key, recent) if k)

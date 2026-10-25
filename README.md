@@ -22,7 +22,7 @@ free:   RSS news → GitHub Models (Gujarati text) → Card image (HTML → PNG)
 
 ## ⭐ Roz ka tareeka: poora automatic
 
-`daily-reel.yml` roz **subah 10 se raat 12 baje tak har ghante** (15 post) apne aap chalta hai:
+**Hourly scheduler** (`scheduler.yml`) roz **subah 10 se raat 12 baje tak har ghante** (15 post) apne aap post karta hai. GitHub ka apna schedule busy hone pe runs chhod deta tha, isliye yeh job lagataar chalta hai aur ~5.5 ghante baad khud ko dobara start karta hai. Rokna ho to: Actions → Hourly scheduler → "..." → Disable workflow. Har post mein:
 
 1. News dhundhta hai aur Gujarati text likhta hai.
 2. Poster banata hai, Gemini-style posters jaisa ("bulletin" design: upar label, laal patti pe headline, bada number box, ✅ points, picture, CTA patti).
@@ -64,7 +64,7 @@ Ek reel mein 2 AI requests lagti hain. Groq ki free key daal doge to sabse bharo
 3. **Actions** tab → **Gujarat news reel** → **Run workflow**.
    - Pehli baar `publish` ka tick hata kar chalao. Video **Artifacts** mein milega, use download karke dekh lo.
    - Theek lage to tick laga kar chalao, Reel post ho jayegi.
-4. Uske baad yeh roz **subah 10 se raat 12 baje tak har ghante** apne aap chalega. GitHub schedule kabhi 5–15 minute der se chalta hai. Time badalna ho to `.github/workflows/daily-reel.yml` mein `cron` badlo (time UTC mein hota hai, IST se 5:30 ghante peeche).
+4. Roz ki posting **Hourly scheduler** karta hai (upar dekho). Pehli baar Actions → Hourly scheduler → Run workflow se chalu karo, uske baad woh khud chalta rahega. Time badalna ho to `.github/workflows/daily-reel.yml` mein `cron` badlo (time UTC mein hota hai, IST se 5:30 ghante peeche).
 
 ### Token auto-refresh (60 din wali problem)
 

@@ -75,15 +75,26 @@ def cmd_run(args, cfg):
         last = last_category()
         first = (names.index(last) + 1) % len(names) if last in names else 0
         order = names[first:] + names[:first]
+    from src.history import is_repeat
+    story = None
     for n, category in enumerate(order):
         print(f"   Category: {category}")
-        try:
-            story, notes = find_story(cfg, previous, category)
+        for _ in range(3):   # the same story from another site is skipped and another one picked
+            try:
+                story, notes = find_story(cfg, previous, category)
+            except RuntimeError as e:   # no fresh story in this category: take the next one
+                print(f"   No story for {category} ({e}).")
+                story = None
+                break
+            if not is_repeat(story.title_en, recent_titles()):
+                break
+            print(f"   Already posted a story like this ({story.title_en}); picking another one.")
+            previous.append(re.search(r"^Headline: (.*)$", notes, re.M).group(1))
+            story = None
+        if story:
             break
-        except RuntimeError as e:   # no fresh story in this category: take the next one
-            if n == len(order) - 1:
-                raise
-            print(f"   No story for {category} ({e}); trying the next category.")
+    if not story:
+        raise RuntimeError("No new story to post in any category.")
     caption = story.full_caption()
     (work_dir / "research.md").write_text(notes, encoding="utf-8")
     (work_dir / "story.json").write_text(json.dumps(story.__dict__, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -277,6 +288,53 @@ def cmd_samples(args, cfg):
     print(f"\n{len(made)} samples in {out_dir.relative_to(ROOT)}/")
 
 
+def cmd_scheduler(args, cfg):
+    """Post one reel every hour from 10:00 to midnight IST, for `--hours` hours (GitHub Actions jobs stop
+    at 6 hours; the workflow then starts the next scheduler run). Each post runs `main.py run` and saves
+    the posted history to the repository, so a restarted scheduler never posts the same hour twice."""
+    import subprocess
+    import sys
+    import time
+    from datetime import timedelta
+
+    from src.history import load_history
+    from src.news import IST
+
+    branch = os.environ.get("GITHUB_REF_NAME", "")
+    stop_at = time.time() + args.hours * 3600
+
+    def git(*a):
+        return subprocess.run(["git", *a], capture_output=True, text=True)
+
+    def posted_this_hour(now) -> bool:
+        if branch:
+            git("pull", "-q", "--rebase", "origin", branch)   # posts made by other runs
+        last = load_history()[-1:] or [{}]
+        when = last[0].get("date")
+        return bool(when) and datetime.fromisoformat(when).astimezone(IST).strftime("%Y%m%d%H") == now.strftime("%Y%m%d%H")
+
+    while True:
+        now = datetime.now(IST)
+        if (now.hour >= 10 or now.hour == 0) and not posted_this_hour(now):   # 10:00 ... 23:00 and midnight
+            print(f"\n=== {now:%d %b %H:%M} IST: posting ===", flush=True)
+            if subprocess.run([sys.executable, "-u", "main.py", "run"]).returncode == 0 and branch:
+                git("add", "data/history.json")
+                git("-c", "user.name=github-actions[bot]",
+                    "-c", "user.email=41898282+github-actions[bot]@users.noreply.github.com",
+                    "commit", "-qm", "Update posted history")
+                for _ in range(3):
+                    if git("push", "-q", "origin", f"HEAD:{branch}").returncode == 0:
+                        break
+                    git("pull", "-q", "--rebase", "origin", branch)
+        next_hour = now.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1)
+        wait = (next_hour - datetime.now(IST)).total_seconds() + 20
+        if time.time() + wait > stop_at:
+            print("Time is up for this run; the next scheduler run takes over.", flush=True)
+            return
+        print(f"Next check at {next_hour:%H:%M} IST", flush=True)
+        time.sleep(max(wait, 1))
+
+
 def cmd_check(args, cfg):
     me = instagram(cfg).me()
     print(f"Token OK: @{me['username']} ({me['account_type']}), user_id={me['user_id']}")
@@ -321,6 +379,10 @@ def main():
     smp = sub.add_parser("samples", help="many different posters from different stories (nothing is posted)")
     smp.add_argument("--count", type=int, default=50)
     smp.set_defaults(func=cmd_samples)
+
+    sch = sub.add_parser("scheduler", help="post every hour from 10:00 to midnight IST (runs for --hours)")
+    sch.add_argument("--hours", type=float, default=5.5)
+    sch.set_defaults(func=cmd_scheduler)
 
     sub.add_parser("check", help="verify the Instagram token").set_defaults(func=cmd_check)
     sub.add_parser("refresh-token", help="extend the Instagram token by 60 days").set_defaults(func=cmd_refresh)
