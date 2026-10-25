@@ -6,18 +6,25 @@ the Wikipedia page belongs to a human (checked on Wikidata) and the file has a f
 """
 import html
 import re
+import time
 from pathlib import Path
 
 import requests
 
-HEADERS = {"User-Agent": "GujaratNewsReels/1.0 (Instagram news page; contact via GitHub)"}
+# Wikimedia asks for a descriptive User-Agent with a contact link (requests without one get throttled)
+HEADERS = {"User-Agent": "GujaratNewsReels/1.0 (https://github.com/ppratik2026/InstagramFacebookAutomation)"}
 WIKI_API = "https://en.wikipedia.org/w/api.php"
 COMMONS_API = "https://commons.wikimedia.org/w/api.php"
-FREE = re.compile(r"^(cc0|cc[ -]by|public domain|pd|gfdl|attribution)", re.I)
+# free licences that allow reuse with credit; GODL-India covers most photos of Indian officials and players
+FREE = re.compile(r"^(cc0|cc[ -]by|public domain|pd|gfdl|attribution|godl)", re.I)
 
 
 def _get(url: str, **params) -> dict:
-    resp = requests.get(url, params={**params, "format": "json"}, headers=HEADERS, timeout=30)
+    for attempt in range(3):
+        resp = requests.get(url, params={**params, "format": "json"}, headers=HEADERS, timeout=30)
+        if resp.status_code != 429 or attempt == 2:
+            break
+        time.sleep(int(resp.headers.get("retry-after", "5")) + 1)   # throttled: wait as asked
     resp.raise_for_status()
     return resp.json()
 
