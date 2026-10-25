@@ -342,6 +342,15 @@ def _latin_words(text: str) -> list[str]:
     return [w for w in re.findall(r"[A-Za-z]{2,}", text or "") if not (w.isupper() and len(w) <= 6)]
 
 
+def _in_gujarat(text: str) -> bool:
+    places = list(PLACES.values())[:list(PLACES).index("January")] + list(PLACES)[:list(PLACES).index("January")]
+    extra = ["ગુજરાત", "ગાંધીનગર", "ઉત્તર ગુજરાત", "દક્ષિણ ગુજરાત", "GSEB", "AMC", "SMC", "VMC", "RMC", "GSRTC",
+             "DGVCL", "PGVCL", "MGVCL", "UGVCL", "GPSC", "GSSSB", "નર્મદા", "સાબરમતી", "તાપી", "મહીસાગર", "સાબરકાંઠા",
+             "બનાસકાંઠા", "પંચમહાલ", "છોટાઉદેપુર", "અરવલ્લી", "ડાંગ", "તાપી", "દેવભૂમિ", "ગીર સોમનાથ", "વેરાવળ", "ઉના",
+             "ગોંડલ", "જેતપુર", "ધોરાજી", "અંકલેશ્વર", "હાલોલ", "કલોલ", "મોડાસા", "વિસનગર", "ઊંઝા", "ડીસા", "થરાદ"]
+    return any(p.lower() in text.lower() for p in places + extra)
+
+
 def _incomplete(fact: dict) -> bool:
     """A date fact without month or day name, e.g. "બેઠક તારીખ: 23", says nothing on its own."""
     return bool(re.search(r"તારીખ|દિવસ|date", fact["label"], re.I)) and not re.search(MONTHS, fact["value"])
@@ -364,6 +373,9 @@ def find_story(cfg: dict, previous: list[str], category: str | None = None) -> t
                 items.append(item)
     # live blogs and "today's important news" roundups mix several stories into one page
     items = [i for i in items if not ROUNDUP.search(i.title)]
+    # national feeds carry other states' news too: keep the stories that name a place in Gujarat
+    local = [i for i in items if _in_gujarat(f"{i.title} {i.text}")]
+    items = local or items
     if not items:
         raise RuntimeError("No recent news found in the RSS feeds.")
     items.sort(key=lambda i: i.published, reverse=True)
