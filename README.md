@@ -95,7 +95,7 @@ Har run ka folder `output/<date-time>/` mein banta hai, usmein yeh files hoti ha
 
 ## 4. Music 🎵
 
-`assets/music/` folder mein `.mp3` files daal do. Har reel mein ek random gaana lag jayega (beech ke kisi hisse se, fade in/out ke saath).
+`assets/music/` folder mein apni `.mp3` (ya `.m4a`, `.wav`) files daal do. GitHub pe: repo → `assets/music` folder → **Add file → Upload files** → files chuno → **Commit changes**. Har reel mein ek random gaana lag jayega (beech ke kisi hisse se, fade in/out ke saath).
 
 **Zaroori:** Instagram API se Instagram ki apni music library (trending audio) attach **nahi** ho sakti. Yeh Instagram ki limit hai. Isliye:
 - **Bollywood ya trending film songs mat daalna.** Copyright ki wajah se Reel mute ho sakti hai, ya account pe strike aa sakti hai.

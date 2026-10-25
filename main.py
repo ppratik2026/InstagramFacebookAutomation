@@ -19,14 +19,25 @@ from pathlib import Path
 from src.config import ROOT, load_config, require_env
 
 
-def public_urls(video: Path) -> list[str]:
-    """Public links to the video for Instagram to fetch (GitHub Actions only); [] means upload the file."""
+def post_reel(cfg: dict, video: Path, caption: str, cover: Path | None = None, ig=None) -> dict:
+    """Publish the reel. The poster image is the cover (else a frame near the end, never the white intro flash)."""
+    from PIL import Image
+
     from src.hosting import video_urls
+    from src.video_builder import media_duration
+
+    cover_jpg = None
+    if cover and cover.exists():   # Instagram wants a JPEG cover
+        cover_jpg = video.with_name("cover.jpg")
+        Image.open(cover).convert("RGB").save(cover_jpg, quality=92)
     try:
-        return video_urls(video)
+        sources = video_urls(video, cover_jpg)
     except Exception as e:   # hosting is best effort: the direct upload is still tried
         print(f"   Could not host the video: {e}")
-        return []
+        sources = []
+    offset = int(max(0.0, media_duration(video) - 1.5) * 1000)
+    return (ig or instagram(cfg)).publish_reel(video, caption, cfg["instagram"]["share_to_feed"],
+                                               sources=sources, thumb_offset_ms=offset)
 
 
 def instagram(cfg: dict):
@@ -109,8 +120,7 @@ def cmd_run(args, cfg):
         return
 
     print("4/4 Publishing to Instagram...")
-    result = ig.publish_reel(video, caption, cfg["instagram"]["share_to_feed"],
-                              video_urls=public_urls(video))
+    result = post_reel(cfg, video, caption, card, ig)
     add_entry(story.title_en, result["media_id"], result.get("permalink"))
     print(f"Published: {result.get('permalink') or result['media_id']}")
 
@@ -120,8 +130,7 @@ def cmd_publish(args, cfg):
 
     video = Path(args.video)
     caption = Path(args.caption_file).read_text(encoding="utf-8") if args.caption_file else (args.caption or "")
-    result = instagram(cfg).publish_reel(video, caption, cfg["instagram"]["share_to_feed"],
-                                         video_urls=public_urls(video))
+    result = post_reel(cfg, video, caption, video.parent / "card.png")
     story_file = video.parent / "story.json"
     title = json.loads(story_file.read_text(encoding="utf-8"))["title_en"] if story_file.exists() else video.stem
     add_entry(title, result["media_id"], result.get("permalink"))
@@ -180,8 +189,7 @@ def cmd_from_issue(args, cfg):
     print(f"Reel: {video.relative_to(ROOT)}")
     if args.no_publish:
         return
-    result = instagram(cfg).publish_reel(video, caption, cfg["instagram"]["share_to_feed"],
-                                         video_urls=public_urls(video))
+    result = post_reel(cfg, video, caption, poster)
     add_entry(title_from(body) or event["issue"]["title"], result["media_id"], result.get("permalink"))
     (ROOT / "output" / "result.txt").write_text(result.get("permalink") or result["media_id"], encoding="utf-8")
     print(f"Published: {result.get('permalink') or result['media_id']}")

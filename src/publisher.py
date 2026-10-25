@@ -38,19 +38,21 @@ class Instagram:
         ))
 
     def publish_reel(self, video_path: Path, caption: str, share_to_feed: bool = True, timeout_s: int = 600,
-                     video_urls: list[str] | None = None) -> dict:
-        """Create the reel from the first public URL Instagram can process; without URLs, upload the file."""
+                     sources: list[dict] | None = None, thumb_offset_ms: int | None = None) -> dict:
+        """Create the reel from the first public source Instagram can process ({"video_url", "cover_url"});
+        without sources, upload the file. The cover is cover_url, else the frame at thumb_offset_ms."""
         container_id = None
-        for url in video_urls or []:
+        extra = {"thumb_offset": str(thumb_offset_ms)} if thumb_offset_ms is not None else {}
+        for source in sources or []:
             try:
-                container_id = self._container({"video_url": url}, caption, share_to_feed)
+                container_id = self._container({**extra, **source}, caption, share_to_feed)
                 self._wait(container_id, timeout_s)
                 break
             except InstagramError as e:
-                print(f"Instagram could not use {url.split('/')[2]}: {e}")
+                print(f"Instagram could not use {source['video_url'].split('/')[2]}: {e}")
                 container_id = None
         if not container_id:
-            container_id = self._upload(video_path, caption, share_to_feed)
+            container_id = self._upload(video_path, caption, share_to_feed, extra)
             self._wait(container_id, timeout_s)
 
         published = _check(requests.post(
@@ -77,9 +79,9 @@ class Instagram:
         print(f"Created container {container['id']}")
         return container["id"]
 
-    def _upload(self, video_path: Path, caption: str, share_to_feed: bool) -> str:
+    def _upload(self, video_path: Path, caption: str, share_to_feed: bool, extra: dict | None = None) -> str:
         """Resumable upload of the local file (not available for every account type)."""
-        container_id = self._container({"upload_type": "resumable"}, caption, share_to_feed)
+        container_id = self._container({"upload_type": "resumable", **(extra or {})}, caption, share_to_feed)
         size = video_path.stat().st_size
         with open(video_path, "rb") as f:
             _check(requests.post(

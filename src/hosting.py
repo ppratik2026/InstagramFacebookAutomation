@@ -12,15 +12,19 @@ def _git(*args: str, stdin: str | None = None) -> str:
     return subprocess.run(["git", *args], input=stdin, check=True, capture_output=True, text=True).stdout.strip()
 
 
-def video_urls(video: Path) -> list[str]:
-    """Push the video to the media branch and return public URLs for it, best first. [] outside GitHub Actions."""
+def video_urls(video: Path, cover: Path | None = None) -> list[dict]:
+    """Push the video (and its cover image) to the media branch; return Instagram sources for it, best host
+    first: [{"video_url": ..., "cover_url": ...}]. [] outside GitHub Actions."""
     repo = os.environ.get("GITHUB_REPOSITORY")
     if not repo:
         return []
-    name = f"reel-{os.environ.get('GITHUB_RUN_ID', 'local')}.mp4"
-    # one commit holding only this video, with no parent, so the branch never grows
-    blob = _git("hash-object", "-w", str(video))
-    tree = _git("mktree", stdin=f"100644 blob {blob}\t{name}\n")
+    run = os.environ.get("GITHUB_RUN_ID", "local")
+    files = {f"reel-{run}.mp4": video}
+    if cover:
+        files[f"cover-{run}.jpg"] = cover
+    # one commit holding only these files, with no parent, so the branch never grows
+    entries = "".join(f"100644 blob {_git('hash-object', '-w', str(path))}\t{name}\n" for name, path in sorted(files.items()))
+    tree = _git("mktree", stdin=entries)
     os.environ.setdefault("GIT_AUTHOR_NAME", "github-actions[bot]")
     os.environ.setdefault("GIT_AUTHOR_EMAIL", "41898282+github-actions[bot]@users.noreply.github.com")
     os.environ.setdefault("GIT_COMMITTER_NAME", os.environ["GIT_AUTHOR_NAME"])
@@ -28,7 +32,10 @@ def video_urls(video: Path) -> list[str]:
     sha = _git("commit-tree", tree, "-m", f"Reel video for run {os.environ.get('GITHUB_RUN_NUMBER', '')}")
     _git("push", "-qf", "origin", f"{sha}:refs/heads/{BRANCH}")
     print(f"   Video hosted on the '{BRANCH}' branch ({sha[:7]})")
-    return [
-        f"https://cdn.jsdelivr.net/gh/{repo}@{sha}/{name}",          # served as video/mp4
-        f"https://raw.githubusercontent.com/{repo}/{sha}/{name}",
-    ]
+    sources = []
+    for base in (f"https://cdn.jsdelivr.net/gh/{repo}@{sha}", f"https://raw.githubusercontent.com/{repo}/{sha}"):
+        source = {"video_url": f"{base}/reel-{run}.mp4"}   # jsDelivr serves it as video/mp4
+        if cover:
+            source["cover_url"] = f"{base}/cover-{run}.jpg"
+        sources.append(source)
+    return sources
