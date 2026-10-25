@@ -8,6 +8,11 @@ on:
       count:
         description: "How many posters"
         default: "50"
+      style:
+        description: "mixed (every design) or cartoon (brand template with cartoon scenes)"
+        type: choice
+        options: [mixed, cartoon]
+        default: mixed
 
 permissions:
   contents: write
@@ -42,7 +47,7 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           POLLINATIONS_API_KEY: ${{ secrets.POLLINATIONS_API_KEY }}
-        run: python main.py samples --count "${{ inputs.count }}"
+        run: python -u main.py samples --count "${{ inputs.count }}" --style "${{ inputs.style }}"
 
       - name: Save them to the previews branch
         if: always()

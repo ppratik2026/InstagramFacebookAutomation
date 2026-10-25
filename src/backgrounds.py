@@ -99,19 +99,30 @@ def _keyed_image(prompt: str, out_path: Path, size: str) -> Path | None:
         return None
 
 
-def generate_free_ai_image(prompt: str, out_path: Path) -> Path | None:
-    """Free AI illustration from Pollinations (no key). None if it fails; never stops the run."""
-    # stylised 3D characters keep it clearly illustrative: never a real, recognisable person
-    full = (f"{prompt}, Pixar style 3D render, cinematic news thumbnail, vivid colours, dramatic rim lighting, "
-            "shallow depth of field, anonymous characters, no real person. "
-            "IMPORTANT: absolutely no text anywhere in the image - no letters, numbers, words, signs, sign boards, "
-            "banners, posters, labels, logos, stamps, price tags or watermarks; any board or screen must be blank")
-    if _keyed_image(full, out_path, "1024x1536"):   # with the free account key: a better model than keyless
-        print("Background: AI illustration (Pollinations key)")
+NO_TEXT = ("IMPORTANT: absolutely no text anywhere in the image - no letters, numbers, words, signs, sign boards, "
+           "banners, posters, labels, logos, stamps, price tags or watermarks; any board or screen must be blank")
+CARTOON_STYLE = ("flat 2D cartoon illustration, clean vector art with bold outlines, bright cheerful colours, simple "
+                 "shapes, Indian setting, generic cartoon characters that do not resemble any real person, "
+                 "editorial news illustration style")
+
+
+def generate_free_ai_image(prompt: str, out_path: Path, style: str = "3d") -> Path | None:
+    """Free AI illustration from Pollinations. style "cartoon": a landscape flat 2D cartoon scene (for the
+    brand template); "3d": a tall 3D scene. None if it fails; never stops the run."""
+    if style == "cartoon":
+        full = f"{prompt}. {CARTOON_STYLE}. {NO_TEXT}"
+        size, params = "1536x1024", {"width": 1536, "height": 1100}
+    else:
+        # stylised 3D characters keep it clearly illustrative: never a real, recognisable person
+        full = (f"{prompt}, Pixar style 3D render, cinematic news thumbnail, vivid colours, dramatic rim lighting, "
+                f"shallow depth of field, anonymous characters, no real person. {NO_TEXT}")
+        # a bit taller than 9:16: the cards show the top of the image, so the watermark strip at the bottom is cut off
+        size, params = "1024x1536", {"width": 1080, "height": 2040}
+    if _keyed_image(full, out_path, size):   # with the free account key: a better model than keyless
+        print(f"Background: AI {style} illustration (Pollinations key)")
         return out_path
     url = POLLINATIONS_IMAGE + urllib.parse.quote(full)
-    # a bit taller than 9:16: the cards show the top of the image, so the watermark strip at the bottom is cut off
-    params = {"width": 1080, "height": 2040, "nologo": "true", "seed": random.randint(1, 10**6)}
+    params |= {"nologo": "true", "seed": random.randint(1, 10**6)}
     for attempt in range(4):
         try:
             resp = requests.get(url, params=params, timeout=120)

@@ -135,7 +135,15 @@ def cmd_run(args, cfg):
         design = choose_design(story, cfg)
         background = cutout = None
         story.stamp = "" if not cfg["card"].get("stamps", False) else story.stamp
-        if cfg["card"].get("picture", "cutout") == "cutout":
+        if cfg["card"].get("picture", "cutout") == "cartoon":
+            # a flat 2D cartoon scene of the story (generic characters, never a real person's likeness)
+            from src.backgrounds import generate_free_ai_image
+            story.person = ""
+            design = "brand"
+            background = generate_free_ai_image(story.image_prompt, work_dir / "scene.jpg", "cartoon")
+            if not background:   # no picture service: the story's objects as a cut-out, else an icon
+                cutout = generate_cutout(story.object_prompt, work_dir / "cutout.png")
+        elif cfg["card"].get("picture", "cutout") == "cutout":
             # only the story's objects as a 3D cut-out: never a person (no AI faces, no real photos); without
             # a cut-out the design shows a big 3D icon
             story.person = ""
@@ -296,7 +304,6 @@ def cmd_from_issue(args, cfg):
 def cmd_samples(args, cfg):
     """Many different posters in one go (no reels, nothing posted): a different story for each, walking
     through the designs, colour looks and fonts so no two look the same. Writes samples/NN.png and sheets."""
-    from PIL import Image
 
     from src import designs
     from src.backgrounds import generate_cutout, get_background
@@ -306,6 +313,31 @@ def cmd_samples(args, cfg):
 
     out_dir = ROOT / "samples"
     out_dir.mkdir(exist_ok=True)
+    if args.style == "cartoon":   # the brand template with a cartoon scene, one story per category in turn
+        from src.backgrounds import generate_free_ai_image
+        from src.free_news import find_story
+        from src.history import is_repeat
+        made, previous, done = [], [], []
+        names = list(cfg["content"]["categories"])
+        for n in range(1, args.count + 1):
+            category = names[(n - 1) % len(names)]
+            print(f"\n[{n}/{args.count}] brand + cartoon - {category}")
+            try:
+                story, notes = find_story(cfg, previous, category)
+            except Exception as e:
+                print(f"   skipped: {e}")
+                continue
+            previous.append(re.search(r"^Headline: (.*)$", notes, re.M).group(1))
+            if is_repeat(story.title_en, done):
+                continue
+            done.append(story.title_en)
+            work = out_dir / f"{n:02d}"
+            work.mkdir(exist_ok=True)
+            scene = generate_free_ai_image(story.image_prompt, work / "scene.jpg", "cartoon")
+            made.append(render_card(story, cfg, work / "card.png", scene, None, "brand", None))
+            (work / "story.json").write_text(json.dumps(story.__dict__, ensure_ascii=False, indent=2), encoding="utf-8")
+        _sheets(made, out_dir)
+        return
     items = gather_items(cfg, [], list(cfg["content"]["categories"]), limit=200)
     # half bulletin (each colour look in turn), half the other designs in turn
     others = ["mag", "hero", "split", "paper", "classic"]
@@ -351,7 +383,13 @@ def cmd_samples(args, cfg):
             continue
         made.append(card)
         (work / "story.json").write_text(json.dumps(story.__dict__, ensure_ascii=False, indent=2), encoding="utf-8")
-    # contact sheets, 10 posters each, to look at them quickly
+    _sheets(made, out_dir)
+
+
+def _sheets(made: list[Path], out_dir: Path) -> None:
+    """Contact sheets, 10 posters each, to look at them quickly."""
+    from PIL import Image
+
     for start in range(0, len(made), 10):
         sheet = Image.new("RGB", (5 * 432, 2 * 768), "white")
         for i, path in enumerate(made[start:start + 10]):
@@ -485,6 +523,8 @@ def main():
 
     smp = sub.add_parser("samples", help="many different posters from different stories (nothing is posted)")
     smp.add_argument("--count", type=int, default=50)
+    smp.add_argument("--style", choices=["mixed", "cartoon"], default="mixed",
+                     help="mixed: every design in turn; cartoon: the brand template with cartoon scenes")
     smp.set_defaults(func=cmd_samples)
 
     sch = sub.add_parser("scheduler", help="post every hour from 10:00 to midnight IST (runs for --hours)")

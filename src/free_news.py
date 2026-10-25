@@ -98,9 +98,12 @@ CARD_FORMAT = """Return a JSON object with exactly these keys:
   "object_prompt": "English: the 1-2 main OBJECTS of the story for a cut-out 3D sticker, e.g. 'a burlap pension
                     money sack with gold coins and a calculator', 'a stack of silver bars and coins', 'a glowing light
                     bulb and an electricity tower', 'a police car with flashing lights'. Objects only, no people, no text",
-  "image_prompt": "English prompt for a dramatic 3D illustration of the scene. Show what happened with generic, anonymous
-                   characters (e.g. Indian police officers escorting handcuffed men seen from behind with faces hidden,
-                   officials at a podium, happy families), never a real or recognisable person, no text",
+  "image_prompt": "English description of ONE cartoon scene that shows what the story is about at a glance, e.g.
+                   'a busy Indian airport with cancelled flights and worried passengers with suitcases', 'Indian women
+                   cricketers in blue jerseys celebrating a century on a stadium pitch', 'a crowded vegetable market
+                   with shocked customers looking at prices'. Generic cartoon characters only: never a real or
+                   recognisable person (for a story about a named person, an ordinary character in their role);
+                   crime: police and handcuffs, people only from behind; no text, no signs with writing",
   "cta": "bottom line asking viewers to comment/share",
   "caption": "Instagram caption in Gujarati, 3-5 short lines, no hashtags",
   "hashtags": ["..."],

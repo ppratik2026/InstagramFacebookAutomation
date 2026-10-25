@@ -436,7 +436,8 @@ def render_card(story: NewsStory, cfg: dict, out_path: Path, background: Path | 
         fit_script = designs.FIT_SCRIPT
     elif design == "brand":
         from src import brand
-        page_html = brand.brand_page(story, date, cfg["card"]["handle"], _data_url(cutout) if cutout else None)
+        page_html = brand.brand_page(story, date, cfg["card"]["handle"], _data_url(cutout) if cutout else None,
+                                     image_url)
         fit_script = brand.FIT
     elif design == "bulletin":
         from src.bulletin import FIT, bulletin_page

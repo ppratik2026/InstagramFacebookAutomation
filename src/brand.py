@@ -58,6 +58,9 @@ body::before { content: ""; position: absolute; inset: 0; opacity: .07;
   background: radial-gradient(circle, rgba(255,255,255,.55) 0%%, %(accent)s55 35%%, transparent 70%%); }
 .hero .obj { position: relative; max-width: 78%%; max-height: 100%%; object-fit: contain;
   filter: drop-shadow(0 30px 30px rgba(0,0,0,.55)); }
+.hero .scene { position: relative; width: 100%%; height: 100%%; border-radius: 34px; background: center/cover no-repeat;
+  border: 6px solid rgba(255,255,255,.92); box-shadow: 0 22px 40px rgba(0,0,0,.5); }
+.hero .scene ~ .badge { left: -12px; bottom: -16px; }
 .hero .icon-big { position: relative; width: 420px; height: 420px; filter: drop-shadow(0 30px 30px rgba(0,0,0,.5)); }
 .badge { position: absolute; left: 0; bottom: 18px; max-width: 470px; background: %(accent)s; color: #111;
   border-radius: 24px; padding: 12px 28px 16px; transform: rotate(-4deg); box-shadow: 0 16px 30px rgba(0,0,0,.45);
@@ -141,13 +144,18 @@ def _rows(story) -> list[tuple[str, str, str]]:
     return unique[:3]
 
 
-def brand_page(story, date: str, handle: str, cutout_url: str | None = None) -> str:
+def brand_page(story, date: str, handle: str, cutout_url: str | None = None, scene_url: str | None = None) -> str:
+    """scene_url: a landscape cartoon scene for the picture zone; else the cut-out, else a big 3D icon."""
     label, icon, top, bottom, accent, value = LOOKS.get(story.category, LOOKS["government"])
     css = CSS % {"font": FONT, "body": BODY_FONT, "top": top, "bottom": bottom, "accent": accent, "value": value}
     story.style.update({"palette": story.category, "visual": story.visual or "checklist"})
     summary = story.summary or story.subheadline
-    picture = (f'<img class="obj" src="{cutout_url}" alt="">' if cutout_url
-               else icon_img(story.headline, "icon-big"))
+    if scene_url:
+        picture = f'<div class="scene" style="background-image:url({scene_url})"></div>'
+    elif cutout_url:
+        picture = f'<div class="glow"></div><img class="obj" src="{cutout_url}" alt="">'
+    else:
+        picture = f'<div class="glow"></div>{icon_img(story.headline, "icon-big")}'
     rows = "".join(
         f'<div class="row">{icon_img(key if key in available() else icon_key(key, "check"))}<div class="txt" data-fit data-max="54" data-min="26">'
         f'{f"<small>{esc(lab)}</small>" if lab else ""}<strong>{esc(val)}</strong></div></div>'
@@ -159,7 +167,7 @@ def brand_page(story, date: str, handle: str, cutout_url: str | None = None) -> 
   <div class="zone bar"><div class="chip">{icon_img(icon)}{esc(label)}</div><div class="date">{date}</div></div>
   <div class="zone hl" data-fit data-max="124" data-min="64"><div>{_headline(story)}</div></div>
   {f'<div class="zone sum" data-fit data-max="40" data-min="26"><div><b>શું થયું?</b>{highlight_numbers(summary)}</div></div>' if summary else ''}
-  <div class="zone hero"><div class="glow"></div>{picture}{_badge(story)}</div>
+  <div class="zone hero">{picture}{_badge(story)}</div>
   <div class="zone rows">{rows}</div>
   <div class="zone foot"><div class="cta">👉 આવા સમાચાર માટે ફોલો કરો {esc(handle)}</div>
     <div class="src">સ્રોત: {esc(story.source_name)}</div></div>
