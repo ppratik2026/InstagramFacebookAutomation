@@ -22,7 +22,7 @@ free:   RSS news → GitHub Models (Gujarati text) → Card image (HTML → PNG)
 
 ## ⭐ Roz ka tareeka: poora automatic
 
-`daily-reel.yml` roz **8:10, 13:10 aur 19:10 IST** pe apne aap chalta hai:
+`daily-reel.yml` roz **subah 10 se raat 8 baje tak har ghante** (11 post) apne aap chalta hai:
 
 1. News dhundhta hai aur Gujarati text likhta hai.
 2. Poster banata hai, Gemini-style posters jaisa ("bulletin" design: upar label, laal patti pe headline, bada number box, ✅ points, picture, CTA patti).
@@ -63,7 +63,7 @@ Ek reel mein 2 AI requests lagti hain. Groq ki free key daal doge to sabse bharo
 3. **Actions** tab → **Gujarat news reel** → **Run workflow**.
    - Pehli baar `publish` ka tick hata kar chalao. Video **Artifacts** mein milega, use download karke dekh lo.
    - Theek lage to tick laga kar chalao, Reel post ho jayegi.
-4. Uske baad yeh roz **8:10, 13:10 aur 19:10 IST** pe apne aap chalega. Time badalna ho to `.github/workflows/daily-reel.yml` mein `cron` badlo (time UTC mein hota hai, IST se 5:30 ghante peeche).
+4. Uske baad yeh roz **subah 10 se raat 8 baje tak har ghante** apne aap chalega. GitHub schedule kabhi 5–15 minute der se chalta hai. Time badalna ho to `.github/workflows/daily-reel.yml` mein `cron` badlo (time UTC mein hota hai, IST se 5:30 ghante peeche).
 
 ### Token auto-refresh (60 din wali problem)
 
