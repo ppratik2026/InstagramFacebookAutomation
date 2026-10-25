@@ -4,6 +4,7 @@ This is the fixed-design card: used when card.style is "template", and as the fa
 AI poster fails its proof-read.
 """
 import base64
+import os
 import html
 import random
 from datetime import datetime
@@ -371,6 +372,9 @@ def _info_page(story: NewsStory, cfg: dict, theme: dict, image: Path | None, fon
 
 def choose_design(story: NewsStory, cfg: dict, has_background: bool = True) -> str:
     """One of the designs that suits this story (by its mood), so the feed doesn't look repetitive."""
+    forced = os.environ.get("CARD_DESIGN", "").strip()   # e.g. from the workflow's "design" choice
+    if forced and forced != "auto" and (forced != "hero" or has_background):
+        return forced
     mood = designs.mood_of(story)
     allowed = cfg["card"].get("designs", ["mag", "hero", "split", "paper"])
     if "bulletin" in allowed and random.random() < cfg["card"].get("bulletin_share", 0.6):

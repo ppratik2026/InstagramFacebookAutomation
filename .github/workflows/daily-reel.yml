@@ -18,6 +18,11 @@ on:
           - crime
           - good_news
         default: any
+      design:
+        description: "Poster design"
+        type: choice
+        options: [auto, bulletin, mag, hero, split, paper]
+        default: auto
       publish:
         description: "Post to Instagram (untick to only make the video)"
         type: boolean
@@ -63,6 +68,7 @@ jobs:
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           POLLINATIONS_API_KEY: ${{ secrets.POLLINATIONS_API_KEY }}
+          CARD_DESIGN: ${{ inputs.design }}
         run: |
           ARGS=""
           if [ -n "${{ inputs.category }}" ] && [ "${{ inputs.category }}" != "any" ]; then ARGS="$ARGS --category ${{ inputs.category }}"; fi
