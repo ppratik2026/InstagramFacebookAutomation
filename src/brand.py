@@ -125,6 +125,51 @@ body::before { content: ""; position: absolute; inset: 0; opacity: .07;
 .step small { color: %(value)s; font-weight: 800; font-size: .6em; }
 .step strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
 
+/* style "numbers": a big accent number, the text on a frosted bar */
+.nums { height: 100%%; display: flex; flex-direction: column; justify-content: space-between; padding: 4px 0; }
+.num-row { height: 118px; display: flex; align-items: center; gap: 18px; }
+.num-row .n { width: 104px; flex-shrink: 0; text-align: center; font: 800 112px/1 '%(font)s', sans-serif; color: %(accent)s;
+  text-shadow: 0 6px 0 rgba(0,0,0,.35); }
+.num-row .txt { flex: 1; min-width: 0; height: 112px; display: flex; align-items: center; gap: 20px; padding: 6px 26px 6px 10px;
+  background: rgba(255,255,255,.14); border: 2px solid rgba(255,255,255,.3); border-radius: 26px; backdrop-filter: blur(6px); }
+.num-row .ic { width: 86px; height: 86px; flex-shrink: 0; }
+.num-row .t { flex: 1; min-width: 0; height: 100%%; display: flex; flex-direction: column; justify-content: center; line-height: 1.12; }
+.num-row small { color: %(accent)s; font-weight: 800; font-size: .6em; }
+.num-row strong { font-family: '%(font)s', sans-serif; font-weight: 800; color: #fff; }
+/* style "split": two cards side by side, the third one wide below */
+.split { height: 100%%; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 20px; padding: 6px 0; }
+.sp { background: #fff; border-radius: 30px; color: #161616; display: flex; align-items: center; gap: 16px; padding: 10px 22px 10px 14px;
+  box-shadow: 0 14px 26px rgba(0,0,0,.35); border-top: 10px solid %(accent)s; }
+.sp:nth-child(3) { grid-column: 1 / 3; }
+.sp .ic { width: 100px; height: 100px; flex-shrink: 0; padding: 12px; border-radius: 26px;
+  background: radial-gradient(circle at 35%% 30%%, #fff, %(accent)s); }
+.sp .t { flex: 1; min-width: 0; height: 150px; display: flex; flex-direction: column; justify-content: center; line-height: 1.12; }
+.sp small { color: %(value)s; font-weight: 800; font-size: .6em; }
+.sp strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+/* style "tickets": white tickets with cut notches, a dashed tear line before the icon stub */
+.tickets { height: 100%%; display: flex; flex-direction: column; justify-content: space-between; padding: 4px 0; }
+.ticket { height: 116px; display: flex; color: #161616; filter: drop-shadow(0 12px 18px rgba(0,0,0,.35)); }
+.ticket .t { flex: 1; min-width: 0; background: #fff; border-radius: 22px 0 0 22px; padding: 4px 30px;
+  display: flex; flex-direction: column; justify-content: center; line-height: 1.12;
+  -webkit-mask: radial-gradient(circle at 100%% 0, transparent 16px, #000 17px) top / 100%% 51%% no-repeat,
+                radial-gradient(circle at 100%% 100%%, transparent 16px, #000 17px) bottom / 100%% 51%% no-repeat; }
+.ticket .stub { width: 150px; flex-shrink: 0; background: %(accent)s; border-radius: 0 22px 22px 0; border-left: 5px dashed rgba(0,0,0,.25);
+  display: flex; align-items: center; justify-content: center;
+  -webkit-mask: radial-gradient(circle at 0 0, transparent 16px, #000 17px) top / 100%% 51%% no-repeat,
+                radial-gradient(circle at 0 100%%, transparent 16px, #000 17px) bottom / 100%% 51%% no-repeat; }
+.ticket .ic { width: 88px; height: 88px; }
+.ticket small { color: %(value)s; font-weight: 800; font-size: .6em; }
+.ticket strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+/* style "board": one white board, three rows split by thin lines, icons in accent squares */
+.board { height: 100%%; background: #fff; border-radius: 36px; padding: 10px 30px; color: #161616;
+  box-shadow: 0 18px 32px rgba(0,0,0,.4); border-left: 16px solid %(accent)s; display: flex; flex-direction: column; }
+.brow { flex: 1; min-height: 0; display: flex; align-items: center; gap: 22px; }
+.brow + .brow { border-top: 3px dashed #ddd; }
+.brow .ic { width: 92px; height: 92px; flex-shrink: 0; padding: 12px; border-radius: 24px; background: %(value)s1f; }
+.brow .t { flex: 1; min-width: 0; height: 104px; display: flex; flex-direction: column; justify-content: center; line-height: 1.12; }
+.brow small { color: %(value)s; font-weight: 800; font-size: .6em; }
+.brow strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+
 .foot { top: 1700px; height: 190px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .cta { background: %(accent)s; color: #111; border-radius: 50px; padding: 10px 40px; font: 800 40px/1.2 '%(font)s', sans-serif; }
 .src { font: 600 28px/1.2 '%(body)s', sans-serif; opacity: .85; }
@@ -193,7 +238,7 @@ def _rows(story) -> list[tuple[str, str, str]]:
     return unique[:3]
 
 
-LONG_ROWS = "cards"   # how rows too long for tiles are shown: cards, cols or steps
+LONG_ROWS = "cards"   # how rows too long for tiles are shown: cards, cols, steps, numbers, split, tickets or board
 SPARE_ICONS = ["pin", "megaphone", "people", "document", "star", "calendar", "check"]
 
 
@@ -223,6 +268,18 @@ def _rows_html(rows: list[tuple[str, str, str]], style: str | None = None) -> st
             f'<div class="step">{icon_img(key)}<div class="txt" data-fit data-max="52" data-min="28">'
             f'{small(label)}<strong>{esc(value)}</strong></div></div>'
             for key, label, value in rows) + "</div>"
+    if style == "numbers":
+        return '<div class="nums">' + "".join(
+            f'<div class="num-row"><div class="n">{i}</div><div class="txt">{icon_img(key)}'
+            f'<div class="t" data-fit data-max="50" data-min="26">{small(label)}<strong>{esc(value)}</strong></div></div></div>'
+            for i, (key, label, value) in enumerate(rows, 1)) + "</div>"
+    if style in ("split", "tickets", "board"):
+        outer, inner = {"split": ("split", "sp"), "tickets": ("tickets", "ticket"), "board": ("board", "brow")}[style]
+        def body(key, label, value):
+            text = f'<div class="t" data-fit data-max="52" data-min="26">{small(label)}<strong>{esc(value)}</strong></div>'
+            return text + f'<div class="stub">{icon_img(key)}</div>' if style == "tickets" else icon_img(key) + text
+        return f'<div class="{outer}">' + "".join(
+            f'<div class="{inner}">{body(*row)}</div>' for row in rows) + "</div>"
     return '<div class="rcards">' + "".join(
         f'<div class="rcard"><div class="side">{icon_img(key)}</div><div class="txt" data-fit data-max="54" data-min="28">'
         f'{small(label)}<strong>{esc(value)}</strong></div></div>'
