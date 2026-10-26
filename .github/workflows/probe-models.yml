@@ -1,0 +1,28 @@
+name: Probe GitHub Models
+on: workflow_dispatch
+permissions:
+  contents: read
+  models: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -q requests pyyaml
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python - <<'PY'
+          import os, yaml
+          from src.free_news import _post, _parse_json
+          cfg = yaml.safe_load(open("config.yaml"))
+          p = next(x for x in cfg["llm_providers"] if x["name"] == "github-models")
+          msgs = [{"role": "system", "content": "Reply with JSON only."},
+                  {"role": "user", "content": 'Return {"headline": "<a short Gujarati news headline about rain in Surat>"}'}]
+          for m in p["models"]:
+              r = _post(p, os.environ["GITHUB_TOKEN"], m, msgs, True)
+              print(m, r.status_code, r.text[:300] if r.status_code != 200 else _parse_json(r.json()["choices"][0]["message"]["content"]))
+          PY
