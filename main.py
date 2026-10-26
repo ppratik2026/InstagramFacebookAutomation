@@ -42,7 +42,8 @@ def post_reel(cfg: dict, video: Path, caption: str, ig=None) -> dict:
 
 def instagram(cfg: dict):
     from src.publisher import Instagram
-    return Instagram(require_env("IG_USER_ID"), require_env("IG_ACCESS_TOKEN"), cfg["instagram"]["api_version"])
+    return Instagram(require_env("IG_USER_ID"), require_env("IG_ACCESS_TOKEN"), cfg["instagram"]["api_version"],
+                     cfg["instagram"].get("collaborators"))
 
 
 def cmd_run(args, cfg):

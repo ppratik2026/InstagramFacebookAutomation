@@ -109,4 +109,7 @@ schedule:
 
 instagram:
   api_version: "v21.0"
+  # up to 3 public Instagram accounts invited as collaborators on every reel, e.g. ["friendpage"]; the reel
+  # then shows on their profile too once they accept the invite (in their Instagram notifications)
+  collaborators: []
   share_to_feed: true

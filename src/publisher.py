@@ -1,4 +1,5 @@
 """Publish Reels with the Instagram API (Instagram Login): from a public video URL, or a resumable upload."""
+import json
 import time
 from pathlib import Path
 
@@ -24,8 +25,10 @@ def _check(resp: requests.Response) -> dict:
 
 
 class Instagram:
-    def __init__(self, user_id: str, token: str, api_version: str = "v21.0"):
+    def __init__(self, user_id: str, token: str, api_version: str = "v21.0", collaborators: list[str] | None = None):
         self.user_id = user_id
+        # up to 3 public accounts invited as collaborators (each must accept the invite in the app)
+        self.collaborators = [c.strip().lstrip("@") for c in (collaborators or []) if c.strip()][:3]
         self.token = token
         self.version = api_version
         self.base = f"{GRAPH}/{api_version}"
@@ -69,13 +72,24 @@ class Instagram:
         return {"media_id": media_id, "permalink": info.get("permalink")}
 
     def _container(self, source: dict, caption: str, share_to_feed: bool) -> str:
-        container = _check(requests.post(f"{self.base}/{self.user_id}/media", data={
+        data = {
             "media_type": "REELS",
             **source,
             "caption": caption,
             "share_to_feed": "true" if share_to_feed else "false",
             "access_token": self.token,
-        }, timeout=60))
+        }
+        if self.collaborators:
+            data["collaborators"] = json.dumps(self.collaborators)
+        try:
+            container = _check(requests.post(f"{self.base}/{self.user_id}/media", data=data, timeout=60))
+        except InstagramError as e:
+            if "collaborators" not in data:
+                raise
+            # a collaborator Instagram refuses (private, wrong name...) never stops the post
+            print(f"   Collaborators {self.collaborators} refused ({e}); posting without them.")
+            data.pop("collaborators")
+            container = _check(requests.post(f"{self.base}/{self.user_id}/media", data=data, timeout=60))
         print(f"Created container {container['id']}")
         return container["id"]
 
