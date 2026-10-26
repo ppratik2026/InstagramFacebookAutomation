@@ -534,6 +534,75 @@ body::before { content: ""; position: absolute; inset: 0; opacity: .07;
 .fr .t { width: 100%%; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; line-height: 1.12; }
 .fr strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
 
+/* style "kites": three Uttarayan kites, the fact in the middle of each, a tail of bows below */
+.kites { height: 100%%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; align-items: start; }
+.kite { position: relative; height: 100%%; display: flex; justify-content: center; }
+.kite .sq { position: absolute; top: 18px; width: 218px; height: 218px; transform: rotate(45deg); border-radius: 10px;
+  background: linear-gradient(135deg, %(accent)s 50%%, #ff7a3d 50%%); box-shadow: 0 14px 22px rgba(0,0,0,.4);
+  border: 4px solid rgba(255,255,255,.8); }
+.kite:nth-child(2) .sq { background: linear-gradient(135deg, #fff 50%%, #4fc3ff 50%%); top: 4px; }
+.kite:nth-child(3) .sq { background: linear-gradient(135deg, #ff8fd8 50%%, %(accent)s 50%%); }
+.kite .sq::before, .kite .sq::after { content: ""; position: absolute; background: rgba(0,0,0,.25); }
+.kite .sq::before { left: 0; top: 0; width: 141%%; height: 4px; transform-origin: 0 0; transform: rotate(45deg); }
+.kite .tail { position: absolute; top: 272px; left: 50%%; width: 4px; height: 110px; background: rgba(255,255,255,.7); }
+.kite .tail::after { content: "▶◀"; position: absolute; top: 60px; left: -18px; color: %(accent)s; font-size: 22px; letter-spacing: -6px; }
+.kite .in { position: relative; z-index: 1; margin-top: 92px; width: 250px; height: 150px; background: rgba(255,255,255,.95); border-radius: 26px;
+  box-shadow: 0 6px 12px rgba(0,0,0,.25);
+  color: #161616; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 14px; }
+.kite:nth-child(2) .in { margin-top: 78px; }
+.kite .ic { width: 44px; height: 44px; flex-shrink: 0; }
+.kite small { color: %(value)s; font: 800 22px/1.2 '%(body)s', sans-serif; }
+.kite .t { width: 100%%; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; line-height: 1.1; }
+.kite strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+/* style "clipboard": a clipboard with a metal clip, the facts as ticked lines */
+.clip { height: 100%%; position: relative; padding-top: 24px; }
+.clip .boardc { height: 100%%; border-radius: 26px; background: #b8834e; padding: 34px 22px 18px; box-shadow: 0 18px 30px rgba(0,0,0,.45); }
+.clip .sheet { height: 100%%; background: #fff; border-radius: 10px; padding: 6px 26px; display: flex; flex-direction: column;
+  background-image: repeating-linear-gradient(transparent 0 98px, #e3ecf7 98px 101px); }
+.clip .metal { position: absolute; top: 0; left: 50%%; margin-left: -130px; width: 260px; height: 70px; border-radius: 16px 16px 30px 30px;
+  background: linear-gradient(180deg, #f5f5f5, #9aa0a6); box-shadow: 0 6px 10px rgba(0,0,0,.35); z-index: 1; }
+.clip .metal::before { content: ""; position: absolute; left: 50%%; top: 12px; margin-left: -40px; width: 80px; height: 20px; border-radius: 10px;
+  background: #b8834e; }
+.ln { flex: 1; min-height: 0; display: flex; align-items: center; gap: 18px; color: #161616; }
+.ln .box { width: 54px; height: 54px; flex-shrink: 0; border: 5px solid %(value)s; border-radius: 10px; position: relative; }
+.ln .box::after { content: "✔"; position: absolute; left: 6px; top: -22px; font-size: 58px; color: #18a558; font-weight: 800; }
+.ln .ic { width: 66px; height: 66px; flex-shrink: 0; }
+.ln .t { flex: 1; min-width: 0; height: 90px; display: flex; flex-direction: column; justify-content: center; line-height: 1.12; }
+.ln small { color: %(value)s; font-weight: 800; font-size: .58em; }
+.ln strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+/* style "tvs": three old TV sets with rabbit-ear antennas, the fact on each screen */
+.tvs { height: 100%%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding-top: 60px; }
+.set { position: relative; border-radius: 26px; background: linear-gradient(180deg, #8b5a2b, #5e3a17); padding: 16px 16px 40px;
+  box-shadow: 0 16px 26px rgba(0,0,0,.45); }
+.set::before, .set::after { content: ""; position: absolute; top: -58px; left: 50%%; width: 5px; height: 66px; background: #ccc;
+  transform-origin: 50%% 100%%; }
+.set::before { transform: rotate(-30deg); } .set::after { transform: rotate(30deg); }
+.set .scr { height: 100%%; border-radius: 30px / 22px; background: radial-gradient(ellipse at 50%% 40%%, #ffffff, #dfe9e3);
+  color: #161616; padding: 8px 12px; display: flex; flex-direction: column; align-items: center; text-align: center;
+  box-shadow: inset 0 0 18px rgba(0,0,0,.35); border: 5px solid #2a1a0b; }
+.set .knobs { position: absolute; bottom: 8px; right: 22px; display: flex; gap: 10px; }
+.set .knobs i { width: 22px; height: 22px; border-radius: 50%%; background: #e0c08a; }
+.set .ic { width: 56px; height: 56px; flex-shrink: 0; }
+.set small { color: %(value)s; font: 800 22px/1.2 '%(body)s', sans-serif; }
+.set .t { width: 100%%; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; line-height: 1.1; }
+.set strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+/* style "balloons": three balloons on strings, the fact written on each */
+.balloons { height: 100%%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.bl { position: relative; display: flex; flex-direction: column; align-items: center; }
+.bl .ball { position: relative; width: 300px; height: 300px; border-radius: 50%% 50%% 48%% 48%% / 56%% 56%% 44%% 44%%;
+  background: radial-gradient(circle at 32%% 28%%, rgba(255,255,255,.75) 0 8%%, transparent 22%%), %(accent)s;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px 26px; color: #111;
+  box-shadow: inset -16px -20px 30px rgba(0,0,0,.18), 0 14px 22px rgba(0,0,0,.35); }
+.bl:nth-child(2) .ball { background: radial-gradient(circle at 32%% 28%%, rgba(255,255,255,.8) 0 8%%, transparent 22%%), #fff; margin-top: -10px; }
+.bl:nth-child(3) .ball { background: radial-gradient(circle at 32%% 28%%, rgba(255,255,255,.75) 0 8%%, transparent 22%%), #7fd3ff; }
+.bl .ball::after { content: ""; position: absolute; bottom: -14px; left: 50%%; margin-left: -12px; border: 12px solid transparent;
+  border-bottom: 18px solid; border-bottom-color: inherit; }
+.bl .str { width: 3px; flex: 1; background: rgba(255,255,255,.7); margin-top: 4px; }
+.bl .ic { width: 54px; height: 54px; flex-shrink: 0; }
+.bl small { color: %(value)s; font: 800 22px/1.2 '%(body)s', sans-serif; }
+.bl .t { width: 100%%; height: 130px; display: flex; align-items: center; justify-content: center; line-height: 1.1; }
+.bl strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+
 .foot { top: 1700px; height: 190px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .cta { background: %(accent)s; color: #111; border-radius: 50px; padding: 10px 40px; font: 800 40px/1.2 '%(font)s', sans-serif; }
 .src { font: 600 28px/1.2 '%(body)s', sans-serif; opacity: .85; }
@@ -609,7 +678,8 @@ LONG_ROWS = "cards"   # how rows too long for tiles are shown: cards, cols, step
 #   glass, bento, clay, aurora,
 #   hub, stairs, arrows, paper, magazine,
 #   road, rope, puzzle, pyramid,
-#   train, signpost, calendar or film
+#   train, signpost, calendar, film,
+#   kites, clipboard, tvs or balloons
 SPARE_ICONS = ["pin", "megaphone", "people", "document", "star", "calendar", "check"]
 
 
@@ -644,6 +714,24 @@ def _rows_html(rows: list[tuple[str, str, str]], style: str | None = None, hub_i
             f'<div class="num-row"><div class="n">{i}</div><div class="txt">{icon_img(key)}'
             f'<div class="t" data-fit data-max="50" data-min="26">{small(label)}<strong>{esc(value)}</strong></div></div></div>'
             for i, (key, label, value) in enumerate(rows, 1)) + "</div>"
+    if style == "kites":
+        return '<div class="kites">' + "".join(
+            f'<div class="kite"><div class="sq"></div><div class="tail"></div><div class="in">{icon_img(key)}{small(label)}'
+            f'<div class="t" data-fit data-max="36" data-min="18"><strong>{esc(value)}</strong></div></div></div>'
+            for key, label, value in rows) + "</div>"
+    if style == "clipboard":
+        return '<div class="clip"><div class="metal"></div><div class="boardc"><div class="sheet">' + "".join(
+            f'<div class="ln"><span class="box"></span>{icon_img(key)}<div class="t" data-fit data-max="44" data-min="22">'
+            f'{small(label)}<strong>{esc(value)}</strong></div></div>' for key, label, value in rows) + "</div></div></div>"
+    if style == "tvs":
+        return '<div class="tvs">' + "".join(
+            f'<div class="set"><div class="scr">{icon_img(key)}{small(label)}<div class="t" data-fit data-max="38" data-min="20">'
+            f'<strong>{esc(value)}</strong></div></div><div class="knobs"><i></i><i></i></div></div>'
+            for key, label, value in rows) + "</div>"
+    if style == "balloons":
+        return '<div class="balloons">' + "".join(
+            f'<div class="bl"><div class="ball">{icon_img(key)}{small(label)}<div class="t" data-fit data-max="38" data-min="20">'
+            f'<strong>{esc(value)}</strong></div></div><div class="str"></div></div>' for key, label, value in rows) + "</div>"
     if style == "train":
         return '<div class="train">' + "".join(
             f'<div class="coach"><div class="win">{icon_img(key)}{small(label)}<div class="t" data-fit data-max="40" data-min="22">'
