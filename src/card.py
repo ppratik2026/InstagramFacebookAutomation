@@ -251,6 +251,7 @@ ANIM_CSS = """<style>
   100% { transform: var(--t0); } }
 @keyframes riseUp { from { transform: translateY(160%) var(--t0); opacity: 0; } to { transform: var(--t0); opacity: 1; } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes glow { 0%, 100% { filter: none; } 50% { filter: brightness(1.5) drop-shadow(0 0 18px currentColor); } }
 @keyframes flash { from { opacity: .95; } to { opacity: 0; } }
 @keyframes shake { 0%, 100% { translate: 0 0; } 20% { translate: -14px 6px; } 40% { translate: 12px -8px; }
   60% { translate: -8px 4px; } 80% { translate: 6px -2px; } }
@@ -258,7 +259,7 @@ ANIM_CSS = """<style>
 </style>"""
 
 # [selector, animation, start s, duration s, stagger s]; each element animates once (first match wins)
-ANIM_JS = """(steps) => {
+ANIM_JS = """([steps, flashOn]) => {
   const done = new Set();
   for (const [sel, name, start, dur, stagger] of steps) {
     [...document.querySelectorAll(sel)].filter(el => !done.has(el)).forEach((el, i) => {
@@ -269,8 +270,10 @@ ANIM_JS = """(steps) => {
       el.style.animation = `${anim} ${dur}s cubic-bezier(.2,.9,.3,1.2) ${start + i * stagger}s both`;
     });
   }
-  const flash = document.createElement('div'); flash.id = 'flash';
-  flash.style.animation = 'flash .35s ease-out 0s both'; document.body.appendChild(flash);
+  if (flashOn) {
+    const flash = document.createElement('div'); flash.id = 'flash';
+    flash.style.animation = 'flash .35s ease-out 0s both'; document.body.appendChild(flash);
+  }
   const main = document.getElementById('main');
   if (main) main.style.animation = 'shake .3s linear 1.55s both';   // the stamp "hits" the poster
   document.getAnimations().forEach(a => a.pause());
@@ -307,11 +310,24 @@ ANIM_STEPS = [
 ]
 
 
-def _capture_intro(page, frames_dir: Path, seconds: float, fps: int) -> None:
+# The brand poster: the very first frame already shows the headline and the picture (people decide to
+# keep watching in the first second; a blank or white start makes them scroll on), then the rest pops in
+# within 1.5 seconds.
+BRAND_STEPS = [
+    [".hl .hi", "glow", 0.3, 0.7, 0],   # stays visible, only lights up for a moment
+    [".badge", "slam", 0.25, 0.4, 0],
+    [".tile, .circ, .note, .stat, .bx, .st, .ar, .core, .rd, .hang, .pz, .tier, .coach, .sgn, .page, .fr, .kite, .set, .bl, .katori, .sb, .memo, .stp", "popIn", 0.45, 0.35, 0.15],
+    [".rcard, .col, .step, .num-row, .sp, .ticket, .brow, .tab, .nrow, .strip-row, .tvrow, .cap, .cpanel, .key, .sign, .msg, .gl, .cl, .au, .hn, .mg, .pc, .pf, .ln", "slideAlt", 0.45, 0.35, 0.12],
+    [".foot", "fadeIn", 1.1, 0.3, 0],
+]
+
+
+def _capture_intro(page, frames_dir: Path, seconds: float, fps: int, steps: list | None = None,
+                   flash: bool = True) -> None:
     """Screenshot the intro animation frame by frame (deterministic, no screen recording)."""
     frames_dir.mkdir(parents=True, exist_ok=True)
     page.add_style_tag(content=ANIM_CSS.removeprefix("<style>").removesuffix("</style>"))
-    page.evaluate(ANIM_JS, ANIM_STEPS)
+    page.evaluate(ANIM_JS, [steps or ANIM_STEPS, flash])
     for n in range(int(seconds * fps)):
         page.evaluate("t => document.getAnimations().forEach(a => a.currentTime = t)", n * 1000 / fps)
         page.screenshot(path=str(frames_dir / f"f{n:04d}.jpg"), type="jpeg", quality=92)
@@ -498,6 +514,9 @@ def render_card(story: NewsStory, cfg: dict, out_path: Path, background: Path | 
         page.screenshot(path=str(out_path))
         if intro_dir:
             vcfg = cfg["video"]
-            _capture_intro(page, intro_dir, vcfg.get("intro_seconds", 3.4), vcfg["fps"])
+            if design == "brand":
+                _capture_intro(page, intro_dir, vcfg.get("intro_seconds", 3.4), vcfg["fps"], BRAND_STEPS, flash=False)
+            else:
+                _capture_intro(page, intro_dir, vcfg.get("intro_seconds", 3.4), vcfg["fps"])
         browser.close()
     return out_path
