@@ -379,17 +379,17 @@ def _info_page(story: NewsStory, cfg: dict, theme: dict, image: Path | None, fon
 
 
 def choose_row_style(cfg: dict) -> str | None:
-    """How the brand poster draws its three facts: one of card.row_styles, not one of the last few posts' styles,
-    favouring the styles whose reels got more views. ROW_STYLE in the environment forces one (for tests)."""
+    """How the brand poster draws its three facts: the styles of card.row_styles one after another (the one after
+    the last post's), then from the first again. ROW_STYLE in the environment forces one (for tests)."""
     if os.environ.get("ROW_STYLE"):
         return os.environ["ROW_STYLE"]
     styles = cfg["card"].get("row_styles") or []
     if not styles:
         return None
-    from src.analytics import weighted_choice
     from src.history import load_history
-    recent = [(item.get("style") or {}).get("rows") for item in load_history()[-3:]]
-    return weighted_choice([s for s in styles if s not in recent] or styles, "rows")
+    last = next(((item.get("style") or {}).get("rows") for item in reversed(load_history())
+                 if (item.get("style") or {}).get("rows") in styles), None)
+    return styles[(styles.index(last) + 1) % len(styles)] if last else styles[0]
 
 
 def choose_design(story: NewsStory, cfg: dict, has_background: bool = True) -> str:
