@@ -292,6 +292,57 @@ body::before { content: ""; position: absolute; inset: 0; opacity: .07;
 .msg .tm { position: absolute; right: 20px; bottom: 8px; font: 600 24px/1 '%(body)s', sans-serif; color: #7a8a7a; }
 .msg .tm i { color: #34b7f1; font-style: normal; font-weight: 800; }
 
+/* style "glass": liquid glass, frosted bars with a light rim, a shine across the top and a glass icon bubble */
+.glassy { height: 100%%; display: flex; flex-direction: column; justify-content: space-between; padding: 6px 0; }
+.gl { position: relative; height: 114px; display: flex; align-items: center; gap: 20px; padding: 0 30px 0 12px; border-radius: 60px;
+  background: linear-gradient(180deg, rgba(255,255,255,.32), rgba(255,255,255,.08)); backdrop-filter: blur(14px) saturate(160%%);
+  border: 2px solid rgba(255,255,255,.55); box-shadow: inset 0 2px 0 rgba(255,255,255,.7), inset 0 -10px 24px rgba(0,0,0,.18),
+  0 16px 30px rgba(0,0,0,.35); overflow: hidden; }
+.gl::after { content: ""; position: absolute; left: 8%%; right: 8%%; top: 4px; height: 40%%; border-radius: 60px;
+  background: linear-gradient(180deg, rgba(255,255,255,.45), transparent); pointer-events: none; }
+.gl .ic { width: 92px; height: 92px; flex-shrink: 0; padding: 12px; border-radius: 50%%; background: rgba(255,255,255,.85);
+  box-shadow: 0 6px 14px rgba(0,0,0,.25); }
+.gl .t { flex: 1; min-width: 0; height: 96px; display: flex; flex-direction: column; justify-content: center; line-height: 1.12; }
+.gl small { color: %(accent)s; font-weight: 800; font-size: .58em; }
+.gl strong { font-family: '%(font)s', sans-serif; font-weight: 800; color: #fff; text-shadow: 0 2px 6px rgba(0,0,0,.35); }
+/* style "bento": an uneven bento grid, one tall accent tile and two white tiles */
+.bento { height: 100%%; display: grid; grid-template-columns: 1fr 1.55fr; grid-template-rows: 1fr 1fr; gap: 18px; padding: 4px 0; }
+.bx { border-radius: 34px; background: #fff; color: #161616; padding: 14px 24px; display: flex; align-items: center; gap: 16px;
+  box-shadow: 0 14px 26px rgba(0,0,0,.35); }
+.bx:first-child { grid-row: 1 / 3; background: %(accent)s; color: #111; flex-direction: column; justify-content: center;
+  align-items: flex-start; }
+.bx .ic { width: 84px; height: 84px; flex-shrink: 0; }
+.bx:first-child .ic { width: 120px; height: 120px; }
+.bx .t { flex: 1; min-width: 0; width: 100%%; display: flex; flex-direction: column; justify-content: center; line-height: 1.12;
+  height: 140px; }
+.bx:first-child .t { height: 190px; flex: none; }
+.bx small { color: %(value)s; font-weight: 800; font-size: .58em; }
+.bx:first-child small { color: rgba(0,0,0,.65); }
+.bx strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+/* style "clay": soft puffy clay buttons in pastel, inner highlights and a soft drop */
+.clay { height: 100%%; display: flex; flex-direction: column; justify-content: space-between; padding: 6px 0 12px; }
+.cl { height: 112px; display: flex; align-items: center; gap: 20px; padding: 0 30px 0 14px; border-radius: 40px; color: #222;
+  background: #fff4e6; box-shadow: inset 6px 6px 12px rgba(255,255,255,.9), inset -8px -10px 16px rgba(0,0,0,.12),
+  0 18px 26px rgba(0,0,0,.35); }
+.cl:nth-child(2) { background: #e9f3ff; } .cl:nth-child(3) { background: #f0ffe9; }
+.cl .ic { width: 88px; height: 88px; flex-shrink: 0; padding: 12px; border-radius: 30px; background: %(accent)s;
+  box-shadow: inset 4px 4px 8px rgba(255,255,255,.7), inset -5px -6px 10px rgba(0,0,0,.18), 0 6px 10px rgba(0,0,0,.18); }
+.cl .t { flex: 1; min-width: 0; height: 96px; display: flex; flex-direction: column; justify-content: center; line-height: 1.12; }
+.cl small { color: %(value)s; font-weight: 800; font-size: .58em; }
+.cl strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+/* style "aurora": dark cards with a glowing aurora gradient border */
+.aurora { height: 100%%; display: flex; flex-direction: column; justify-content: space-between; padding: 6px 0; }
+.au { position: relative; height: 112px; border-radius: 28px; padding: 4px;
+  background: linear-gradient(100deg, #ff4fd8, %(accent)s 35%%, #33e1ff 70%%, #7c5cff);
+  box-shadow: 0 0 26px rgba(124,92,255,.55), 0 12px 24px rgba(0,0,0,.4); }
+.au .in { height: 100%%; border-radius: 24px; background: linear-gradient(120deg, #120a24, #1d1438); display: flex; align-items: center;
+  gap: 20px; padding: 0 28px 0 12px; }
+.au .ic { width: 84px; height: 84px; flex-shrink: 0; padding: 10px; border-radius: 22px; background: rgba(255,255,255,.9); }
+.au .t { flex: 1; min-width: 0; height: 92px; display: flex; flex-direction: column; justify-content: center; line-height: 1.12; }
+.au small { font-weight: 800; font-size: .58em; background: linear-gradient(90deg, #ff8ae6, #7fe9ff); -webkit-background-clip: text;
+  color: transparent; }
+.au strong { font-family: '%(font)s', sans-serif; font-weight: 800; color: #fff; }
+
 .foot { top: 1700px; height: 190px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .cta { background: %(accent)s; color: #111; border-radius: 50px; padding: 10px 40px; font: 800 40px/1.2 '%(font)s', sans-serif; }
 .src { font: 600 28px/1.2 '%(body)s', sans-serif; opacity: .85; }
@@ -363,7 +414,8 @@ def _rows(story) -> list[tuple[str, str, str]]:
 LONG_ROWS = "cards"   # how rows too long for tiles are shown: cards, cols, steps, numbers, split, tickets, board,
 #   tabs, neon, circles, strips,
 #   tv, notes, capsules, stats,
-#   comic, keys, signs or chat
+#   comic, keys, signs, chat,
+#   glass, bento, clay or aurora
 SPARE_ICONS = ["pin", "megaphone", "people", "document", "star", "calendar", "check"]
 
 
@@ -398,6 +450,13 @@ def _rows_html(rows: list[tuple[str, str, str]], style: str | None = None) -> st
             f'<div class="num-row"><div class="n">{i}</div><div class="txt">{icon_img(key)}'
             f'<div class="t" data-fit data-max="50" data-min="26">{small(label)}<strong>{esc(value)}</strong></div></div></div>'
             for i, (key, label, value) in enumerate(rows, 1)) + "</div>"
+    if style in ("glass", "bento", "clay", "aurora"):
+        outer, inner = {"glass": ("glassy", "gl"), "bento": ("bento", "bx"), "clay": ("clay", "cl"), "aurora": ("aurora", "au")}[style]
+        def tile(key, label, value):
+            body = (f'{icon_img(key)}<div class="t" data-fit data-max="{46 if style == "bento" else 50}" data-min="24">'
+                    f'{small(label)}<strong>{esc(value)}</strong></div>')
+            return f'<div class="in">{body}</div>' if style == "aurora" else body
+        return f'<div class="{outer}">' + "".join(f'<div class="{inner}">{tile(*row)}</div>' for row in rows) + "</div>"
     if style in ("comic", "keys", "signs"):
         inner = {"comic": "cpanel", "keys": "key", "signs": "sign"}[style]
         arrow = '<div class="arr">➜</div>' if style == "signs" else ""
