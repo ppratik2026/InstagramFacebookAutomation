@@ -56,7 +56,9 @@ video:
   music_volume: 0.9               # music from assets/music/*.mp3 (random pick each run)
 
 free:
-  ai_images: true                 # free AI illustration (Pollinations) on the card; false = Pexels / emoji
+  ai_images: false                # true = try AI cartoon pictures first (needs image quota); false = scenes drawn in code
+  # no AI reachable at all (every free quota used up): still post, with the card text taken from the article
+  allow_plain_card: true
   # Whole poster (picture + Gujarati text) from the free image AI. Off: those models garble Gujarati letters.
   # The picture comes from the AI (POLLINATIONS_API_KEY gives the better gptimage model) and the text is
   # written by the card design, so it is always spelled right. Put e.g. ["gptimage"] here to try it anyway.
@@ -82,6 +84,10 @@ llm_providers:
     url: "https://api.groq.com/openai/v1/chat/completions"
     key_env: GROQ_API_KEY
     models: ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "qwen/qwen3-32b", "llama-3.1-8b-instant"]
+  - name: github-models               # free with the workflow's own GITHUB_TOKEN (permission models: read), no key to add
+    url: "https://models.github.ai/inference/chat/completions"
+    key_env: GITHUB_TOKEN
+    models: ["openai/gpt-4.1-mini", "openai/gpt-4o-mini", "openai/gpt-4.1"]
   - name: openrouter                  # free key, no card: https://openrouter.ai/keys
     url: "https://openrouter.ai/api/v1/chat/completions"
     key_env: OPENROUTER_API_KEY
@@ -104,7 +110,7 @@ gemini:
   poster_attempts: 3                    # regenerate if the proof-read finds mistakes
   ai_background: true                   # false = Pexels photo / theme colours only
   # cartoon scenes for the brand template (picture: cartoon), tried in order before the free services
-  cartoon_models: ["gemini-3.1-flash-image", "gemini-2.5-flash-image", "gemini-3-pro-image"]
+  cartoon_models: []   # empty: no image quota needed, the cartoon scenes are drawn in code (src/scenes.py)
 
 schedule:
   max_breaking_per_day: 6         # extra posts for really big breaking news, between the hourly posts

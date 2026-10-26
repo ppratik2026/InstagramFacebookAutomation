@@ -142,9 +142,12 @@ def cmd_run(args, cfg):
             story.person = ""
             design = "brand"
             from src.scenes import BY_CATEGORY, draw_scene
-            background = (generate_gemini_cartoon(story.image_prompt, cfg["gemini"].get("cartoon_models", []),
-                                                  work_dir / "scene.png")
-                          or generate_free_ai_image(story.image_prompt, work_dir / "scene.jpg", "cartoon", keyless=False))
+            background = None
+            if cfg["free"].get("ai_images", False):   # AI pictures need image quota; off = drawn scenes only
+                background = (generate_gemini_cartoon(story.image_prompt, cfg["gemini"].get("cartoon_models", []),
+                                                      work_dir / "scene.png")
+                              or generate_free_ai_image(story.image_prompt, work_dir / "scene.jpg", "cartoon",
+                                                        keyless=False))
             if not background:   # no image AI: a cartoon scene drawn in code (always works, never a 3D icon alone)
                 background = draw_scene(story.scene or BY_CATEGORY.get(story.category, "city"), story.props,
                                         work_dir / "scene-drawn.png")

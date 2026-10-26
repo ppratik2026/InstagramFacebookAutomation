@@ -327,27 +327,31 @@ def _shorten(text: str, limit: int) -> str:
 
 
 def _plain_card(item: FeedItem, category: str, article: str, hashtags_count: int) -> dict:
-    """Card text taken straight from the news item, for when no AI is reachable. Adds nothing new."""
+    """Card text taken straight from the news item, for when no AI is reachable (all free quotas used up), so
+    the hour is still posted. Adds nothing new: the headline, the first sentences and the date of the story."""
     head, rest = item.title, ""
     for sep in (":", "|", " - "):
         if sep in item.title:
             head, rest = (part.strip() for part in item.title.split(sep, 1))
             break
-    sentences = [x.strip() for x in re.split(r"(?<=[.।!?])\s+", article) if len(x.strip()) > 20]
+    sentences = [x.strip() for x in re.split(r"(?<=[.।!?])\s+", article) if 20 < len(x.strip())]
+    short = [x.rstrip(".") for x in sentences[1:] if len(x) <= 90][:3]   # facts for the three rows
     date = item.published.astimezone(IST)
+    summary = _shorten(sentences[0] if sentences else rest, 200)
     return {
         "category": category,
         "title_en": item.title,
         "kicker": KICKERS.get(category, KICKERS["government"]),
-        "headline": _shorten(head, 70),
-        "subheadline": _shorten(rest or (sentences[0] if sentences else ""), 90),
-        "facts": [{"label": "સ્રોત", "value": item.source},
-                  {"label": "તારીખ", "value": f"{date.day} {GUJARATI_MONTHS[date.month - 1]} {date.year}"}],
-        "summary": _shorten(" ".join(sentences[:2]), 220),
-        "points": [_shorten(x, 110) for x in sentences[2:6]],
+        "headline": _shorten(head, 80),
+        "subheadline": _shorten(rest, 90),
+        "facts": [{"label": "તારીખ", "value": f"{date.day} {GUJARATI_MONTHS[date.month - 1]}"}],
+        "summary": summary,
+        "points": short,
+        "visual": "checklist",
         "image_prompt": IMAGE_PROMPTS.get(category, IMAGE_PROMPTS["government"]),
         "cta": "તમારો અભિપ્રાય કોમેન્ટમાં જણાવો 👇",
-        "caption": _shorten(" ".join([item.title, *sentences[:2]]), 400),
+        "caption": "\n".join(["📰 " + head, *("👉 " + x for x in sentences[:3]), "", "તમારું શું માનવું છે? 👇"]),
+        "comment": "આ સમાચાર વિશે તમારો અભિપ્રાય જણાવો 👇",
         "hashtags": DEFAULT_HASHTAGS[:hashtags_count],
         "image_keywords": ["gujarat", "india news"],
     }
@@ -504,7 +508,8 @@ Return {{"index": <number>, "category": "<category>"}}.""")
         # no AI available: take the newest story, preferring ones with full text
         print("   No AI available to pick a story, taking the newest one.")
         pick = {}
-        item = next((i for i in items if len(i.text) > 400), items[0])
+        gujarati = [i for i in items if not re.search(r"[A-Za-z]{4}", i.title)]   # the card is printed in Gujarati
+        item = next((i for i in gujarati if len(i.text) > 400), gujarati[0] if gujarati else items[0])
     print(f"   Picked: [{item.source}] {item.title}")
     return write_card(cfg, item, pick.get("category") or item.category or wanted[0], wanted)
 
