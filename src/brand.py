@@ -170,6 +170,41 @@ body::before { content: ""; position: absolute; inset: 0; opacity: .07;
 .brow small { color: %(value)s; font-weight: 800; font-size: .6em; }
 .brow strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
 
+/* style "tabs": each bar wears its label as a coloured folder tab */
+.tabs { height: 100%%; display: flex; flex-direction: column; justify-content: space-between; padding: 0 0 4px; }
+.tab { position: relative; height: 104px; margin-top: 26px; background: #fff; color: #161616; border-radius: 0 26px 26px 26px;
+  display: flex; align-items: center; gap: 18px; padding: 6px 26px 6px 14px; box-shadow: 0 12px 22px rgba(0,0,0,.35); }
+.tab small { position: absolute; left: 0; top: -38px; height: 40px; background: %(accent)s; color: #111; border-radius: 18px 18px 0 0;
+  padding: 2px 24px; font: 800 26px/36px '%(body)s', sans-serif; white-space: nowrap; }
+.tab .ic { width: 80px; height: 80px; flex-shrink: 0; }
+.tab .t { flex: 1; min-width: 0; height: 92px; display: flex; align-items: center; line-height: 1.12; }
+.tab strong { font-family: '%(font)s', sans-serif; font-weight: 800; color: %(value)s; }
+/* style "neon": dark glassy bars with a glowing accent outline, no white */
+.neon { height: 100%%; display: flex; flex-direction: column; justify-content: space-between; padding: 6px 0; }
+.nrow { height: 112px; display: flex; align-items: center; gap: 20px; padding: 6px 28px 6px 12px; border-radius: 60px;
+  background: rgba(0,0,0,.35); border: 4px solid %(accent)s; box-shadow: 0 0 22px %(accent)s88, inset 0 0 18px %(accent)s44; }
+.nrow .ic { width: 90px; height: 90px; flex-shrink: 0; padding: 10px; border-radius: 50%%; background: radial-gradient(circle at 35%% 30%%, #fff, #ddd); }
+.nrow .t { flex: 1; min-width: 0; height: 96px; display: flex; flex-direction: column; justify-content: center; line-height: 1.12; }
+.nrow small { color: %(accent)s; font-weight: 800; font-size: .6em; }
+.nrow strong { font-family: '%(font)s', sans-serif; font-weight: 800; color: #fff; }
+/* style "circles": three big round icons in a row, the text straight on the background below */
+.circles { height: 100%%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.circ { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; }
+.circ .ic { width: 168px; height: 168px; flex-shrink: 0; padding: 26px; border-radius: 50%%; border: 8px solid %(accent)s;
+  background: radial-gradient(circle at 35%% 30%%, #fff, #f1f1f1); box-shadow: 0 14px 26px rgba(0,0,0,.4); }
+.circ small { color: %(accent)s; font: 800 28px/1.2 '%(body)s', sans-serif; }
+.circ .t { width: 100%%; flex: 1; min-height: 0; display: flex; align-items: flex-start; justify-content: center; line-height: 1.15; }
+.circ strong { font-family: '%(font)s', sans-serif; font-weight: 800; color: #fff; text-shadow: 0 4px 0 rgba(0,0,0,.35); }
+/* style "strips": bold accent-to-colour bars, white text, the icon in a white bubble on the right */
+.strips { height: 100%%; display: flex; flex-direction: column; justify-content: space-between; padding: 6px 0; }
+.strip-row { height: 116px; display: flex; align-items: center; gap: 18px; padding: 6px 10px 6px 30px; border-radius: 22px;
+  background: linear-gradient(100deg, %(value)s 0%%, %(value)s 55%%, %(accent)s 140%%); border: 3px solid rgba(255,255,255,.35);
+  box-shadow: 0 12px 24px rgba(0,0,0,.4); }
+.strip-row .t { flex: 1; min-width: 0; height: 100px; display: flex; flex-direction: column; justify-content: center; line-height: 1.12; }
+.strip-row small { color: %(accent)s; font-weight: 800; font-size: .6em; }
+.strip-row strong { font-family: '%(font)s', sans-serif; font-weight: 800; color: #fff; }
+.strip-row .ic { width: 96px; height: 96px; flex-shrink: 0; padding: 12px; border-radius: 50%%; background: #fff; }
+
 .foot { top: 1700px; height: 190px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .cta { background: %(accent)s; color: #111; border-radius: 50px; padding: 10px 40px; font: 800 40px/1.2 '%(font)s', sans-serif; }
 .src { font: 600 28px/1.2 '%(body)s', sans-serif; opacity: .85; }
@@ -238,7 +273,8 @@ def _rows(story) -> list[tuple[str, str, str]]:
     return unique[:3]
 
 
-LONG_ROWS = "cards"   # how rows too long for tiles are shown: cards, cols, steps, numbers, split, tickets or board
+LONG_ROWS = "cards"   # how rows too long for tiles are shown: cards, cols, steps, numbers, split, tickets, board,
+#   tabs, neon, circles or strips
 SPARE_ICONS = ["pin", "megaphone", "people", "document", "star", "calendar", "check"]
 
 
@@ -273,6 +309,20 @@ def _rows_html(rows: list[tuple[str, str, str]], style: str | None = None) -> st
             f'<div class="num-row"><div class="n">{i}</div><div class="txt">{icon_img(key)}'
             f'<div class="t" data-fit data-max="50" data-min="26">{small(label)}<strong>{esc(value)}</strong></div></div></div>'
             for i, (key, label, value) in enumerate(rows, 1)) + "</div>"
+    if style == "tabs":
+        return '<div class="tabs">' + "".join(
+            f'<div class="tab">{small(label or f"મુદ્દો {i}")}{icon_img(key)}<div class="t" data-fit data-max="52" data-min="26">'
+            f'<strong>{esc(value)}</strong></div></div>' for i, (key, label, value) in enumerate(rows, 1)) + "</div>"
+    if style == "circles":
+        return '<div class="circles">' + "".join(
+            f'<div class="circ">{icon_img(key)}{small(label)}<div class="t" data-fit data-max="46" data-min="24">'
+            f'<strong>{esc(value)}</strong></div></div>' for key, label, value in rows) + "</div>"
+    if style in ("neon", "strips"):
+        inner = {"neon": "nrow", "strips": "strip-row"}[style]
+        def line(key, label, value):
+            text = f'<div class="t" data-fit data-max="52" data-min="26">{small(label)}<strong>{esc(value)}</strong></div>'
+            return text + icon_img(key) if style == "strips" else icon_img(key) + text
+        return f'<div class="{style}">' + "".join(f'<div class="{inner}">{line(*row)}</div>' for row in rows) + "</div>"
     if style in ("split", "tickets", "board"):
         outer, inner = {"split": ("split", "sp"), "tickets": ("tickets", "ticket"), "board": ("board", "brow")}[style]
         def body(key, label, value):
