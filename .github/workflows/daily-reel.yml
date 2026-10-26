@@ -121,6 +121,7 @@ jobs:
           git fetch origin previews:previews 2>/dev/null || true
           git worktree add -f /tmp/prev previews 2>/dev/null || (git worktree add --detach /tmp/prev && cd /tmp/prev && git checkout --orphan previews && git rm -rfq .)
           cp "$card" "/tmp/prev/run-${{ github.run_number }}.png"
+          cp "$(dirname "$card")/caption.txt" "/tmp/prev/run-${{ github.run_number }}.txt" 2>/dev/null || true
           cd /tmp/prev
           git add . && git commit -qm "Preview run ${{ github.run_number }}: $title" && git push -q origin previews
           echo "Preview: https://github.com/${{ github.repository }}/blob/previews/run-${{ github.run_number }}.png"
