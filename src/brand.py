@@ -205,6 +205,47 @@ body::before { content: ""; position: absolute; inset: 0; opacity: .07;
 .strip-row strong { font-family: '%(font)s', sans-serif; font-weight: 800; color: #fff; }
 .strip-row .ic { width: 96px; height: 96px; flex-shrink: 0; padding: 12px; border-radius: 50%%; background: #fff; }
 
+/* style "tv": TV-news lower thirds, a slanted accent label block, then a white bar */
+.tv { height: 100%%; display: flex; flex-direction: column; justify-content: space-between; padding: 6px 0; }
+.tvrow { height: 112px; display: flex; filter: drop-shadow(0 10px 16px rgba(0,0,0,.4)); }
+.tvrow .lab { width: 250px; flex-shrink: 0; background: %(accent)s; color: #111; display: flex; align-items: center; gap: 10px;
+  padding: 0 34px 0 16px; clip-path: polygon(0 0, 100%% 0, calc(100%% - 30px) 100%%, 0 100%%);
+  font: 800 30px/1.1 '%(body)s', sans-serif; }
+.tvrow .lab .ic { width: 64px; height: 64px; flex-shrink: 0; }
+.tvrow .t { flex: 1; min-width: 0; margin-left: -26px; background: #fff; color: #161616; padding: 4px 26px 4px 48px;
+  clip-path: polygon(30px 0, 100%% 0, 100%% 100%%, 0 100%%); display: flex; align-items: center; line-height: 1.12;
+  border-bottom: 8px solid %(value)s; }
+.tvrow strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+/* style "notes": three sticky notes pinned in a row */
+.notes { height: 100%%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; padding: 30px 6px 10px; }
+.note { position: relative; background: linear-gradient(170deg, #fffbe0, #fff2a8); color: #2a2200; border-radius: 6px 6px 30px 6px;
+  box-shadow: 0 16px 24px rgba(0,0,0,.4); padding: 64px 16px 16px; display: flex; flex-direction: column; align-items: center;
+  text-align: center; gap: 6px; }
+.note:nth-child(1) { transform: rotate(-3deg); } .note:nth-child(2) { transform: rotate(2deg); background: linear-gradient(170deg, #fff, #eaf4ff); }
+.note:nth-child(3) { transform: rotate(-2deg); background: linear-gradient(170deg, #fff, #ffe8ec); }
+.note .ic { position: absolute; top: -34px; left: 50%%; margin-left: -46px; width: 92px; height: 92px;
+  filter: drop-shadow(0 8px 8px rgba(0,0,0,.3)); }
+.note small { color: %(value)s; font: 800 26px/1.2 '%(body)s', sans-serif; }
+.note .t { width: 100%%; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; line-height: 1.15; }
+.note strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+/* style "capsules": one capsule per row, the label half in colour, the value half white */
+.caps { height: 100%%; display: flex; flex-direction: column; justify-content: space-between; padding: 6px 0; }
+.cap { height: 112px; display: flex; border-radius: 60px; overflow: hidden; background: #fff; box-shadow: 0 12px 22px rgba(0,0,0,.35); }
+.cap .lab { width: 290px; flex-shrink: 0; background: %(value)s; color: #fff; display: flex; align-items: center; gap: 12px;
+  padding: 0 18px 0 14px; font: 800 30px/1.15 '%(body)s', sans-serif; border-right: 8px solid %(accent)s; }
+.cap .lab .ic { width: 82px; height: 82px; flex-shrink: 0; padding: 8px; border-radius: 50%%; background: #fff; }
+.cap .t { flex: 1; min-width: 0; padding: 4px 34px 4px 26px; display: flex; align-items: center; color: #161616; line-height: 1.12; }
+.cap strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+/* style "stats": dark stat cards, icon in the corner, the value large in accent */
+.stats { height: 100%%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 10px 0; }
+.stat { position: relative; border-radius: 30px; background: linear-gradient(160deg, rgba(255,255,255,.2), rgba(0,0,0,.35));
+  border: 3px solid rgba(255,255,255,.3); padding: 22px 18px; display: flex; flex-direction: column; gap: 8px;
+  box-shadow: 0 14px 26px rgba(0,0,0,.4); }
+.stat .ic { width: 84px; height: 84px; }
+.stat small { color: rgba(255,255,255,.85); font: 700 28px/1.2 '%(body)s', sans-serif; }
+.stat .t { height: 168px; display: flex; align-items: center; line-height: 1.15; }
+.stat strong { font-family: '%(font)s', sans-serif; font-weight: 800; color: %(accent)s; }
+
 .foot { top: 1700px; height: 190px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .cta { background: %(accent)s; color: #111; border-radius: 50px; padding: 10px 40px; font: 800 40px/1.2 '%(font)s', sans-serif; }
 .src { font: 600 28px/1.2 '%(body)s', sans-serif; opacity: .85; }
@@ -274,7 +315,8 @@ def _rows(story) -> list[tuple[str, str, str]]:
 
 
 LONG_ROWS = "cards"   # how rows too long for tiles are shown: cards, cols, steps, numbers, split, tickets, board,
-#   tabs, neon, circles or strips
+#   tabs, neon, circles, strips,
+#   tv, notes, capsules or stats
 SPARE_ICONS = ["pin", "megaphone", "people", "document", "star", "calendar", "check"]
 
 
@@ -309,6 +351,17 @@ def _rows_html(rows: list[tuple[str, str, str]], style: str | None = None) -> st
             f'<div class="num-row"><div class="n">{i}</div><div class="txt">{icon_img(key)}'
             f'<div class="t" data-fit data-max="50" data-min="26">{small(label)}<strong>{esc(value)}</strong></div></div></div>'
             for i, (key, label, value) in enumerate(rows, 1)) + "</div>"
+    if style in ("tv", "capsules"):
+        outer, inner = {"tv": ("tv", "tvrow"), "capsules": ("caps", "cap")}[style]
+        return f'<div class="{outer}">' + "".join(
+            f'<div class="{inner}"><div class="lab">{icon_img(key)}<span>{esc(label or f"મુદ્દો {i}")}</span></div>'
+            f'<div class="t" data-fit data-max="50" data-min="26"><strong>{esc(value)}</strong></div></div>'
+            for i, (key, label, value) in enumerate(rows, 1)) + "</div>"
+    if style in ("notes", "stats"):
+        inner = {"notes": "note", "stats": "stat"}[style]
+        return f'<div class="{style}">' + "".join(
+            f'<div class="{inner}">{icon_img(key)}{small(label)}<div class="t" data-fit data-max="46" data-min="24">'
+            f'<strong>{esc(value)}</strong></div></div>' for key, label, value in rows) + "</div>"
     if style == "tabs":
         return '<div class="tabs">' + "".join(
             f'<div class="tab">{small(label or f"મુદ્દો {i}")}{icon_img(key)}<div class="t" data-fit data-max="52" data-min="26">'
