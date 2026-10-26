@@ -17,10 +17,10 @@ from src.icons import available, icon_img, icon_key
 
 # category -> (label, icon, background top, background bottom, accent, value colour on the white rows)
 LOOKS = {
-    "government": ("સરકારી જાહેરાત", "govt", "#0d3a8c", "#061a42", "#ffc93c", "#0d3a8c"),
+    "government": ("સરકારી જાહેરાત", "govt", "#1a237e", "#070b33", "#ff9933", "#1a237e"),
     "politics": ("રાજકારણ", "vote", "#4a1676", "#1b0630", "#ffb347", "#4a1676"),
-    "crime": ("ક્રાઇમ", "police", "#5c0b0b", "#120404", "#ff4d4d", "#b3001b"),
-    "trending": ("ટ્રેન્ડિંગ", "fire", "#8a3300", "#2b1000", "#ffd23f", "#c2410c"),
+    "crime": ("ક્રાઇમ", "police", "#1c1c1c", "#000000", "#ff2b2b", "#c40000"),
+    "trending": ("ટ્રેન્ડિંગ", "fire", "#0a3d91", "#020f2b", "#00e5ff", "#0a3d91"),
     "good_news": ("સારા સમાચાર", "trophy", "#0d5c34", "#03231a", "#ffe14d", "#0d6b3a"),
 }
 
