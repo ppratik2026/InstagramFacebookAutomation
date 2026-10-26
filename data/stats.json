@@ -7,19 +7,19 @@
   "shares": 0,
   "saved": 0,
   "ig_reels_avg_watch_time": 2385,
-  "age_hours": 29.7,
-  "updated": "2026-10-26T10:32:26+00:00"
+  "age_hours": 32.7,
+  "updated": "2026-10-26T13:31:54+00:00"
  },
  "17888483280485319": {
   "views": 114,
-  "reach": 107,
+  "reach": 108,
   "likes": 2,
   "comments": 0,
   "shares": 0,
   "saved": 0,
   "ig_reels_avg_watch_time": 4244,
-  "age_hours": 26.4,
-  "updated": "2026-10-26T10:32:26+00:00"
+  "age_hours": 29.4,
+  "updated": "2026-10-26T13:31:54+00:00"
  },
  "18494310871107088": {
   "views": 128,
@@ -29,8 +29,8 @@
   "shares": 0,
   "saved": 0,
   "ig_reels_avg_watch_time": 3314,
-  "age_hours": 25.0,
-  "updated": "2026-10-26T10:32:26+00:00"
+  "age_hours": 28.0,
+  "updated": "2026-10-26T13:31:54+00:00"
  },
  "18133389448715994": {
   "views": 162,
@@ -40,30 +40,30 @@
   "shares": 0,
   "saved": 0,
   "ig_reels_avg_watch_time": 2787,
-  "age_hours": 24.0,
-  "updated": "2026-10-26T10:32:26+00:00"
+  "age_hours": 27.0,
+  "updated": "2026-10-26T13:31:54+00:00"
  },
  "18119377742072399": {
-  "views": 118,
-  "reach": 101,
+  "views": 123,
+  "reach": 108,
   "likes": 3,
   "comments": 0,
   "shares": 0,
   "saved": 0,
-  "ig_reels_avg_watch_time": 3225,
-  "age_hours": 23.0,
-  "updated": "2026-10-26T10:32:26+00:00"
+  "ig_reels_avg_watch_time": 3110,
+  "age_hours": 26.0,
+  "updated": "2026-10-26T13:31:54+00:00"
  },
  "18377096245210627": {
-  "views": 200,
-  "reach": 166,
+  "views": 205,
+  "reach": 169,
   "likes": 1,
   "comments": 0,
   "shares": 0,
   "saved": 0,
-  "ig_reels_avg_watch_time": 4271,
-  "age_hours": 22.0,
-  "updated": "2026-10-26T10:32:26+00:00"
+  "ig_reels_avg_watch_time": 4382,
+  "age_hours": 25.0,
+  "updated": "2026-10-26T13:31:54+00:00"
  },
  "18123440077898587": {
   "views": 144,
@@ -73,8 +73,8 @@
   "shares": 0,
   "saved": 0,
   "ig_reels_avg_watch_time": 5151,
-  "age_hours": 21.0,
-  "updated": "2026-10-26T10:32:26+00:00"
+  "age_hours": 24.0,
+  "updated": "2026-10-26T13:31:54+00:00"
  },
  "18109034326953206": {
   "views": 146,
@@ -84,8 +84,8 @@
   "shares": 0,
   "saved": 0,
   "ig_reels_avg_watch_time": 5108,
-  "age_hours": 20.0,
-  "updated": "2026-10-26T10:32:26+00:00"
+  "age_hours": 23.0,
+  "updated": "2026-10-26T13:31:54+00:00"
  },
  "18112681175266273": {
   "views": 135,
@@ -95,8 +95,8 @@
   "shares": 0,
   "saved": 0,
   "ig_reels_avg_watch_time": 4490,
-  "age_hours": 19.0,
-  "updated": "2026-10-26T10:32:26+00:00"
+  "age_hours": 22.0,
+  "updated": "2026-10-26T13:31:54+00:00"
  },
  "18169158100476831": {
   "views": 143,
@@ -106,7 +106,40 @@
   "shares": 0,
   "saved": 0,
   "ig_reels_avg_watch_time": 3813,
-  "age_hours": 16.0,
-  "updated": "2026-10-26T10:32:26+00:00"
+  "age_hours": 19.0,
+  "updated": "2026-10-26T13:31:54+00:00"
+ },
+ "18372656197244248": {
+  "views": 114,
+  "reach": 99,
+  "likes": 0,
+  "comments": 0,
+  "shares": 0,
+  "saved": 0,
+  "ig_reels_avg_watch_time": 2179,
+  "age_hours": 8.9,
+  "updated": "2026-10-26T13:31:54+00:00"
+ },
+ "17923743810223483": {
+  "views": 128,
+  "reach": 110,
+  "likes": 1,
+  "comments": 0,
+  "shares": 0,
+  "saved": 0,
+  "ig_reels_avg_watch_time": 2967,
+  "age_hours": 7.9,
+  "updated": "2026-10-26T13:31:54+00:00"
+ },
+ "18010321218005438": {
+  "views": 117,
+  "reach": 107,
+  "likes": 1,
+  "comments": 0,
+  "shares": 0,
+  "saved": 0,
+  "ig_reels_avg_watch_time": 3907,
+  "age_hours": 7.0,
+  "updated": "2026-10-26T13:31:54+00:00"
  }
 }
