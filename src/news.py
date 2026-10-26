@@ -183,7 +183,7 @@ who announced it, and the source names with URLs and publish dates."""
 
 
 def find_story(cfg: dict, previous: list[str], category: str | None = None) -> tuple[NewsStory, str]:
-    client = genai.Client()  # reads GEMINI_API_KEY
+    client = genai.Client(http_options={"timeout": 150_000})  # reads GEMINI_API_KEY
     notes = _research(client, cfg, previous, category)
 
     response = client.models.generate_content(

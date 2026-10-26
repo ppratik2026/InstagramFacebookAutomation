@@ -221,7 +221,7 @@ def _verify(client: genai.Client, model: str, image: bytes, story: NewsStory) ->
 def make_poster(story: NewsStory, cfg: dict, out_path: Path) -> Path | None:
     """Return the path of a verified poster, or None if no attempt passed the check."""
     gcfg = cfg["gemini"]
-    client = genai.Client()
+    client = genai.Client(http_options={"timeout": 150_000})
     fix = ""
     for attempt in range(1, gcfg.get("poster_attempts", 3) + 1):
         for model in gcfg["poster_models"]:

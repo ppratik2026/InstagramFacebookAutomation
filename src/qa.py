@@ -34,7 +34,7 @@ Check it like a strict designer and editor, and list every problem briefly in En
 - stamps, stickers, banners or labels that do not fit this news, or that cover important text
 - a picture that has nothing to do with the news, or that could mislead (e.g. a random face for a named person)
 Then give a score from 1 (do not post) to 10 (excellent, ready to post)."""
-    client = genai.Client()
+    client = genai.Client(http_options={"timeout": 150_000})
     for model in MODELS:
         for attempt in range(2):
             try:

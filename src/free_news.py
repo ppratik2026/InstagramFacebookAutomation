@@ -216,7 +216,7 @@ def _gemini_chat(model: str, system: str, user: str) -> dict:
     from google import genai
     from google.genai import types
 
-    client = genai.Client()
+    client = genai.Client(http_options={"timeout": 150_000})
     for attempt in range(2):
         try:
             response = client.models.generate_content(

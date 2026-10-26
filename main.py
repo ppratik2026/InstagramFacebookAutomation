@@ -450,6 +450,15 @@ def cmd_scheduler(args, cfg):
                 break
             git("pull", "-q", "--rebase", "origin", branch)
 
+    def attempt(command: list[str]) -> bool:
+        """One `main.py` run. A run that hangs (e.g. an AI service that never answers) is stopped after 25
+        minutes, so it cannot block the posts of the following hours."""
+        try:
+            return subprocess.run([sys.executable, "-u", "main.py", *command], timeout=25 * 60).returncode == 0
+        except subprocess.TimeoutExpired:
+            print("   The run took over 25 minutes and was stopped; trying again later.", flush=True)
+            return False
+
     max_extra = cfg.get("schedule", {}).get("max_breaking_per_day", 6)
     checked_hour = ""
     while True:
@@ -459,7 +468,7 @@ def cmd_scheduler(args, cfg):
             posts = posts_ist()
             if not any(p.strftime("%Y%m%d%H") == now.strftime("%Y%m%d%H") for p in posts):
                 print(f"\n=== {now:%d %b %H:%M} IST: hourly post ===", flush=True)
-                if subprocess.run([sys.executable, "-u", "main.py", "run"]).returncode == 0:
+                if attempt(["run"]):
                     save(stats=now.hour % 3 == 1)
             elif (25 <= now.minute <= 45 and checked_hour != now.strftime("%Y%m%d%H")
                     and (now - max(posts)).total_seconds() >= 20 * 60):
@@ -469,7 +478,7 @@ def cmd_scheduler(args, cfg):
                 hours_so_far = (now.hour - 9) if now.hour >= 10 else 15
                 if today - hours_so_far < max_extra:
                     print(f"\n=== {now:%d %b %H:%M} IST: breaking news check ===", flush=True)
-                    if subprocess.run([sys.executable, "-u", "main.py", "run", "--breaking"]).returncode == 0:
+                    if attempt(["run", "--breaking"]):
                         save(stats=False)
         # wake at the next hour, or in 20 minutes for the breaking news check
         next_hour = now.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1)

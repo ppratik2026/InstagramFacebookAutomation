@@ -16,7 +16,7 @@ PEXELS_PHOTOS = "https://api.pexels.com/v1/search"
 def generate_ai_background(prompt: str, model: str, out_path: Path) -> Path | None:
     """Create a 9:16 illustration with a Gemini image model. Returns None if nothing was generated."""
     try:
-        response = genai.Client().models.generate_content(
+        response = genai.Client(http_options={"timeout": 150_000}).models.generate_content(
             model=model,
             contents=(
                 f"{prompt}\n\nVertical 9:16 background for a Gujarati news reel. Bold colours, cinematic lighting, "
@@ -112,7 +112,7 @@ def generate_gemini_cartoon(prompt: str, models: list[str], out_path: Path) -> P
     if not os.environ.get("GEMINI_API_KEY") or not prompt:
         return None
     full = f"{prompt}. {CARTOON_STYLE}. {NO_TEXT}"
-    client = genai.Client()
+    client = genai.Client(http_options={"timeout": 150_000})
     for model in models:
         try:
             response = client.models.generate_content(
