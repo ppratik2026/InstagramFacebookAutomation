@@ -38,6 +38,7 @@ card:
   stickers: false                 # true = corner banner ("NEW RULE") and tag stickers ("IMPORTANT") ...
   sticker_share: 0.3              # ... on about this share of the reels (never on a real person's photo)
   min_check_score: 7              # the AI checks each poster (1-10); below this it is made again in another design
+  min_post_score: 5               # below this the poster is not posted at all (the hour is tried again later)
   font: "random"                  # "random" = a different Gujarati font each post, or a Google Font name
 
 video:

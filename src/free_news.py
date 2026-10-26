@@ -18,6 +18,7 @@ import requests
 
 from .card import GUJARATI_MONTHS
 from .icons import available
+from .scenes import SCENES
 from .news import IST, NewsStory
 
 CONTENT_NS = "{http://purl.org/rss/1.0/modules/content/}encoded"
@@ -95,6 +96,8 @@ CARD_FORMAT = """Return a JSON object with exactly these keys:
   "person": "English Wikipedia name of the ONE well-known public figure the story is mainly about (a minister,
              sportsperson, actor, official), e.g. 'Harmanpreet Kaur', 'Bhupendra Patel'; their real photo is shown.
              Empty for crime stories, accused, victims, private people, or when no single public figure leads",
+  "scene": "the place that shows this story, one of: SCENE_KEYS",
+  "props": ["up to 3 objects in that place, from: ICON_KEYS"],
   "object_prompt": "English: the 1-2 main OBJECTS of the story for a cut-out 3D sticker, e.g. 'a burlap pension
                     money sack with gold coins and a calculator', 'a stack of silver bars and coins', 'a glowing light
                     bulb and an electricity tower', 'a police car with flashing lights'. Objects only, no people, no text",
@@ -108,7 +111,7 @@ CARD_FORMAT = """Return a JSON object with exactly these keys:
   "caption": "Instagram caption in Gujarati, 3-5 short lines, no hashtags",
   "hashtags": ["..."],
   "image_keywords": ["2-3 English stock-photo searches: places/objects, never real people"]
-}""".replace("ICON_KEYS", ", ".join(sorted(available())))
+}""".replace("ICON_KEYS", ", ".join(sorted(available()))).replace("SCENE_KEYS", ", ".join(SCENES))
 
 
 @dataclass
@@ -591,6 +594,8 @@ Return {{"headline": "...", "highlight": "..."}}.""")
         reasons=reasons,
         highlight=card.get("highlight", "") if card.get("highlight", "") in (card.get("headline") or "") else "",
         object_prompt=card.get("object_prompt", ""),
+        scene=card.get("scene") if card.get("scene") in SCENES else "",
+        props=[p for p in card.get("props") or [] if p in available()][:3],
         # never a real face on crime news (accused / victims), whatever the AI says
         person="" if suggested == "crime" or card.get("category") == "crime" else str(card.get("person") or "").strip(),
         cta=card.get("cta", "તમારો અભિપ્રાય કોમેન્ટમાં જણાવો 👇"),

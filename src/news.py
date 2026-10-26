@@ -129,6 +129,8 @@ class NewsStory:
     object_prompt: str = ""  # main object(s) of the story, drawn as a cut-out for the bulletin design
     person: str = ""  # English Wikipedia name of the public figure the story is about (their real photo is used)
     photo_credit: str = ""  # set when a real photo is used: shown instead of "symbolic picture"
+    scene: str = ""  # drawn cartoon place for the picture (src/scenes.py), e.g. airport, rally, market
+    props: list = field(default_factory=list)  # up to three objects placed in the scene (icon names)
     style: dict = field(default_factory=dict)  # how the reel looked (design, palette, ...), saved for the analytics
 
     def full_caption(self) -> str:

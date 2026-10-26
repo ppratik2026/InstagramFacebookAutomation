@@ -28,7 +28,8 @@ RULES = [
     (r"નોકરી|ભરતી|job|recruit", "job"), (r"કોર્ટ|ચુકાદ|કાયદ|court|law", "law"),
     (r"ચૂંટણી|મતદાન|election|vote", "vote"),
     (r"બસ|bus|ST ", "bus"), (r"ટ્રેન|રેલ|train|rail", "train"), (r"ફ્લાઇટ|એરપોર્ટ|flight|airport", "plane"),
-    (r"રસ્તો|રોડ|હાઇવે|બ્રિજ|road|highway|bridge", "road"), (r"વાહન|કાર|ગાડી|car|vehicle", "car"),
+    # કાર(?!્): not the "કાર્" of કાર્યક્રમ / કાર્યવાહી
+    (r"રસ્તો|રોડ|હાઇવે|બ્રિજ|road|highway|bridge", "road"), (r"વાહન|કાર(?!\u0acd)|ગાડી|\bcar\b|vehicle", "car"),
     (r"ઘર|મકાન|આવાસ|house|housing", "house"), (r"ઉદ્યોગ|ફેક્ટરી|કંપની|industr|factory", "factory"),
     (r"વિશ્વ|વૈશ્વિક|દેશ|global|world|international|અમેરિકા", "globe"),
     (r"મેડલ|જીત|ગોલ્ડ મેડલ|medal|winner", "medal"), (r"એવોર્ડ|સન્માન|award|trophy", "trophy"),
@@ -52,7 +53,8 @@ def available() -> set[str]:
 def icon_key(text: str, fallback: str = "pin") -> str:
     """Icon that fits the text."""
     for pattern, key in RULES:
-        if re.search(pattern, text or "", re.I):
+        # a Gujarati word must start the match (not "કાર" inside "મલ્લિકાર્જુન")
+        if re.search(rf"(?<![\u0A80-\u0AFF])(?:{pattern})", text or "", re.I):
             return key
     return fallback
 

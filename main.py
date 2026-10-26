@@ -140,11 +140,13 @@ def cmd_run(args, cfg):
             from src.backgrounds import generate_free_ai_image, generate_gemini_cartoon
             story.person = ""
             design = "brand"
+            from src.scenes import BY_CATEGORY, draw_scene
             background = (generate_gemini_cartoon(story.image_prompt, cfg["gemini"].get("cartoon_models", []),
                                                   work_dir / "scene.png")
                           or generate_free_ai_image(story.image_prompt, work_dir / "scene.jpg", "cartoon", keyless=False))
-            if not background:   # no picture service: the story's objects as a cut-out, else an icon
-                cutout = generate_cutout(story.object_prompt, work_dir / "cutout.png")
+            if not background:   # no image AI: a cartoon scene drawn in code (always works, never a 3D icon alone)
+                background = draw_scene(story.scene or BY_CATEGORY.get(story.category, "city"), story.props,
+                                        work_dir / "scene-drawn.png")
         elif cfg["card"].get("picture", "cutout") == "cutout":
             # only the story's objects as a 3D cut-out: never a person (no AI faces, no real photos); without
             # a cut-out the design shows a big 3D icon
@@ -230,6 +232,8 @@ def _checked_card(story, cfg, card: Path, background, intro_dir, design: str, cu
         if intro_dir:   # the intro animation belongs to the first design: the reel starts on the poster instead
             shutil.rmtree(intro_dir, ignore_errors=True)
     story.style = {**best_style, "check_score": best_score}   # the analytics learn from the look that was posted
+    if best_score < cfg["card"].get("min_post_score", 5):   # clearly broken: better no post this time
+        raise RuntimeError(f"Poster scored {best_score}/10 in the check; not posting it.")
     return card
 
 
