@@ -287,7 +287,7 @@ ANIM_STEPS = [
     [".hero .obj, .hero .icon-big", "popIn", 0.9, 0.5, 0],
     [".badge", "slam", 1.3, 0.4, 0],
     [".tile", "popIn", 1.5, 0.35, 0.18],
-    [".pill", "slideAlt", 1.5, 0.35, 0.15],
+    [".rcard, .col, .step", "slideAlt", 1.5, 0.35, 0.15],
     [".foot", "fadeIn", 2.0, 0.3, 0],
     [".photo, .img, .fallback, .scene, .icon, .pic", "zoomIn", 0.7, 0.7, 0],
     [".objcell", "popIn", 1.2, 0.5, 0],

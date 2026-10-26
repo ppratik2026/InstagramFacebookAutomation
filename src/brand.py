@@ -89,18 +89,41 @@ body::before { content: ""; position: absolute; inset: 0; opacity: .07;
 .tile .txt { width: 100%%; height: 190px; display: flex; flex-direction: column; justify-content: center; line-height: 1.12; }
 .tile strong { color: %(value)s; font-family: '%(font)s', sans-serif; font-weight: 800; }
 .tile small { display: block; color: #555; font-weight: 700; font-size: .55em; margin-top: 6px; }
-/* longer lines: speech-bubble pills, left and right in turn */
-.pills { height: 100%%; display: flex; flex-direction: column; justify-content: space-evenly; }
-.pill { align-self: flex-start; max-width: 92%%; height: 108px; display: flex; align-items: center; gap: 16px;
-  background: #fff; color: #161616; border-radius: 60px 26px 26px 60px; padding: 8px 32px 8px 8px;
-  box-shadow: 0 12px 24px rgba(0,0,0,.32); border-right: 10px solid %(accent)s; }
-.pill:nth-child(2) { align-self: flex-end; flex-direction: row-reverse; border-radius: 26px 60px 60px 26px;
-  padding: 8px 8px 8px 32px; border-right: 0; border-left: 10px solid %(accent)s; }
-.pill .ic { width: 92px; height: 92px; flex-shrink: 0; padding: 10px; border-radius: 50%%;
-  background: radial-gradient(circle at 35%% 30%%, #fff, %(accent)s); }
-.pill .txt { max-width: 800px; height: 92px; display: flex; flex-direction: column; justify-content: center; line-height: 1.15; }
-.pill strong { color: %(value)s; font-weight: 800; }
-.pill small { display: block; color: #666; font-weight: 700; font-size: .62em; }
+/* longer lines, style "cards": three equal white cards, a coloured icon block on the left */
+.rcards { height: 100%%; display: flex; flex-direction: column; justify-content: space-between; padding: 6px 0; }
+.rcard { height: 116px; display: flex; background: #fff; border-radius: 30px; overflow: hidden; color: #161616;
+  box-shadow: 0 14px 26px rgba(0,0,0,.35); }
+.rcard .side { width: 128px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(140deg, %(accent)s, %(accent)s 45%%, %(value)s 160%%); }
+.rcard .ic { width: 84px; height: 84px; filter: drop-shadow(0 6px 8px rgba(0,0,0,.25)); }
+.rcard .txt { flex: 1; min-width: 0; padding: 4px 30px; display: flex; flex-direction: column; justify-content: center;
+  line-height: 1.12; }
+.rcard small { color: %(value)s; font-weight: 800; font-size: .6em; letter-spacing: .5px; }
+.rcard strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+/* style "cols": three equal columns, icon on top, label chip, value wrapping onto up to three lines */
+.cols { height: 100%%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; padding-top: 58px; }
+.col { position: relative; background: #fff; border-radius: 32px; color: #161616; text-align: center;
+  box-shadow: 0 16px 28px rgba(0,0,0,.35); border-bottom: 12px solid %(accent)s; padding: 70px 14px 14px;
+  display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.col .ic { position: absolute; top: -56px; left: 50%%; margin-left: -58px; width: 116px; height: 116px; padding: 14px;
+  border-radius: 50%%; background: radial-gradient(circle at 35%% 30%%, #fff, %(accent)s); border: 6px solid #fff;
+  box-shadow: 0 10px 20px rgba(0,0,0,.3); }
+.col small { background: %(value)s; color: #fff; border-radius: 30px; padding: 2px 18px 4px; font: 700 26px/1.3 '%(body)s', sans-serif;
+  max-width: 100%%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.col .txt { width: 100%%; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; line-height: 1.15; }
+.col strong { font-family: '%(font)s', sans-serif; font-weight: 800; color: %(value)s; }
+/* style "steps": a dotted line joins three round icons, each with its own white bubble */
+.steps { height: 100%%; position: relative; display: flex; flex-direction: column; justify-content: space-between; padding: 4px 0; }
+.steps::before { content: ""; position: absolute; left: 58px; top: 60px; bottom: 60px;
+  border-left: 8px dotted %(accent)s; }
+.step { position: relative; height: 118px; display: flex; align-items: center; gap: 22px; }
+.step .ic { width: 124px; height: 124px; flex-shrink: 0; padding: 16px; border-radius: 50%%; border: 6px solid #fff;
+  background: radial-gradient(circle at 35%% 30%%, #fff, %(accent)s); box-shadow: 0 10px 20px rgba(0,0,0,.35); }
+.step .txt { flex: 1; min-width: 0; height: 108px; background: #fff; color: #161616; border-radius: 22px 54px 54px 22px;
+  padding: 4px 34px; display: flex; flex-direction: column; justify-content: center; line-height: 1.12;
+  box-shadow: 0 12px 24px rgba(0,0,0,.32); }
+.step small { color: %(value)s; font-weight: 800; font-size: .6em; }
+.step strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
 
 .foot { top: 1700px; height: 190px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .cta { background: %(accent)s; color: #111; border-radius: 50px; padding: 10px 40px; font: 800 40px/1.2 '%(font)s', sans-serif; }
@@ -170,18 +193,39 @@ def _rows(story) -> list[tuple[str, str, str]]:
     return unique[:3]
 
 
-def _rows_html(rows: list[tuple[str, str, str]]) -> str:
-    """Short facts as three tiles side by side; longer lines as pills, left and right in turn."""
-    def icon(key: str) -> str:
-        return icon_img(key if key in available() else icon_key(key, "check"))
+LONG_ROWS = "cards"   # how rows too long for tiles are shown: cards, cols or steps
+SPARE_ICONS = ["pin", "megaphone", "people", "document", "star", "calendar", "check"]
+
+
+def _rows_html(rows: list[tuple[str, str, str]], style: str | None = None) -> str:
+    """Short facts as three tiles side by side; longer lines as equal cards, columns or steps."""
+    keys = []
+    for key, _, _ in rows:   # each row its own icon
+        key = key if key in available() else icon_key(key, "")
+        if not key or key in keys:
+            key = next(k for k in SPARE_ICONS if k not in keys)
+        keys.append(key)
+    rows = [(k, label, value) for k, (_, label, value) in zip(keys, rows)]
+    small = lambda label: f"<small>{esc(label)}</small>" if label else ""
     if len(rows) == 3 and all(len(value) <= 18 for _, _, value in rows):
         return '<div class="tiles">' + "".join(
-            f'<div class="tile">{icon(key)}<div class="txt" data-fit data-max="76" data-min="34">'
-            f'<strong>{esc(value)}</strong>{f"<small>{esc(label)}</small>" if label else ""}</div></div>'
+            f'<div class="tile">{icon_img(key)}<div class="txt" data-fit data-max="76" data-min="34">'
+            f'<strong>{esc(value)}</strong>{small(label)}</div></div>'
             for key, label, value in rows) + "</div>"
-    return '<div class="pills">' + "".join(
-        f'<div class="pill">{icon(key)}<div class="txt" data-fit data-max="50" data-min="26">'
-        f'{f"<small>{esc(label)}</small>" if label else ""}<strong>{esc(value)}</strong></div></div>'
+    style = style or LONG_ROWS
+    if style == "cols":
+        return '<div class="cols">' + "".join(
+            f'<div class="col">{icon_img(key)}{small(label)}<div class="txt" data-fit data-max="50" data-min="26">'
+            f'<strong>{esc(value)}</strong></div></div>'
+            for key, label, value in rows) + "</div>"
+    if style == "steps":
+        return '<div class="steps">' + "".join(
+            f'<div class="step">{icon_img(key)}<div class="txt" data-fit data-max="52" data-min="28">'
+            f'{small(label)}<strong>{esc(value)}</strong></div></div>'
+            for key, label, value in rows) + "</div>"
+    return '<div class="rcards">' + "".join(
+        f'<div class="rcard"><div class="side">{icon_img(key)}</div><div class="txt" data-fit data-max="54" data-min="28">'
+        f'{small(label)}<strong>{esc(value)}</strong></div></div>'
         for key, label, value in rows) + "</div>"
 
 
