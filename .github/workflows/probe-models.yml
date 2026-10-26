@@ -16,15 +16,21 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python - <<'PY'
-          import os, yaml
-          from src.free_news import _post, _parse_json
-          cfg = yaml.safe_load(open("config.yaml"))
-          p = next(x for x in cfg["llm_providers"] if x["name"] == "github-models")
-          msgs = [{"role": "system", "content": "Reply with JSON only."},
-                  {"role": "user", "content": 'Return {"headline": "<a short Gujarati news headline about rain in Surat>"}'}]
-          for m in p["models"]:
-              r = _post(p, os.environ["GITHUB_TOKEN"], m, msgs, True)
-              print(m, r.status_code, r.headers.get("content-type"), r.headers.get("location"), repr(r.text[:400]))
-              r = _post(p, os.environ["GITHUB_TOKEN"], m, msgs, False)
-              print("  no json_mode:", r.status_code, r.headers.get("content-type"), repr(r.text[:400]))
+          import os, requests
+          tok = os.environ["GITHUB_TOKEN"]
+          msgs = [{"role": "user", "content": 'Reply with JSON {"headline": "<a short Gujarati headline about rain in Surat>"}'}]
+          tries = [
+            ("https://models.github.ai/inference/chat/completions", "openai/gpt-4.1-mini", {"Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"}),
+            ("https://models.github.ai/inference/chat/completions", "openai/gpt-4.1-mini", {"Accept": "application/json"}),
+            ("https://models.inference.ai.azure.com/chat/completions", "gpt-4o-mini", {}),
+            ("https://models.github.ai/orgs/ppratik2026/inference/chat/completions", "openai/gpt-4.1-mini", {"Accept": "application/vnd.github+json"}),
+          ]
+          for url, model, extra in tries:
+              try:
+                  r = requests.post(url, json={"model": model, "messages": msgs},
+                                    headers={"Authorization": f"Bearer {tok}", "Content-Type": "application/json", **extra},
+                                    timeout=60, allow_redirects=False)
+                  print(url, model, extra, "->", r.status_code, r.headers.get("content-type"), repr(r.text[:300]))
+              except Exception as e:
+                  print(url, "ERR", e)
           PY
