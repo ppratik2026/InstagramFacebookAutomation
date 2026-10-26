@@ -410,6 +410,68 @@ body::before { content: ""; position: absolute; inset: 0; opacity: .07;
 .mg:nth-child(2) { border-bottom: 3px solid rgba(255,255,255,.25); }
 .mg strong { font-family: '%(font)s', sans-serif; font-weight: 800; color: #fff; text-shadow: 0 4px 0 rgba(0,0,0,.3); }
 
+/* style "road": a winding road across the bottom, a pin standing on it under each fact */
+.road { height: 100%%; position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.road svg { position: absolute; left: -44px; right: -44px; bottom: 0; width: calc(100%% + 88px); height: 170px; }
+.rd { position: relative; display: flex; flex-direction: column; align-items: center; }
+.rd .card2 { width: 100%%; height: 190px; background: #fff; color: #161616; border-radius: 26px; padding: 10px 16px; text-align: center;
+  display: flex; flex-direction: column; box-shadow: 0 12px 22px rgba(0,0,0,.4); }
+.rd .card2::after { content: ""; position: absolute; left: 50%%; top: 188px; margin-left: -14px; border: 14px solid transparent;
+  border-top-color: #fff; }
+.rd .ic { position: absolute; width: 96px; height: 96px; left: 50%%; margin-left: -48px; filter: drop-shadow(0 8px 6px rgba(0,0,0,.45)); }
+.rd:nth-child(2) .ic { top: 236px; } .rd:nth-child(3) .ic { top: 266px; } .rd:nth-child(4) .ic { top: 222px; }
+.rd small { color: %(value)s; font: 800 26px/1.2 '%(body)s', sans-serif; }
+.rd .t { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; line-height: 1.12; }
+.rd strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+/* style "rope": cards hanging from a sagging rope with wooden pegs */
+.rope { height: 100%%; position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; padding-top: 34px; }
+.rope svg { position: absolute; left: -44px; top: 0; width: calc(100%% + 88px); height: 80px; }
+.hang { position: relative; height: 330px; background: #fff; color: #161616; border-radius: 10px 10px 28px 28px; padding: 46px 16px 16px;
+  text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px; box-shadow: 0 16px 26px rgba(0,0,0,.45);
+  transform-origin: 50%% 0; }
+.hang:nth-of-type(1) { transform: rotate(3deg); margin-top: 6px; } .hang:nth-of-type(2) { transform: rotate(-1.5deg); margin-top: 26px; }
+.hang:nth-of-type(3) { transform: rotate(-3.5deg); margin-top: 6px; }
+.hang::before { content: ""; position: absolute; top: -26px; left: 50%%; margin-left: -12px; width: 24px; height: 58px; border-radius: 6px;
+  background: linear-gradient(90deg, #b9824a, #e2b07a, #b9824a); box-shadow: 0 3px 4px rgba(0,0,0,.35); }
+.hang .ic { width: 84px; height: 84px; flex-shrink: 0; }
+.hang small { color: %(value)s; font: 800 26px/1.2 '%(body)s', sans-serif; }
+.hang .t { width: 100%%; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; line-height: 1.12; }
+.hang strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+/* style "puzzle": three jigsaw pieces locked together, each knob in the colour of its own piece */
+.puzzle { height: 100%%; display: grid; grid-template-columns: repeat(3, 1fr); align-items: center; padding: 0 30px 0 0;
+  filter: drop-shadow(0 16px 20px rgba(0,0,0,.45)); }
+.pz { position: relative; height: 300px; background: #fff; color: #161616; padding: 18px 30px 18px 22px; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.pz:nth-child(1) { border-radius: 30px 0 0 30px; z-index: 3; } .pz:nth-child(2) { background: %(accent)s; z-index: 2; }
+.pz:nth-child(3) { border-radius: 0 30px 30px 0; z-index: 1; padding-left: 40px; }
+.pz:nth-child(2) { padding-left: 40px; }
+.pz:not(:last-child)::after { content: ""; position: absolute; right: -36px; top: 50%%; margin-top: -40px; width: 80px; height: 80px;
+  border-radius: 50%%; background: inherit; }
+.pz:nth-child(1)::before, .pz:nth-child(2)::before { content: ""; position: absolute; left: 50%%; bottom: -30px; margin-left: -34px;
+  width: 68px; height: 68px; border-radius: 50%%; background: inherit; }
+.pz .ic { width: 84px; height: 84px; flex-shrink: 0; position: relative; z-index: 1; }
+.pz small { color: %(value)s; font: 800 26px/1.2 '%(body)s', sans-serif; position: relative; z-index: 1; }
+.pz:nth-child(2) small { color: #111; }
+.pz .t { width: 100%%; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; line-height: 1.12;
+  position: relative; z-index: 1; }
+.pz strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+/* style "pyramid": a three-tier pyramid of icons on the left, each tier's fact beside it */
+.pyr { height: 100%%; display: grid; grid-template-columns: 400px 1fr; grid-template-rows: repeat(3, 1fr); column-gap: 0; row-gap: 8px; }
+.tier.r1, .pf:nth-of-type(4) { grid-row: 1; } .tier.r2, .pf:nth-of-type(5) { grid-row: 2; } .tier.r3, .pf:nth-of-type(6) { grid-row: 3; }
+.tier { grid-column: 1; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 8px 8px rgba(0,0,0,.35)); }
+.tier div { height: 100%%; display: flex; align-items: center; justify-content: center; background: %(accent)s; }
+.tier.r1 div { width: 100%%; clip-path: polygon(50%% 0, 66.7%% 100%%, 33.3%% 100%%); background: #fff; padding-top: 40px; }
+.tier.r2 div { width: 100%%; clip-path: polygon(31.3%% 0, 68.7%% 0, 83.3%% 100%%, 16.7%% 100%%); background: %(accent)s; }
+.tier.r3 div { width: 100%%; clip-path: polygon(14.6%% 0, 85.4%% 0, 100%% 100%%, 0 100%%); background: %(value)s; }
+.tier .ic { width: 70px; height: 70px; padding: 8px; border-radius: 50%%; background: rgba(255,255,255,.9); }
+.tier.r1 .ic { width: 58px; height: 58px; padding: 0; background: none; }
+.pf { grid-column: 2; display: flex; align-items: center; gap: 0; }
+.pf::before { content: ""; width: 44px; flex-shrink: 0; border-top: 5px dotted %(accent)s; }
+.pf .t { flex: 1; min-width: 0; height: 112px; background: #fff; color: #161616; border-radius: 22px; padding: 4px 22px;
+  display: flex; flex-direction: column; justify-content: center; line-height: 1.12; box-shadow: 0 10px 20px rgba(0,0,0,.35); }
+.pf small { color: %(value)s; font-weight: 800; font-size: .58em; }
+.pf strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+
 .foot { top: 1700px; height: 190px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .cta { background: %(accent)s; color: #111; border-radius: 50px; padding: 10px 40px; font: 800 40px/1.2 '%(font)s', sans-serif; }
 .src { font: 600 28px/1.2 '%(body)s', sans-serif; opacity: .85; }
@@ -483,7 +545,8 @@ LONG_ROWS = "cards"   # how rows too long for tiles are shown: cards, cols, step
 #   tv, notes, capsules, stats,
 #   comic, keys, signs, chat,
 #   glass, bento, clay, aurora,
-#   hub, stairs, arrows, paper or magazine
+#   hub, stairs, arrows, paper, magazine,
+#   road, rope, puzzle or pyramid
 SPARE_ICONS = ["pin", "megaphone", "people", "document", "star", "calendar", "check"]
 
 
@@ -518,6 +581,29 @@ def _rows_html(rows: list[tuple[str, str, str]], style: str | None = None, hub_i
             f'<div class="num-row"><div class="n">{i}</div><div class="txt">{icon_img(key)}'
             f'<div class="t" data-fit data-max="50" data-min="26">{small(label)}<strong>{esc(value)}</strong></div></div></div>'
             for i, (key, label, value) in enumerate(rows, 1)) + "</div>"
+    if style == "road":
+        svg = ('<svg viewBox="0 0 1080 170" preserveAspectRatio="none"><path d="M0 120 C 180 60, 300 160, 540 110 S 900 40, 1080 100"'
+               ' fill="none" stroke="#2b2b33" stroke-width="64" stroke-linecap="round"/><path d="M0 120 C 180 60, 300 160, 540 110 S 900 40, 1080 100"'
+               ' fill="none" stroke="#fff" stroke-width="6" stroke-dasharray="26 22"/></svg>')
+        return '<div class="road">' + svg + "".join(
+            f'<div class="rd"><div class="card2">{small(label)}<div class="t" data-fit data-max="44" data-min="22">'
+            f'<strong>{esc(value)}</strong></div></div>{icon_img("pin")}</div>'
+            for key, label, value in rows) + "</div>"
+    if style == "rope":
+        svg = ('<svg viewBox="0 0 1080 80" preserveAspectRatio="none"><path d="M0 10 Q 270 70, 540 34 T 1080 12" fill="none"'
+               ' stroke="#e9d3a8" stroke-width="7"/></svg>')
+        return '<div class="rope">' + svg + "".join(
+            f'<div class="hang">{icon_img(key)}{small(label)}<div class="t" data-fit data-max="44" data-min="22">'
+            f'<strong>{esc(value)}</strong></div></div>' for key, label, value in rows) + "</div>"
+    if style == "puzzle":
+        return '<div class="puzzle">' + "".join(
+            f'<div class="pz">{icon_img(key)}{small(label)}<div class="t" data-fit data-max="42" data-min="22">'
+            f'<strong>{esc(value)}</strong></div></div>' for key, label, value in rows) + "</div>"
+    if style == "pyramid":
+        tiers = "".join(f'<div class="tier r{i}"><div>{icon_img(key)}</div></div>' for i, (key, _, _) in enumerate(rows, 1))
+        facts = "".join(f'<div class="pf"><div class="t" data-fit data-max="46" data-min="24">{small(label)}<strong>{esc(value)}</strong>'
+                        f'</div></div>' for _, label, value in rows)
+        return f'<div class="pyr">{tiers}{facts}</div>'
     if style == "hub":
         nodes = "".join(f'<div class="hn n{i}">{small(label)}<div class="t" data-fit data-max="46" data-min="24">'
                         f'<strong>{esc(value)}</strong></div></div>' for i, (_, label, value) in enumerate(rows, 1))
