@@ -25,7 +25,8 @@ content:
 card:
   # ai_poster: Gemini designs the whole poster (text + illustration), checked for mistakes before use.
   # template:  fixed HTML design (src/card.py) with an AI/stock background. Also the fallback for ai_poster.
-  style: "ai_poster"              # only used with provider "gemini"; "free" always uses the template
+  style: "template"               # every post uses the brand template with the row styles below, in turn;
+                                  # "ai_poster" would let Gemini draw the whole poster instead (skips the styles)
   handle: "@aehaalogujarat"
   # Designs that may be used: bulletin, mag, hero, split, paper (classic is the fallback).
   # The news mood (breaking / money / info / happy) decides which of these fit; one of them is picked at random.
