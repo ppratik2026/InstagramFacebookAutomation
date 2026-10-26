@@ -343,6 +343,73 @@ body::before { content: ""; position: absolute; inset: 0; opacity: .07;
   color: transparent; }
 .au strong { font-family: '%(font)s', sans-serif; font-weight: 800; color: #fff; }
 
+/* style "hub": a mind map, the story icon in a big circle, the facts branching off it */
+.hub { height: 100%%; position: relative; display: grid; grid-template-columns: 1fr 210px 1fr; grid-template-rows: 214px 1fr;
+  column-gap: 26px; row-gap: 26px; }
+.hub .core { grid-column: 2; grid-row: 1; align-self: center; width: 210px; height: 210px; border-radius: 50%%; padding: 34px;
+  background: radial-gradient(circle at 35%% 30%%, #fff, %(accent)s); border: 8px solid #fff; z-index: 1;
+  box-shadow: 0 0 0 10px %(accent)s55, 0 18px 30px rgba(0,0,0,.45); }
+.hub .core .ic { width: 100%%; height: 100%%; }
+.hub::before { content: ""; position: absolute; left: 16%%; right: 16%%; top: 107px; border-top: 6px dashed %(accent)s; }
+.hub::after { content: ""; position: absolute; left: 50%%; top: 200px; height: 50px; border-left: 6px dashed %(accent)s; }
+.hn { background: #fff; color: #161616; border-radius: 28px; padding: 12px 20px; box-shadow: 0 14px 24px rgba(0,0,0,.35);
+  display: flex; flex-direction: column; justify-content: center; text-align: center; align-self: center; height: 180px; z-index: 1; }
+.hn.n1 { grid-column: 1; grid-row: 1; } .hn.n2 { grid-column: 3; grid-row: 1; }
+.hn.n3 { grid-column: 1 / 4; grid-row: 2; width: 74%%; justify-self: center; height: 128px; }
+.hn small { color: %(value)s; font: 800 28px/1.2 '%(body)s', sans-serif; }
+.hn .t { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; line-height: 1.12; }
+.hn strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+/* style "stairs": three rising steps, left to right, each with its icon standing on top */
+.stairs { height: 100%%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; align-items: end; }
+.st { position: relative; border-radius: 26px 26px 8px 8px; background: linear-gradient(180deg, #fff, #e9e9ee); color: #161616;
+  padding: 50px 16px 14px; text-align: center; display: flex; flex-direction: column; box-shadow: 0 14px 24px rgba(0,0,0,.4);
+  border-top: 12px solid %(accent)s; }
+.st:nth-child(1) { height: 250px; } .st:nth-child(2) { height: 310px; } .st:nth-child(3) { height: 370px; }
+.st .ic { position: absolute; top: -62px; left: 50%%; margin-left: -50px; width: 100px; height: 100px;
+  filter: drop-shadow(0 8px 8px rgba(0,0,0,.35)); }
+.st .no { position: absolute; left: 14px; bottom: 6px; font: 800 80px/1 '%(font)s', sans-serif; color: %(value)s22; }
+.st small { color: %(value)s; font: 800 26px/1.2 '%(body)s', sans-serif; }
+.st .t { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; line-height: 1.15; position: relative; }
+.st strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+/* style "arrows": a process, three chevron arrows pointing right, icon on top of each */
+.arrows { height: 100%%; display: flex; align-items: center; filter: drop-shadow(0 14px 18px rgba(0,0,0,.4)); }
+.ar { position: relative; flex: 1; height: 300px; margin-left: -34px; padding: 70px 54px 20px 70px; color: #161616; text-align: center;
+  display: flex; flex-direction: column; background: #fff;
+  clip-path: polygon(0 0, calc(100%% - 56px) 0, 100%% 50%%, calc(100%% - 56px) 100%%, 0 100%%, 56px 50%%); }
+.ar:first-child { margin-left: 0; padding-left: 26px; clip-path: polygon(0 0, calc(100%% - 56px) 0, 100%% 50%%, calc(100%% - 56px) 100%%, 0 100%%); border-radius: 26px 0 0 26px; }
+.ar:nth-child(2) { background: %(accent)s; }
+.ar .ic { position: absolute; top: 14px; left: 50%%; margin-left: -34px; width: 68px; height: 68px; }
+.ar:first-child .ic { margin-left: -46px; }
+.ar small { color: %(value)s; font: 800 24px/1.2 '%(body)s', sans-serif; }
+.ar .t { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; line-height: 1.12; }
+.ar strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+/* style "paper": a newspaper clipping, torn edges, three columns split by rules, values under a marker */
+.paper { height: 100%%; padding: 34px 28px 30px; background: #f7f1e3; color: #1b1b1b; transform: rotate(-1.2deg);
+  box-shadow: 0 18px 30px rgba(0,0,0,.45); display: grid; grid-template-columns: repeat(3, 1fr);
+  clip-path: polygon(0 3%%, 4%% 0, 9%% 2.5%%, 15%% 0, 22%% 2%%, 30%% 0, 37%% 2.8%%, 45%% .5%%, 53%% 2.6%%, 61%% 0, 69%% 2.2%%, 77%% .3%%, 85%% 2.7%%, 92%% 0, 100%% 2.4%%,
+    100%% 97%%, 95%% 100%%, 88%% 97.5%%, 80%% 100%%, 72%% 97.2%%, 64%% 99.6%%, 56%% 97.4%%, 48%% 100%%, 40%% 97.6%%, 32%% 99.8%%, 24%% 97.3%%, 16%% 100%%, 8%% 97.5%%, 0 100%%); }
+.pc { padding: 0 18px; display: flex; flex-direction: column; gap: 6px; text-align: left; }
+.pc + .pc { border-left: 3px double #9a8f7a; }
+.pc .hd { display: flex; align-items: center; gap: 10px; border-bottom: 3px solid #1b1b1b; padding-bottom: 6px; }
+.pc .ic { width: 54px; height: 54px; flex-shrink: 0; }
+.pc small { font: 800 26px/1.15 '%(body)s', sans-serif; text-transform: uppercase; }
+.pc .t { flex: 1; min-height: 0; display: flex; align-items: center; line-height: 1.25; }
+.pc strong { font-family: '%(font)s', sans-serif; font-weight: 800;
+  background: linear-gradient(transparent 55%%, %(accent)s 55%%, %(accent)s 92%%, transparent 92%%); box-decoration-break: clone;
+  -webkit-box-decoration-break: clone; }
+/* style "magazine": no boxes, type only; the main fact large with an outlined number, two smaller facts beside it */
+.mag { height: 100%%; display: grid; grid-template-columns: 1.25fr 1fr; gap: 0 30px; }
+.mg { position: relative; display: flex; flex-direction: column; justify-content: center; padding-left: 4px; }
+.mg:first-child { grid-row: 1 / 3; border-right: 4px solid %(accent)s; padding-right: 26px; }
+.mg .no { font: 800 140px/0.9 '%(font)s', sans-serif; color: transparent; -webkit-text-stroke: 3px %(accent)s; }
+.mg:not(:first-child) .no { position: absolute; right: 0; top: 4px; font-size: 80px; opacity: .6; }
+.mg small { display: flex; align-items: center; gap: 10px; color: %(accent)s; font: 800 30px/1.2 '%(body)s', sans-serif; }
+.mg small .ic { width: 52px; height: 52px; }
+.mg .t { height: 190px; display: flex; align-items: center; line-height: 1.12; }
+.mg:not(:first-child) .t { height: 116px; }
+.mg:nth-child(2) { border-bottom: 3px solid rgba(255,255,255,.25); }
+.mg strong { font-family: '%(font)s', sans-serif; font-weight: 800; color: #fff; text-shadow: 0 4px 0 rgba(0,0,0,.3); }
+
 .foot { top: 1700px; height: 190px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .cta { background: %(accent)s; color: #111; border-radius: 50px; padding: 10px 40px; font: 800 40px/1.2 '%(font)s', sans-serif; }
 .src { font: 600 28px/1.2 '%(body)s', sans-serif; opacity: .85; }
@@ -415,11 +482,12 @@ LONG_ROWS = "cards"   # how rows too long for tiles are shown: cards, cols, step
 #   tabs, neon, circles, strips,
 #   tv, notes, capsules, stats,
 #   comic, keys, signs, chat,
-#   glass, bento, clay or aurora
+#   glass, bento, clay, aurora,
+#   hub, stairs, arrows, paper or magazine
 SPARE_ICONS = ["pin", "megaphone", "people", "document", "star", "calendar", "check"]
 
 
-def _rows_html(rows: list[tuple[str, str, str]], style: str | None = None) -> str:
+def _rows_html(rows: list[tuple[str, str, str]], style: str | None = None, hub_icon: str = "") -> str:
     """Short facts as three tiles side by side; longer lines as equal cards, columns or steps."""
     keys = []
     for key, _, _ in rows:   # each row its own icon
@@ -449,6 +517,28 @@ def _rows_html(rows: list[tuple[str, str, str]], style: str | None = None) -> st
         return '<div class="nums">' + "".join(
             f'<div class="num-row"><div class="n">{i}</div><div class="txt">{icon_img(key)}'
             f'<div class="t" data-fit data-max="50" data-min="26">{small(label)}<strong>{esc(value)}</strong></div></div></div>'
+            for i, (key, label, value) in enumerate(rows, 1)) + "</div>"
+    if style == "hub":
+        nodes = "".join(f'<div class="hn n{i}">{small(label)}<div class="t" data-fit data-max="46" data-min="24">'
+                        f'<strong>{esc(value)}</strong></div></div>' for i, (_, label, value) in enumerate(rows, 1))
+        return f'<div class="hub"><div class="core">{icon_img(hub_icon or rows[0][0])}</div>{nodes}</div>'
+    if style == "stairs":
+        return '<div class="stairs">' + "".join(
+            f'<div class="st">{icon_img(key)}<div class="no">{i}</div>{small(label)}<div class="t" data-fit data-max="46" data-min="24">'
+            f'<strong>{esc(value)}</strong></div></div>' for i, (key, label, value) in enumerate(rows, 1)) + "</div>"
+    if style == "arrows":
+        return '<div class="arrows">' + "".join(
+            f'<div class="ar">{icon_img(key)}{small(label)}<div class="t" data-fit data-max="42" data-min="22">'
+            f'<strong>{esc(value)}</strong></div></div>' for key, label, value in rows) + "</div>"
+    if style == "paper":
+        return '<div class="paper">' + "".join(
+            f'<div class="pc"><div class="hd">{icon_img(key)}<small>{esc(label or f"મુદ્દો {i}")}</small></div>'
+            f'<div class="t" data-fit data-max="44" data-min="22"><strong>{esc(value)}</strong></div></div>'
+            for i, (key, label, value) in enumerate(rows, 1)) + "</div>"
+    if style == "magazine":
+        return '<div class="mag">' + "".join(
+            f'<div class="mg"><div class="no">0{i}</div><small>{icon_img(key)}{esc(label)}</small>'
+            f'<div class="t" data-fit data-max="{64 if i == 1 else 44}" data-min="24"><strong>{esc(value)}</strong></div></div>'
             for i, (key, label, value) in enumerate(rows, 1)) + "</div>"
     if style in ("glass", "bento", "clay", "aurora"):
         outer, inner = {"glass": ("glassy", "gl"), "bento": ("bento", "bx"), "clay": ("clay", "cl"), "aurora": ("aurora", "au")}[style]
@@ -522,7 +612,7 @@ def brand_page(story, date: str, handle: str, cutout_url: str | None = None, sce
         picture = f'<div class="glow"></div><img class="obj" src="{cutout_url}" alt="">'
     else:
         picture = f'<div class="glow"></div>{icon_img(story.headline, "icon-big")}'
-    rows = _rows_html(_rows(story))
+    rows = _rows_html(_rows(story), hub_icon=icon_key(story.headline, icon))
     fonts = f"{FONT.replace(' ', '+')}:wght@600;700;800&family={BODY_FONT.replace(' ', '+')}:wght@600;700"
     return f"""<!doctype html><html><head><meta charset="utf-8">
 <link href="https://fonts.googleapis.com/css2?family={fonts}&display=block" rel="stylesheet">
