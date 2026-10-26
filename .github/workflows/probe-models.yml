@@ -24,5 +24,7 @@ jobs:
                   {"role": "user", "content": 'Return {"headline": "<a short Gujarati news headline about rain in Surat>"}'}]
           for m in p["models"]:
               r = _post(p, os.environ["GITHUB_TOKEN"], m, msgs, True)
-              print(m, r.status_code, r.text[:300] if r.status_code != 200 else _parse_json(r.json()["choices"][0]["message"]["content"]))
+              print(m, r.status_code, r.headers.get("content-type"), r.headers.get("location"), repr(r.text[:400]))
+              r = _post(p, os.environ["GITHUB_TOKEN"], m, msgs, False)
+              print("  no json_mode:", r.status_code, r.headers.get("content-type"), repr(r.text[:400]))
           PY
