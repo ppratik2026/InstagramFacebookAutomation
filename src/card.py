@@ -286,7 +286,7 @@ ANIM_STEPS = [
     [".sum", "slideL", 0.7, 0.4, 0],
     [".hero .obj, .hero .icon-big", "popIn", 0.9, 0.5, 0],
     [".badge", "slam", 1.3, 0.4, 0],
-    [".tile, .circ, .note, .stat, .bx, .st, .ar, .core, .rd, .hang, .pz, .tier", "popIn", 1.5, 0.35, 0.18],
+    [".tile, .circ, .note, .stat, .bx, .st, .ar, .core, .rd, .hang, .pz, .tier, .coach, .sgn, .page, .fr", "popIn", 1.5, 0.35, 0.18],
     [".rcard, .col, .step, .num-row, .sp, .ticket, .brow, .tab, .nrow, .strip-row, .tvrow, .cap, .cpanel, .key, .sign, .msg, .gl, .cl, .au, .hn, .mg, .pc, .pf", "slideAlt", 1.5, 0.35, 0.15],
     [".foot", "fadeIn", 2.0, 0.3, 0],
     [".photo, .img, .fallback, .scene, .icon, .pic", "zoomIn", 0.7, 0.7, 0],

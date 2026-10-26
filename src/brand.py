@@ -472,6 +472,68 @@ body::before { content: ""; position: absolute; inset: 0; opacity: .07;
 .pf small { color: %(value)s; font-weight: 800; font-size: .58em; }
 .pf strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
 
+/* style "train": an engine and two coaches on a track, each fact in a coach window */
+.train { height: 100%%; position: relative; display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 16px; align-items: end;
+  padding-bottom: 46px; }
+.train::after { content: ""; position: absolute; left: -44px; right: -44px; bottom: 14px; height: 14px;
+  background: repeating-linear-gradient(90deg, #6b4a2b 0 18px, transparent 18px 40px), linear-gradient(#bbb, #bbb) 0 0 / 100%% 5px no-repeat;
+  border-top: 5px solid #ccc; }
+.coach { position: relative; height: 270px; border-radius: 26px 26px 10px 10px; background: %(value)s; padding: 16px 16px 26px;
+  box-shadow: inset 0 -16px 0 rgba(0,0,0,.25), 0 14px 22px rgba(0,0,0,.4); border: 4px solid rgba(255,255,255,.5); }
+.coach:first-child { background: %(accent)s; border-radius: 26px 90px 10px 10px; }
+.coach:first-child::before { content: ""; position: absolute; left: 30px; top: -58px; width: 54px; height: 60px; border-radius: 10px 10px 0 0;
+  background: #333; box-shadow: inset 0 8px 0 #555; }
+.coach + .coach::before { content: ""; position: absolute; left: -22px; bottom: 40px; width: 28px; height: 12px; background: #333; }
+.coach .wh { position: absolute; bottom: -34px; width: 58px; height: 58px; border-radius: 50%%; background: radial-gradient(circle, #ddd 0 8px, #333 9px 20px, #111 21px);
+  border: 4px solid #666; }
+.coach .wh.a { left: 26px; } .coach .wh.b { right: 26px; }
+.coach .win { height: 100%%; background: #fff; color: #161616; border-radius: 18px; padding: 8px 12px; text-align: center;
+  display: flex; flex-direction: column; align-items: center; }
+.coach .ic { width: 64px; height: 64px; flex-shrink: 0; }
+.coach small { color: %(value)s; font: 800 24px/1.2 '%(body)s', sans-serif; }
+.coach .t { width: 100%%; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; line-height: 1.12; }
+.coach strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+/* style "signpost": a wooden post with three arrow boards, pointing right, left, right */
+.post { height: 100%%; position: relative; display: flex; flex-direction: column; justify-content: space-between; padding: 0 0 4px; }
+.post::before { content: ""; position: absolute; left: 50%%; margin-left: -18px; top: -20px; bottom: -30px; width: 36px; border-radius: 8px;
+  background: linear-gradient(90deg, #6b4423, #9c6a3c, #6b4423); box-shadow: 0 10px 18px rgba(0,0,0,.4); }
+.sgn { position: relative; width: 90%%; height: 112px; display: flex; align-items: center; gap: 16px; padding: 0 90px 0 24px; color: #3b230d;
+  background: repeating-linear-gradient(0deg, rgba(0,0,0,.05) 0 3px, transparent 3px 14px), linear-gradient(180deg, #f2c27f, #d99a52);
+  clip-path: polygon(0 0, calc(100%% - 64px) 0, 100%% 50%%, calc(100%% - 64px) 100%%, 0 100%%); filter: drop-shadow(0 8px 10px rgba(0,0,0,.4)); }
+.sgn:nth-child(2) { align-self: flex-end; flex-direction: row-reverse; padding: 0 24px 0 90px; text-align: right;
+  clip-path: polygon(64px 0, 100%% 0, 100%% 100%%, 64px 100%%, 0 50%%); }
+.sgn:nth-child(1) { transform: rotate(-2deg); } .sgn:nth-child(3) { transform: rotate(1.5deg); }
+.sgn .ic { width: 78px; height: 78px; flex-shrink: 0; }
+.sgn .t { flex: 1; min-width: 0; height: 96px; display: flex; flex-direction: column; justify-content: center; line-height: 1.12; }
+.sgn small { color: #8a3b00; font-weight: 800; font-size: .58em; }
+.sgn strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+/* style "calendar": three desk-calendar pages with binder rings and a coloured header */
+.cal { height: 100%%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; padding-top: 30px; }
+.page { position: relative; border-radius: 18px; background: #fff; color: #161616; overflow: visible; display: flex; flex-direction: column;
+  box-shadow: 0 6px 0 #ddd, 0 12px 0 #c8c8c8, 0 22px 26px rgba(0,0,0,.4); }
+.page .hd { height: 80px; border-radius: 18px 18px 0 0; background: %(accent)s; display: flex; align-items: center; justify-content: center;
+  gap: 8px; padding: 14px 10px 0; color: #111; font: 800 26px/1.15 '%(body)s', sans-serif; text-align: center; }
+.page .hd .ic { width: 52px; height: 52px; flex-shrink: 0; }
+.page::before, .page::after { content: ""; position: absolute; top: -26px; width: 18px; height: 50px; border-radius: 10px;
+  background: linear-gradient(90deg, #888, #eee, #888); }
+.page::before { left: 26%%; } .page::after { right: 26%%; }
+.page .t { flex: 1; min-height: 0; padding: 10px 14px; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.12; }
+.page strong { font-family: '%(font)s', sans-serif; font-weight: 800; color: %(value)s; }
+/* style "film": a strip of film with sprocket holes, one fact per frame */
+.film { height: 100%%; display: flex; align-items: center; }
+.reel { width: 100%%; height: 340px; transform: rotate(-2deg); background: #151515; border-radius: 10px; padding: 46px 16px;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; position: relative; box-shadow: 0 18px 30px rgba(0,0,0,.5); }
+.reel::before, .reel::after { content: ""; position: absolute; left: 14px; right: 14px; height: 22px;
+  background: repeating-linear-gradient(90deg, #f3f3f3 0 26px, transparent 26px 50px); border-radius: 4px; }
+.reel::before { top: 12px; } .reel::after { bottom: 12px; }
+.fr { border-radius: 8px; background: linear-gradient(160deg, #fff, #ececec); color: #161616; padding: 8px 12px; text-align: center;
+  display: flex; flex-direction: column; align-items: center; }
+.fr:nth-child(2) { background: linear-gradient(160deg, #fff6d6, %(accent)s); }
+.fr .ic { width: 60px; height: 60px; flex-shrink: 0; }
+.fr small { color: %(value)s; font: 800 24px/1.2 '%(body)s', sans-serif; }
+.fr .t { width: 100%%; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; line-height: 1.12; }
+.fr strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+
 .foot { top: 1700px; height: 190px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .cta { background: %(accent)s; color: #111; border-radius: 50px; padding: 10px 40px; font: 800 40px/1.2 '%(font)s', sans-serif; }
 .src { font: 600 28px/1.2 '%(body)s', sans-serif; opacity: .85; }
@@ -546,7 +608,8 @@ LONG_ROWS = "cards"   # how rows too long for tiles are shown: cards, cols, step
 #   comic, keys, signs, chat,
 #   glass, bento, clay, aurora,
 #   hub, stairs, arrows, paper, magazine,
-#   road, rope, puzzle or pyramid
+#   road, rope, puzzle, pyramid,
+#   train, signpost, calendar or film
 SPARE_ICONS = ["pin", "megaphone", "people", "document", "star", "calendar", "check"]
 
 
@@ -581,6 +644,24 @@ def _rows_html(rows: list[tuple[str, str, str]], style: str | None = None, hub_i
             f'<div class="num-row"><div class="n">{i}</div><div class="txt">{icon_img(key)}'
             f'<div class="t" data-fit data-max="50" data-min="26">{small(label)}<strong>{esc(value)}</strong></div></div></div>'
             for i, (key, label, value) in enumerate(rows, 1)) + "</div>"
+    if style == "train":
+        return '<div class="train">' + "".join(
+            f'<div class="coach"><div class="win">{icon_img(key)}{small(label)}<div class="t" data-fit data-max="40" data-min="22">'
+            f'<strong>{esc(value)}</strong></div></div><i class="wh a"></i><i class="wh b"></i></div>'
+            for key, label, value in rows) + "</div>"
+    if style == "signpost":
+        return '<div class="post">' + "".join(
+            f'<div class="sgn">{icon_img(key)}<div class="t" data-fit data-max="46" data-min="24">{small(label)}'
+            f'<strong>{esc(value)}</strong></div></div>' for key, label, value in rows) + "</div>"
+    if style == "calendar":
+        return '<div class="cal">' + "".join(
+            f'<div class="page"><div class="hd">{icon_img(key)}<span>{esc(label or f"મુદ્દો {i}")}</span></div>'
+            f'<div class="t" data-fit data-max="44" data-min="22"><strong>{esc(value)}</strong></div></div>'
+            for i, (key, label, value) in enumerate(rows, 1)) + "</div>"
+    if style == "film":
+        return '<div class="film"><div class="reel">' + "".join(
+            f'<div class="fr">{icon_img(key)}{small(label)}<div class="t" data-fit data-max="40" data-min="22">'
+            f'<strong>{esc(value)}</strong></div></div>' for key, label, value in rows) + "</div></div>"
     if style == "road":
         svg = ('<svg viewBox="0 0 1080 170" preserveAspectRatio="none"><path d="M0 120 C 180 60, 300 160, 540 110 S 900 40, 1080 100"'
                ' fill="none" stroke="#2b2b33" stroke-width="64" stroke-linecap="round"/><path d="M0 120 C 180 60, 300 160, 540 110 S 900 40, 1080 100"'
