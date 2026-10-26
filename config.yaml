@@ -15,7 +15,7 @@ content:
     politics: "રાજકારણ (political statements and fights: BJP, Congress, AAP leaders, elections, Gujarat or national)"
     crime: "ક્રાઇમ ન્યૂઝ (crime and police news)"
     trending: "ટ્રેન્ડિંગ (the news everyone is talking about today: viral, cricket and sport, weather, films, India)"
-    good_news: "સારા સમાચાર (positive stories, achievements, development)"
+    good_news: "સારા સમાચાર (only truly happy news: achievements, medals, awards, new facilities, relief or help for people; never a disease outbreak, death, accident, crime, disaster, price rise or warning)"
   max_news_age_hours: 48
   hashtags_count: 10
   extra_instructions: ""
