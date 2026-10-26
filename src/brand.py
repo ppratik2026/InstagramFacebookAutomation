@@ -246,6 +246,52 @@ body::before { content: ""; position: absolute; inset: 0; opacity: .07;
 .stat .t { height: 168px; display: flex; align-items: center; line-height: 1.15; }
 .stat strong { font-family: '%(font)s', sans-serif; font-weight: 800; color: %(accent)s; }
 
+/* style "comic": pop-art panels, thick ink outlines, hard shadows, halftone dots, a tilted caption box */
+.comic { height: 100%%; display: flex; flex-direction: column; justify-content: space-between; padding: 8px 10px 14px 0; }
+.cpanel { position: relative; height: 108px; display: flex; align-items: center; gap: 18px; padding: 4px 26px 4px 12px;
+  background: radial-gradient(circle, rgba(0,0,0,.09) 2px, transparent 2.5px) 0 0 / 14px 14px, #fff;
+  border: 5px solid #111; border-radius: 12px; box-shadow: 9px 9px 0 #111; color: #111; }
+.cpanel:nth-child(2) { transform: rotate(-1deg); } .cpanel:nth-child(3) { transform: rotate(.8deg); }
+.cpanel .ic { width: 84px; height: 84px; flex-shrink: 0; padding: 8px; border: 4px solid #111; border-radius: 50%%; background: %(accent)s; }
+.cpanel small { position: absolute; top: -24px; right: 26px; background: %(accent)s; border: 4px solid #111; padding: 0 14px 2px;
+  font: 800 26px/1.3 '%(font)s', sans-serif; transform: rotate(2deg); white-space: nowrap; }
+.cpanel .t { flex: 1; min-width: 0; height: 92px; display: flex; align-items: center; line-height: 1.1; }
+.cpanel strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+/* style "keys": chunky 3D push buttons, the icon on its own sunken key */
+.keys { height: 100%%; display: flex; flex-direction: column; justify-content: space-between; padding: 0 0 18px; }
+.key { height: 110px; display: flex; align-items: center; gap: 20px; padding: 0 28px 10px 12px; border-radius: 30px;
+  background: linear-gradient(180deg, #fff 0%%, #eceff3 100%%); color: #161616;
+  box-shadow: inset 0 -12px 0 #c9ced6, 0 10px 0 %(value)s, 0 18px 24px rgba(0,0,0,.45); }
+.key .ic { width: 86px; height: 86px; flex-shrink: 0; padding: 10px; border-radius: 22px; background: %(accent)s;
+  box-shadow: inset 0 -8px 0 rgba(0,0,0,.2), inset 0 4px 0 rgba(255,255,255,.5); }
+.key .t { flex: 1; min-width: 0; height: 92px; display: flex; flex-direction: column; justify-content: center; line-height: 1.12; }
+.key small { color: %(value)s; font-weight: 800; font-size: .6em; }
+.key strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+/* style "signs": green highway sign boards with a white inner border and an arrow */
+.signs { height: 100%%; display: flex; flex-direction: column; justify-content: space-between; padding: 6px 0; }
+.sign { height: 114px; display: flex; align-items: center; gap: 18px; padding: 0 20px 0 14px; border-radius: 16px; background: #0a6b3b;
+  outline: 4px solid #fff; outline-offset: -11px; box-shadow: 0 0 0 4px #054526, 0 14px 24px rgba(0,0,0,.45); color: #fff; }
+.sign .ic { width: 80px; height: 80px; flex-shrink: 0; padding: 8px; border-radius: 50%%; background: #fff; }
+.sign .t { flex: 1; min-width: 0; height: 84px; display: flex; flex-direction: column; justify-content: center; line-height: 1.1; }
+.sign small { color: #ffe14d; font-weight: 800; font-size: .58em; }
+.sign strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+.sign .arr { flex-shrink: 0; font: 800 64px/1 '%(font)s', sans-serif; color: #fff; }
+/* style "chat": incoming chat messages, a round avatar, sender name in colour, time and double tick */
+.chat { height: 100%%; display: flex; flex-direction: column; justify-content: space-between; padding: 4px 0; }
+.msg { height: 118px; display: flex; align-items: flex-end; gap: 14px; }
+.msg .ic { width: 78px; height: 78px; flex-shrink: 0; padding: 10px; border-radius: 50%%; background: %(accent)s;
+  border: 4px solid #fff; }
+.msg .b { position: relative; flex: 1; min-width: 0; height: 112px; background: #fff; color: #111; border-radius: 6px 30px 30px 30px;
+  padding: 6px 120px 6px 24px; box-shadow: 0 8px 18px rgba(0,0,0,.35); }
+.msg:nth-child(2) .b { background: #dcf8c6; }
+.msg .b::before { content: ""; position: absolute; left: -16px; bottom: 14px; border: 14px solid transparent;
+  border-right-color: inherit; }
+.msg .t { height: 100%%; display: flex; flex-direction: column; justify-content: center; line-height: 1.12; }
+.msg small { color: %(value)s; font-weight: 800; font-size: .58em; }
+.msg strong { font-weight: 700; }
+.msg .tm { position: absolute; right: 20px; bottom: 8px; font: 600 24px/1 '%(body)s', sans-serif; color: #7a8a7a; }
+.msg .tm i { color: #34b7f1; font-style: normal; font-weight: 800; }
+
 .foot { top: 1700px; height: 190px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .cta { background: %(accent)s; color: #111; border-radius: 50px; padding: 10px 40px; font: 800 40px/1.2 '%(font)s', sans-serif; }
 .src { font: 600 28px/1.2 '%(body)s', sans-serif; opacity: .85; }
@@ -316,7 +362,8 @@ def _rows(story) -> list[tuple[str, str, str]]:
 
 LONG_ROWS = "cards"   # how rows too long for tiles are shown: cards, cols, steps, numbers, split, tickets, board,
 #   tabs, neon, circles, strips,
-#   tv, notes, capsules or stats
+#   tv, notes, capsules, stats,
+#   comic, keys, signs or chat
 SPARE_ICONS = ["pin", "megaphone", "people", "document", "star", "calendar", "check"]
 
 
@@ -351,6 +398,21 @@ def _rows_html(rows: list[tuple[str, str, str]], style: str | None = None) -> st
             f'<div class="num-row"><div class="n">{i}</div><div class="txt">{icon_img(key)}'
             f'<div class="t" data-fit data-max="50" data-min="26">{small(label)}<strong>{esc(value)}</strong></div></div></div>'
             for i, (key, label, value) in enumerate(rows, 1)) + "</div>"
+    if style in ("comic", "keys", "signs"):
+        inner = {"comic": "cpanel", "keys": "key", "signs": "sign"}[style]
+        arrow = '<div class="arr">➜</div>' if style == "signs" else ""
+        if style == "comic":   # the label goes to the caption box, the text stays big
+            return '<div class="comic">' + "".join(
+                f'<div class="cpanel">{small(label)}{icon_img(key)}<div class="t" data-fit data-max="52" data-min="26">'
+                f'<strong>{esc(value)}</strong></div></div>' for key, label, value in rows) + "</div>"
+        return f'<div class="{style}">' + "".join(
+            f'<div class="{inner}">{icon_img(key)}<div class="t" data-fit data-max="50" data-min="26">'
+            f'{small(label)}<strong>{esc(value)}</strong></div>{arrow}</div>' for key, label, value in rows) + "</div>"
+    if style == "chat":
+        return '<div class="chat">' + "".join(
+            f'<div class="msg">{icon_img(key)}<div class="b"><div class="t" data-fit data-max="46" data-min="24">'
+            f'{small(label)}<strong>{esc(value)}</strong></div><span class="tm">હમણાં <i>✓✓</i></span></div></div>'
+            for key, label, value in rows) + "</div>"
     if style in ("tv", "capsules"):
         outer, inner = {"tv": ("tv", "tvrow"), "capsules": ("caps", "cap")}[style]
         return f'<div class="{outer}">' + "".join(
