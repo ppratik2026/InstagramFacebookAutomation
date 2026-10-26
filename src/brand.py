@@ -1,13 +1,12 @@
 """The page's one brand template: the same layout on every post, only the category colour changes, so the
 profile grid looks like one page.
 
-Fixed zones on the 1080x1920 reel (9:16) (the profile grid shows only the middle 1080x1440, from y=240 to 1680):
+Fixed zones on the 1080x1920 reel (the profile grid shows only the middle 1080x1440, from y=240 to 1680):
   0-230     brand bar: category and date (cut off in the grid)
   236-588   headline, its key word highlighted
   596-742   "what happened" summary
   750-1270  the story's 3D cut-out (or a big 3D icon) on a glow, with the key number as a badge
-  1278-1670 the three facts, in one of the row styles; kept left of the x=930 line, where Instagram
-            puts its like / comment / share buttons
+  1278-1670 always three rows of the same height: icon, label, value
   1700-1920 follow line, source and handle (Instagram's buttons cover this part)
 Every text box keeps its size; long text only gets a smaller font.
 """
@@ -74,8 +73,7 @@ body::before { content: ""; position: absolute; inset: 0; opacity: .07;
 .badge small { display: block; font: 700 32px/1.15 '%(body)s', sans-serif; }
 .badge b { display: block; font: 800 84px/1 '%(font)s', sans-serif; white-space: nowrap; }
 
-/* the right edge stays clear of Instagram's like / comment / share buttons (x 950-1060 from y 1150) */
-.rows { top: 1278px; height: 392px; overflow: visible; right: 150px; }
+.rows { top: 1278px; height: 392px; overflow: visible; }
 /* short facts: three tiles side by side, a round icon popping out of each */
 .tiles { height: 100%%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; align-items: end;
   padding-bottom: 8px; }
@@ -414,7 +412,7 @@ body::before { content: ""; position: absolute; inset: 0; opacity: .07;
 
 /* style "road": a winding road across the bottom, a pin standing on it under each fact */
 .road { height: 100%%; position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-.road svg { position: absolute; left: -44px; right: -150px; bottom: 0; width: calc(100%% + 194px); height: 170px; }
+.road svg { position: absolute; left: -44px; right: -44px; bottom: 0; width: calc(100%% + 88px); height: 170px; }
 .rd { position: relative; display: flex; flex-direction: column; align-items: center; }
 .rd .card2 { width: 100%%; height: 190px; background: #fff; color: #161616; border-radius: 26px; padding: 10px 16px; text-align: center;
   display: flex; flex-direction: column; box-shadow: 0 12px 22px rgba(0,0,0,.4); }
@@ -427,7 +425,7 @@ body::before { content: ""; position: absolute; inset: 0; opacity: .07;
 .rd strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
 /* style "rope": cards hanging from a sagging rope with wooden pegs */
 .rope { height: 100%%; position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; padding-top: 34px; }
-.rope svg { position: absolute; left: -44px; top: 0; width: calc(100%% + 194px); height: 80px; }
+.rope svg { position: absolute; left: -44px; top: 0; width: calc(100%% + 88px); height: 80px; }
 .hang { position: relative; height: 330px; background: #fff; color: #161616; border-radius: 10px 10px 28px 28px; padding: 46px 16px 16px;
   text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px; box-shadow: 0 16px 26px rgba(0,0,0,.45);
   transform-origin: 50%% 0; }
@@ -477,7 +475,7 @@ body::before { content: ""; position: absolute; inset: 0; opacity: .07;
 /* style "train": an engine and two coaches on a track, each fact in a coach window */
 .train { height: 100%%; position: relative; display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 16px; align-items: end;
   padding-bottom: 46px; }
-.train::after { content: ""; position: absolute; left: -44px; right: -150px; bottom: 14px; height: 14px;
+.train::after { content: ""; position: absolute; left: -44px; right: -44px; bottom: 14px; height: 14px;
   background: repeating-linear-gradient(90deg, #6b4a2b 0 18px, transparent 18px 40px), linear-gradient(#bbb, #bbb) 0 0 / 100%% 5px no-repeat;
   border-top: 5px solid #ccc; }
 .coach { position: relative; height: 270px; border-radius: 26px 26px 10px 10px; background: %(value)s; padding: 16px 16px 26px;
