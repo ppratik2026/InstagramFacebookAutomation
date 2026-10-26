@@ -603,6 +603,63 @@ body::before { content: ""; position: absolute; inset: 0; opacity: .07;
 .bl .t { width: 100%%; height: 130px; display: flex; align-items: center; justify-content: center; line-height: 1.1; }
 .bl strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
 
+/* style "thali": a steel thali, each fact in its own katori */
+.thali { height: 100%%; display: flex; align-items: center; justify-content: center; }
+.plate { width: 100%%; height: 380px; border-radius: 50%%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; align-items: center;
+  padding: 0 54px; background: radial-gradient(ellipse at 50%% 45%%, #f4f6f8 0 55%%, #c9ced4 62%%, #eef1f4 68%%, #9aa1a8 74%%, #e7eaee 100%%);
+  box-shadow: 0 20px 34px rgba(0,0,0,.5), inset 0 -10px 20px rgba(0,0,0,.18); }
+.katori { width: 100%%; aspect-ratio: 1; border-radius: 50%%; padding: 18px; color: #161616; text-align: center;
+  background: radial-gradient(circle at 50%% 40%%, #fffef5 0 58%%, #d6dbe0 64%%, #f6f7f9 70%%, #a9b0b7 100%%);
+  box-shadow: 0 10px 16px rgba(0,0,0,.3); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.katori:nth-child(2) { background: radial-gradient(circle at 50%% 40%%, #fff3c4 0 58%%, #d6dbe0 64%%, #f6f7f9 70%%, #a9b0b7 100%%); }
+.katori .ic { width: 50px; height: 50px; flex-shrink: 0; }
+.katori small { color: %(value)s; font: 800 22px/1.2 '%(body)s', sans-serif; }
+.katori .t { width: 78%%; height: 110px; display: flex; align-items: center; justify-content: center; line-height: 1.1; }
+.katori strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+/* style "station": Indian railway station name boards, yellow with black letters, on two legs */
+.station { height: 100%%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.sb { display: flex; flex-direction: column; align-items: stretch; }
+.sb .plate2 { height: 250px; background: #ffd400; color: #111; border: 8px solid #111; border-radius: 6px; outline: 4px solid #ffd400;
+  padding: 8px 12px; text-align: center; display: flex; flex-direction: column; align-items: center; box-shadow: 0 14px 22px rgba(0,0,0,.45); }
+.sb .ic { width: 58px; height: 58px; flex-shrink: 0; }
+.sb small { font: 800 24px/1.2 '%(body)s', sans-serif; border-bottom: 3px solid #111; padding: 0 8px; }
+.sb .t { width: 100%%; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; line-height: 1.1; }
+.sb strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+.sb .legs { flex: 1; display: flex; justify-content: space-between; padding: 0 40px; }
+.sb .legs i { width: 14px; background: linear-gradient(90deg, #555, #aaa, #555); }
+/* style "detective": a cork board, notes pinned at different heights, joined by a red string */
+.cork { height: 100%%; position: relative; border-radius: 20px; padding: 26px 26px 0; border: 12px solid #6b4423;
+  background: radial-gradient(circle at 20%% 30%%, rgba(0,0,0,.08) 2px, transparent 3px) 0 0 / 22px 22px,
+              radial-gradient(circle at 70%% 60%%, rgba(255,255,255,.1) 2px, transparent 3px) 0 0 / 17px 17px, #c08a52;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; align-items: start; box-shadow: 0 16px 28px rgba(0,0,0,.5); }
+.cork svg { position: absolute; inset: 0; width: 100%%; height: 100%%; z-index: 2; pointer-events: none; }
+.memo { position: relative; height: 230px; background: #fffdf2; color: #161616; padding: 26px 14px 12px; text-align: center;
+  display: flex; flex-direction: column; align-items: center; box-shadow: 0 8px 14px rgba(0,0,0,.35); }
+.memo:nth-of-type(1) { transform: rotate(-3deg); } .memo:nth-of-type(2) { margin-top: 64px; transform: rotate(2deg); background: #eaf6ff; }
+.memo:nth-of-type(3) { margin-top: 22px; transform: rotate(-1.5deg); }
+.memo::before { content: ""; position: absolute; top: -12px; left: 50%%; margin-left: -15px; width: 30px; height: 30px; border-radius: 50%%; z-index: 3;
+  background: radial-gradient(circle at 35%% 30%%, #ff8a8a, #c40000); box-shadow: 0 4px 5px rgba(0,0,0,.4); }
+.memo .ic { width: 56px; height: 56px; flex-shrink: 0; }
+.memo small { color: #c40000; font: 800 22px/1.2 '%(body)s', sans-serif; }
+.memo .t { width: 100%%; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; line-height: 1.1; }
+.memo strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+/* style "stamps": three postage stamps with perforated edges, a price corner and a postmark */
+.stamps { height: 100%%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; align-items: center; }
+.stp { height: 330px; padding: 14px; background: #fff; filter: drop-shadow(0 12px 14px rgba(0,0,0,.45));
+  -webkit-mask: radial-gradient(circle at 10px 10px, transparent 7px, #000 7.5px) -10px -10px / 20px 20px,
+                linear-gradient(#000 0 0) content-box; }
+.stp:nth-child(1) { transform: rotate(-3deg); } .stp:nth-child(3) { transform: rotate(3deg); }
+.stp .in { position: relative; height: 100%%; border: 5px solid %(value)s; background: linear-gradient(170deg, #fff, %(accent)s33);
+  padding: 10px 10px 8px; display: flex; flex-direction: column; align-items: center; text-align: center; color: #161616; overflow: hidden; }
+.stp:nth-child(2) .in { background: linear-gradient(170deg, #fff, #7fd3ff44); }
+.stp .rs { position: absolute; top: 4px; right: 8px; font: 800 26px/1 '%(font)s', sans-serif; color: %(value)s; }
+.stp .pm { position: absolute; right: -30px; bottom: 6px; width: 120px; height: 120px; border-radius: 50%%; border: 4px solid rgba(0,0,0,.18);
+  background: repeating-linear-gradient(0deg, transparent 0 14px, rgba(0,0,0,.14) 14px 17px); }
+.stp .ic { width: 64px; height: 64px; flex-shrink: 0; margin-top: 18px; }
+.stp small { color: %(value)s; font: 800 22px/1.2 '%(body)s', sans-serif; }
+.stp .t { width: 100%%; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; line-height: 1.1; position: relative; }
+.stp strong { font-family: '%(font)s', sans-serif; font-weight: 800; }
+
 .foot { top: 1700px; height: 190px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .cta { background: %(accent)s; color: #111; border-radius: 50px; padding: 10px 40px; font: 800 40px/1.2 '%(font)s', sans-serif; }
 .src { font: 600 28px/1.2 '%(body)s', sans-serif; opacity: .85; }
@@ -679,7 +736,8 @@ LONG_ROWS = "cards"   # how rows too long for tiles are shown: cards, cols, step
 #   hub, stairs, arrows, paper, magazine,
 #   road, rope, puzzle, pyramid,
 #   train, signpost, calendar, film,
-#   kites, clipboard, tvs or balloons
+#   kites, clipboard, tvs, balloons,
+#   thali, station, detective or stamps
 SPARE_ICONS = ["pin", "megaphone", "people", "document", "star", "calendar", "check"]
 
 
@@ -714,6 +772,26 @@ def _rows_html(rows: list[tuple[str, str, str]], style: str | None = None, hub_i
             f'<div class="num-row"><div class="n">{i}</div><div class="txt">{icon_img(key)}'
             f'<div class="t" data-fit data-max="50" data-min="26">{small(label)}<strong>{esc(value)}</strong></div></div></div>'
             for i, (key, label, value) in enumerate(rows, 1)) + "</div>"
+    if style == "thali":
+        return '<div class="thali"><div class="plate">' + "".join(
+            f'<div class="katori">{icon_img(key)}{small(label)}<div class="t" data-fit data-max="34" data-min="18">'
+            f'<strong>{esc(value)}</strong></div></div>' for key, label, value in rows) + "</div></div>"
+    if style == "station":
+        return '<div class="station">' + "".join(
+            f'<div class="sb"><div class="plate2">{icon_img(key)}{small(label or f"મુદ્દો {i}")}<div class="t" data-fit data-max="44" data-min="20">'
+            f'<strong>{esc(value)}</strong></div></div><div class="legs"><i></i><i></i></div></div>'
+            for i, (key, label, value) in enumerate(rows, 1)) + "</div>"
+    if style == "detective":
+        string = ('<svg viewBox="0 0 968 368" preserveAspectRatio="none"><polyline points="150,22 484,84 818,40" fill="none"'
+                  ' stroke="#d40000" stroke-width="5" stroke-linejoin="round"/></svg>')
+        return '<div class="cork">' + "".join(
+            f'<div class="memo">{icon_img(key)}{small(label)}<div class="t" data-fit data-max="40" data-min="20">'
+            f'<strong>{esc(value)}</strong></div></div>' for key, label, value in rows) + string + "</div>"
+    if style == "stamps":
+        return '<div class="stamps">' + "".join(
+            f'<div class="stp"><div class="in"><span class="rs">₹5</span><span class="pm"></span>{icon_img(key)}{small(label)}'
+            f'<div class="t" data-fit data-max="40" data-min="20"><strong>{esc(value)}</strong></div></div></div>'
+            for key, label, value in rows) + "</div>"
     if style == "kites":
         return '<div class="kites">' + "".join(
             f'<div class="kite"><div class="sq"></div><div class="tail"></div><div class="in">{icon_img(key)}{small(label)}'
