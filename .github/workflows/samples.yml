@@ -31,9 +31,14 @@ jobs:
           cache: pip
 
       - name: Install system packages
+        # a stuck Ubuntu mirror once hung this step for over half an hour: each try is time-limited
+        timeout-minutes: 12
         run: |
-          sudo apt-get update
-          sudo apt-get install -y fonts-noto-core fonts-noto-color-emoji
+          for try in 1 2 3; do
+            sudo timeout 150 apt-get update -o Acquire::Retries=3 &&
+              sudo timeout 300 apt-get install -y --no-install-recommends -o Acquire::Retries=3 fonts-noto-core fonts-noto-color-emoji && break
+            echo "apt try $try failed, retrying"; sleep 15
+          done
 
       - name: Install Python packages
         run: |
