@@ -30,6 +30,11 @@ card:
   # The news mood (breaking / money / info / happy) decides which of these fit; one of them is picked at random.
   designs: ["brand"]              # brand = one fixed layout on every post (only the category colour changes), so
                                   # the profile grid looks like one page; others: bulletin, mag, hero, split, paper
+  # how the brand poster draws its three facts; each post takes one of these (not one of the last 3 posts'),
+  # leaning on the ones whose reels get more views (see data/report.md, "rows")
+  row_styles: [cols, split, neon, circles, strips, tv, notes, capsules, stats, keys, bento, aurora,
+               hub, stairs, arrows, paper, magazine, road, rope, puzzle, train, calendar, film,
+               clipboard, tvs, balloons, station, detective, stamps]
   picture: "cartoon"              # cartoon = a flat 2D cartoon scene of the story (Gemini first; generic characters,
                                   # never a real person's likeness), else a 3D cut-out, else a big 3D icon;
                                   # cutout = only 3D object cut-outs; scene = AI scenes and real photos allowed

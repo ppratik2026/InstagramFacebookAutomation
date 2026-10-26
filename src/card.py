@@ -378,6 +378,20 @@ def _info_page(story: NewsStory, cfg: dict, theme: dict, image: Path | None, fon
     )
 
 
+def choose_row_style(cfg: dict) -> str | None:
+    """How the brand poster draws its three facts: one of card.row_styles, not one of the last few posts' styles,
+    favouring the styles whose reels got more views. ROW_STYLE in the environment forces one (for tests)."""
+    if os.environ.get("ROW_STYLE"):
+        return os.environ["ROW_STYLE"]
+    styles = cfg["card"].get("row_styles") or []
+    if not styles:
+        return None
+    from src.analytics import weighted_choice
+    from src.history import load_history
+    recent = [(item.get("style") or {}).get("rows") for item in load_history()[-3:]]
+    return weighted_choice([s for s in styles if s not in recent] or styles, "rows")
+
+
 def choose_design(story: NewsStory, cfg: dict, has_background: bool = True) -> str:
     """One of the designs that suits this story (by its mood), so the feed doesn't look repetitive."""
     forced = os.environ.get("CARD_DESIGN", "").strip()   # e.g. from the workflow's "design" choice
@@ -437,8 +451,10 @@ def render_card(story: NewsStory, cfg: dict, out_path: Path, background: Path | 
         fit_script = designs.FIT_SCRIPT
     elif design == "brand":
         from src import brand
+        row_style = choose_row_style(cfg)
+        story.style["rows"] = row_style
         page_html = brand.brand_page(story, date, cfg["card"]["handle"], _data_url(cutout) if cutout else None,
-                                     image_url)
+                                     image_url, row_style)
         fit_script = brand.FIT
     elif design == "bulletin":
         from src.bulletin import FIT, bulletin_page

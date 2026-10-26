@@ -751,7 +751,7 @@ def _rows_html(rows: list[tuple[str, str, str]], style: str | None = None, hub_i
         keys.append(key)
     rows = [(k, label, value) for k, (_, label, value) in zip(keys, rows)]
     small = lambda label: f"<small>{esc(label)}</small>" if label else ""
-    if len(rows) == 3 and all(len(value) <= 18 for _, _, value in rows):
+    if not style and len(rows) == 3 and all(len(value) <= 18 for _, _, value in rows):
         return '<div class="tiles">' + "".join(
             f'<div class="tile">{icon_img(key)}<div class="txt" data-fit data-max="76" data-min="34">'
             f'<strong>{esc(value)}</strong>{small(label)}</div></div>'
@@ -933,8 +933,10 @@ def _rows_html(rows: list[tuple[str, str, str]], style: str | None = None, hub_i
         for key, label, value in rows) + "</div>"
 
 
-def brand_page(story, date: str, handle: str, cutout_url: str | None = None, scene_url: str | None = None) -> str:
-    """scene_url: a landscape cartoon scene for the picture zone; else the cut-out, else a big 3D icon."""
+def brand_page(story, date: str, handle: str, cutout_url: str | None = None, scene_url: str | None = None,
+               row_style: str | None = None) -> str:
+    """scene_url: a landscape cartoon scene for the picture zone; else the cut-out, else a big 3D icon.
+    row_style: how the three facts are drawn (one of the styles in _rows_html); None = tiles or LONG_ROWS."""
     label, icon, top, bottom, accent, value = LOOKS.get(story.category, LOOKS["government"])
     css = CSS % {"font": FONT, "body": BODY_FONT, "top": top, "bottom": bottom, "accent": accent, "value": value}
     story.style.update({"palette": story.category, "visual": story.visual or "checklist"})
@@ -945,7 +947,7 @@ def brand_page(story, date: str, handle: str, cutout_url: str | None = None, sce
         picture = f'<div class="glow"></div><img class="obj" src="{cutout_url}" alt="">'
     else:
         picture = f'<div class="glow"></div>{icon_img(story.headline, "icon-big")}'
-    rows = _rows_html(_rows(story), hub_icon=icon_key(story.headline, icon))
+    rows = _rows_html(_rows(story), row_style, hub_icon=icon_key(story.headline, icon))
     fonts = f"{FONT.replace(' ', '+')}:wght@600;700;800&family={BODY_FONT.replace(' ', '+')}:wght@600;700"
     return f"""<!doctype html><html><head><meta charset="utf-8">
 <link href="https://fonts.googleapis.com/css2?family={fonts}&display=block" rel="stylesheet">

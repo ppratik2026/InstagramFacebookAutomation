@@ -18,7 +18,7 @@ STATS_FILE = ROOT / "data" / "stats.json"
 REPORT_FILE = ROOT / "data" / "report.md"
 METRICS = "views,reach,likes,comments,shares,saved,ig_reels_avg_watch_time"
 MIN_AGE_HOURS = 6        # younger reels are still growing; they are not compared yet
-DIMENSIONS = ["design", "palette", "visual", "category", "mood", "music", "hour"]
+DIMENSIONS = ["design", "rows", "palette", "visual", "category", "mood", "music", "hour"]
 
 
 def load_stats() -> dict:
