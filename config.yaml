@@ -17,7 +17,8 @@ content:
     trending: "ટ્રેન્ડિંગ (the news everyone is talking about today: viral, cricket and sport, weather, films, India)"
     good_news: "સારા સમાચાર (only truly happy news: achievements, medals, awards, new facilities, relief or help for people; never a disease outbreak, death, accident, crime, disaster, price rise or warning)"
   max_news_age_hours: 48
-  hashtags_count: 10
+  hashtags_count: 5               # Instagram suggests 3-5 relevant hashtags
+  page_hashtags: ["aehaalogujarat"]   # added to every caption
   extra_instructions: ""
 
 # Look of the news card. Colour themes per category are in src/card.py (THEMES).
@@ -112,4 +113,5 @@ instagram:
   # up to 3 public Instagram accounts invited as collaborators on every reel, e.g. ["friendpage"]; the reel
   # then shows on their profile too once they accept the invite (in their Instagram notifications)
   collaborators: []
+  first_comment: true             # post a question as the first comment under each reel
   share_to_feed: true

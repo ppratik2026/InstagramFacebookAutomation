@@ -108,8 +108,17 @@ CARD_FORMAT = """Return a JSON object with exactly these keys:
                    recognisable person (for a story about a named person, an ordinary character in their role);
                    crime: police and handcuffs, people only from behind; no text, no signs with writing",
   "cta": "bottom line asking viewers to comment/share",
-  "caption": "Instagram caption in Gujarati, 3-5 short lines, no hashtags",
-  "hashtags": ["..."],
+  "caption": "Instagram caption in Gujarati, no hashtags, made to be found in search and shared:
+              line 1: an emoji and a hook with the place and the key word people would search (e.g. '🚨 અમદાવાદ:
+              5 ઝોનમાં કાલે પાણી કાપ'); lines 2-4: the main facts (who, what, when, how much), one per line, each
+              starting with an emoji; then one short question to the viewers about the story (neutral, never
+              taking a side in politics) that invites a comment",
+  "keywords": ["4-6 English search phrases people type on Instagram for this news, e.g. 'Ahmedabad water cut',
+               'Gujarat news today', 'Surat crime news'"],
+  "comment": "a short friendly Gujarati question for the first comment under the reel, different from the
+              caption's question, e.g. 'તમારા વિસ્તારમાં પણ આવું થયું છે? 👇'",
+  "hashtags": ["5 hashtags: one place (e.g. Ahmedabad), two about the topic, one Gujarati (e.g. ગુજરાત), one broad
+               news tag (e.g. GujaratNews); no spaces, no #"],
   "image_keywords": ["2-3 English stock-photo searches: places/objects, never real people"]
 }""".replace("ICON_KEYS", ", ".join(sorted(available()))).replace("SCENE_KEYS", ", ".join(SCENES))
 
@@ -600,6 +609,8 @@ Return {{"headline": "...", "highlight": "..."}}.""")
         person="" if suggested == "crime" or card.get("category") == "crime" else str(card.get("person") or "").strip(),
         cta=card.get("cta", "તમારો અભિપ્રાય કોમેન્ટમાં જણાવો 👇"),
         caption=card.get("caption", item.title),
+        keywords=[str(k) for k in card.get("keywords", [])][:6],
+        comment=str(card.get("comment", "")),
         hashtags=card.get("hashtags", ["ગુજરાત", "GujaratNews"]),
         image_prompt=card.get("image_prompt", ""),
         stamp=_fitting_stamp(card) if cfg["card"].get("stamps", False) else "",

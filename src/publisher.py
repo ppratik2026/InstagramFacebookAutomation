@@ -71,6 +71,17 @@ class Instagram:
         ))
         return {"media_id": media_id, "permalink": info.get("permalink")}
 
+    def comment(self, media_id: str, text: str) -> bool:
+        """Post a comment under the reel as the page (best effort: needs the comments permission)."""
+        try:
+            _check(requests.post(f"{self.base}/{media_id}/comments",
+                                 data={"message": text, "access_token": self.token}, timeout=30))
+            print(f"   First comment: {text}")
+            return True
+        except (InstagramError, requests.RequestException) as e:
+            print(f"   First comment not posted: {e}")
+            return False
+
     def _container(self, source: dict, caption: str, share_to_feed: bool) -> str:
         data = {
             "media_type": "REELS",

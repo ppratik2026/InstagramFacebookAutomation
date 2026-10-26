@@ -104,7 +104,7 @@ def cmd_run(args, cfg):
             break
     if not story:
         raise RuntimeError("No new story to post in any category.")
-    caption = story.full_caption()
+    caption = story.full_caption(cfg["card"]["handle"], cfg["content"].get("page_hashtags"))
     (work_dir / "research.md").write_text(notes, encoding="utf-8")
     (work_dir / "story.json").write_text(json.dumps(story.__dict__, ensure_ascii=False, indent=2), encoding="utf-8")
     (work_dir / "caption.txt").write_text(caption, encoding="utf-8")
@@ -188,9 +188,12 @@ def cmd_run(args, cfg):
         return
 
     print("4/4 Publishing to Instagram...")
+    ig = ig or instagram(cfg)
     result = post_reel(cfg, video, caption, ig)
     add_entry(story.title_en, result["media_id"], result.get("permalink"), story.category, story.style)
     print(f"Published: {result.get('permalink') or result['media_id']}")
+    if story.comment and cfg["instagram"].get("first_comment", True):
+        ig.comment(result["media_id"], story.comment)   # a question that starts the conversation
 
 
 def _checked_card(story, cfg, card: Path, background, intro_dir, design: str, cutout) -> Path:
@@ -272,7 +275,7 @@ def cmd_prepare(args, cfg):
     (work_dir / "story.json").write_text(json.dumps(story.__dict__, ensure_ascii=False, indent=2), encoding="utf-8")
     (work_dir / "issue_title.txt").write_text(f"📰 {story.headline}", encoding="utf-8")
     from src.designs import mood_of
-    (work_dir / "issue.md").write_text(issue_body(story, prompt, story.full_caption(), mood_of(story)), encoding="utf-8")
+    (work_dir / "issue.md").write_text(issue_body(story, prompt, story.full_caption(cfg["card"]["handle"], cfg["content"].get("page_hashtags")), mood_of(story)), encoding="utf-8")
     print(f"Prepared: [{story.category}] {story.title_en}\n   {work_dir.relative_to(ROOT)}/issue.md")
 
 

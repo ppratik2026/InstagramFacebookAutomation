@@ -28,12 +28,13 @@ def pick_music(mood: str = "") -> Path | None:
 
 
 # Reel length by news mood (seconds): longer for posts with more to read
-MOOD_SECONDS = {"breaking": 12, "money": 14, "info": 18, "happy": 12}
+# short reels are watched to the end and loop, which Instagram rewards most
+MOOD_SECONDS = {"breaking": 9, "money": 10, "info": 11, "happy": 9}
 
 
 def reel_seconds(mood: str, n_points: int = 0) -> float:
     """Length of the reel: longer when there is more to read."""
-    return MOOD_SECONDS.get(mood, 15) + (3 if n_points > 4 else 0)
+    return MOOD_SECONDS.get(mood, 10) + (2 if n_points > 4 else 0)
 
 
 def build_video(image: Path, vcfg: dict, out_path: Path, music: Path | None = None,

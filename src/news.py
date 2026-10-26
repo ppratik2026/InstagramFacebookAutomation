@@ -132,10 +132,24 @@ class NewsStory:
     scene: str = ""  # drawn cartoon place for the picture (src/scenes.py), e.g. airport, rally, market
     props: list = field(default_factory=list)  # up to three objects placed in the scene (icon names)
     style: dict = field(default_factory=dict)  # how the reel looked (design, palette, ...), saved for the analytics
+    keywords: list = field(default_factory=list)  # English search phrases, written into the caption for search
+    comment: str = ""  # question posted as the first comment under the reel
 
-    def full_caption(self) -> str:
-        tags = " ".join(t if t.startswith("#") else f"#{t}" for t in self.hashtags)
-        return f"{self.caption}\n\nસ્રોત: {self.source_name}\n\n{tags}".strip()
+    def full_caption(self, handle: str = "", page_tags: list | None = None) -> str:
+        """Hook and facts, the search keywords, a share / follow line, the source and the hashtags."""
+        tags = []
+        for t in [*self.hashtags, *(page_tags or [])]:
+            t = "#" + str(t).lstrip("#").replace(" ", "")
+            if t.lower() not in {x.lower() for x in tags} and len(t) > 1:
+                tags.append(t)
+        parts = [self.caption.strip()]
+        if self.keywords:
+            parts.append(" | ".join(str(k) for k in self.keywords))
+        follow = f"🔔 આવા સમાચાર માટે {handle} ને ફોલો કરો" if handle else ""
+        parts.append("\n".join(x for x in ["📲 આ માહિતી મિત્રો અને પરિવાર સાથે શેર કરો", follow] if x))
+        parts.append(f"સ્રોત: {self.source_name}")
+        parts.append(" ".join(tags))
+        return "\n\n".join(p for p in parts if p).strip()
 
 
 def _research(client: genai.Client, cfg: dict, previous: list[str], category: str | None) -> str:
