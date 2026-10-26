@@ -84,10 +84,6 @@ llm_providers:
     url: "https://api.groq.com/openai/v1/chat/completions"
     key_env: GROQ_API_KEY
     models: ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "qwen/qwen3-32b", "llama-3.1-8b-instant"]
-  - name: github-models               # free with the workflow's own GITHUB_TOKEN (permission models: read), no key to add
-    url: "https://models.github.ai/inference/chat/completions"
-    key_env: GITHUB_TOKEN
-    models: ["openai/gpt-4.1-mini", "openai/gpt-4o-mini", "openai/gpt-4.1"]
   - name: openrouter                  # free key, no card: https://openrouter.ai/keys
     url: "https://openrouter.ai/api/v1/chat/completions"
     key_env: OPENROUTER_API_KEY
