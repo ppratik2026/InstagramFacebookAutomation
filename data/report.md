@@ -1,4 +1,4 @@
-# Page report (27 Oct 2026 04:33 UTC)
+# Page report (27 Oct 2026 07:36 UTC)
 
 25 reels compared (older than 6 hours).
 
@@ -6,9 +6,9 @@
 
 | Views | Reach | Shares | Saves | Category | Design | Title |
 |---|---|---|---|---|---|---|
-| 221 | 182 | 0 | 0 | crime |  | [Surat cyber sting busts ₹110 crore online trading scam](https://www.instagram.com/reel/De6tot_ESsK/) |
+| 222 | 183 | 0 | 0 | crime |  | [Surat cyber sting busts ₹110 crore online trading scam](https://www.instagram.com/reel/De6tot_ESsK/) |
 | 170 | 152 | 0 | 0 | good_news |  | [Gujarat athletes win 8 medals at Asian Para Games 2026](https://www.instagram.com/reel/De6f9cdACJB/) |
-| 154 | 106 | 0 | 0 | crime | brand | [Kerala High Court allows case against judge after son's fatal car crash](https://www.instagram.com/reel/De9XU3BCbj3/) |
+| 155 | 107 | 0 | 0 | crime | brand | [Kerala High Court allows case against judge after son's fatal car crash](https://www.instagram.com/reel/De9XU3BCbj3/) |
 | 144 | 119 | 0 | 0 | good_news |  | [Gold loan usage jumps 35% in five years](https://www.instagram.com/reel/De60loXAfTo/) |
 | 146 | 129 | 0 | 0 | government |  | [Fire safety certificate now mandatory for tall buildings in Gujarat](https://www.instagram.com/reel/De67daJCrFb/) |
 | 146 | 115 | 0 | 0 | government | brand | [Gujarat govt announces DA hike for pensioners as Diwali gift](https://www.instagram.com/reel/De7Wz-tACPq/) |
@@ -27,16 +27,16 @@
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| strips | 1.32 | 1 |
-| capsules | 1.11 | 1 |
+| strips | 1.33 | 1 |
+| capsules | 1.10 | 1 |
 | keys | 1.07 | 1 |
 | neon | 1.00 | 1 |
-| stats | 1.00 | 1 |
-| cols | 0.97 | 1 |
+| stats | 0.99 | 1 |
+| cols | 0.98 | 1 |
 | tv | 0.47 | 1 |
 | notes | 0.44 | 1 |
 | bento | 0.41 | 1 |
-| circles | 0.37 | 1 |
+| circles | 0.39 | 1 |
 | split | 0.10 | 1 |
 
 ## palette
@@ -45,7 +45,7 @@
 |---|---|---|
 | government | 1.11 | 2 |
 | crime | 1.10 | 4 |
-| trending | 0.73 | 4 |
+| trending | 0.74 | 4 |
 | politics | 0.72 | 3 |
 | good_news | 0.68 | 3 |
 
@@ -54,7 +54,7 @@
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
 | checklist | 0.90 | 12 |
-| reasons | 0.74 | 2 |
+| reasons | 0.75 | 2 |
 | table | 0.72 | 2 |
 
 ## category
@@ -63,8 +63,8 @@
 |---|---|---|
 | crime | 1.21 | 7 |
 | government | 1.17 | 4 |
-| good_news | 0.95 | 5 |
-| trending | 0.73 | 4 |
+| good_news | 0.94 | 5 |
+| trending | 0.74 | 4 |
 | politics | 0.72 | 3 |
 
 ## mood
@@ -73,33 +73,33 @@
 |---|---|---|
 | money | 1.14 | 2 |
 | breaking | 0.93 | 10 |
-| info | 0.67 | 2 |
-| happy | 0.42 | 2 |
+| info | 0.68 | 2 |
+| happy | 0.43 | 2 |
 
 ## music
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| Rule of Fear | 1.25 | 1 |
+| Rule of Fear | 1.24 | 1 |
 | Iron Rise | 1.14 | 2 |
-| Dark Throne | 0.81 | 7 |
+| Dark Throne | 0.82 | 7 |
 | Shadow Walk | 0.78 | 4 |
-| One Man Empire | 0.69 | 2 |
+| One Man Empire | 0.71 | 2 |
 
 ## hour
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| 13 | 1.19 | 1 |
-| 21 | 1.11 | 1 |
-| 11 | 1.08 | 1 |
+| 13 | 1.18 | 1 |
+| 21 | 1.10 | 1 |
+| 11 | 1.09 | 1 |
 | 23 | 1.07 | 1 |
-| 12 | 1.02 | 1 |
+| 12 | 1.03 | 1 |
 | 17 | 1.00 | 1 |
-| 22 | 1.00 | 1 |
-| 15 | 0.97 | 1 |
-| 10 | 0.95 | 1 |
-| 18 | 0.84 | 2 |
+| 22 | 0.99 | 1 |
+| 15 | 0.98 | 1 |
+| 10 | 0.94 | 1 |
+| 18 | 0.86 | 2 |
 | 00 | 0.83 | 2 |
 | 19 | 0.47 | 1 |
 | 20 | 0.44 | 1 |
