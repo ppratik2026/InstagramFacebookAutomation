@@ -1,6 +1,6 @@
-# Page report (31 Oct 2026 10:36 UTC)
+# Page report (31 Oct 2026 13:35 UTC)
 
-99 reels compared (older than 6 hours).
+102 reels compared (older than 6 hours).
 
 ## Top reels
 
@@ -21,7 +21,7 @@
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| brand | 0.98 | 90 |
+| brand | 0.98 | 93 |
 
 ## rows
 
@@ -31,29 +31,29 @@
 | calendar | 2.38 | 3 |
 | tvs | 1.47 | 3 |
 | tv | 1.43 | 3 |
-| train | 1.33 | 3 |
+| train | 1.32 | 3 |
 | film | 1.27 | 3 |
+| station | 1.08 | 3 |
 | hub | 1.06 | 3 |
-| cols | 1.02 | 3 |
-| station | 0.96 | 3 |
+| rope | 0.97 | 3 |
 | stats | 0.95 | 3 |
 | circles | 0.94 | 3 |
 | strips | 0.93 | 3 |
 | capsules | 0.92 | 3 |
 | bento | 0.92 | 3 |
-| rope | 0.89 | 3 |
-| magazine | 0.87 | 3 |
+| magazine | 0.88 | 3 |
 | keys | 0.86 | 3 |
 | arrows | 0.86 | 3 |
-| balloons | 0.73 | 3 |
+| stamps | 0.83 | 3 |
+| cols | 0.82 | 4 |
+| balloons | 0.77 | 3 |
 | split | 0.71 | 3 |
 | notes | 0.70 | 3 |
 | stairs | 0.67 | 3 |
-| detective | 0.63 | 2 |
-| stamps | 0.60 | 2 |
+| clipboard | 0.66 | 3 |
 | neon | 0.54 | 3 |
-| clipboard | 0.53 | 3 |
 | puzzle | 0.53 | 3 |
+| detective | 0.53 | 3 |
 | paper | 0.39 | 3 |
 | aurora | 0.34 | 3 |
 
@@ -61,68 +61,68 @@
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| crime | 1.27 | 19 |
-| politics | 1.05 | 21 |
-| trending | 0.91 | 15 |
-| government | 0.83 | 21 |
-| good_news | 0.77 | 14 |
+| crime | 1.29 | 19 |
+| politics | 1.01 | 22 |
+| trending | 0.94 | 16 |
+| government | 0.86 | 21 |
+| good_news | 0.73 | 15 |
 
 ## visual
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| table | 1.24 | 11 |
+| table | 1.24 | 12 |
 | compare | 1.21 | 5 |
-| checklist | 0.94 | 68 |
-| reasons | 0.86 | 4 |
-| timeline | 0.57 | 2 |
+| checklist | 0.94 | 69 |
+| reasons | 0.89 | 4 |
+| timeline | 0.58 | 3 |
 
 ## category
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| crime | 1.28 | 22 |
-| politics | 1.05 | 21 |
-| trending | 0.91 | 15 |
-| government | 0.86 | 23 |
-| good_news | 0.84 | 16 |
+| crime | 1.30 | 22 |
+| politics | 1.01 | 22 |
+| trending | 0.94 | 16 |
+| government | 0.89 | 23 |
+| good_news | 0.81 | 17 |
 
 ## mood
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| breaking | 1.15 | 44 |
-| money | 1.06 | 14 |
-| happy | 0.79 | 15 |
-| info | 0.64 | 17 |
+| breaking | 1.16 | 44 |
+| money | 1.09 | 15 |
+| happy | 0.75 | 16 |
+| info | 0.64 | 18 |
 
 ## music
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| Iron Rise | 1.19 | 20 |
+| Iron Rise | 1.20 | 20 |
 | Shadow Walk | 1.05 | 23 |
-| Dark Throne | 0.94 | 25 |
+| Dark Throne | 0.93 | 26 |
 | Rule of Fear | 0.91 | 11 |
-| One Man Empire | 0.61 | 10 |
-| The Last King | 0.29 | 1 |
+| One Man Empire | 0.70 | 11 |
+| The Last King | 0.30 | 2 |
 
 ## hour
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
 | 18 | 1.39 | 8 |
-| 00 | 1.28 | 7 |
-| 23 | 1.22 | 7 |
+| 00 | 1.35 | 7 |
+| 23 | 1.27 | 7 |
 | 22 | 1.11 | 5 |
 | 15 | 1.04 | 5 |
 | 14 | 0.94 | 4 |
-| 12 | 0.93 | 5 |
 | 13 | 0.91 | 5 |
-| 10 | 0.86 | 6 |
+| 11 | 0.86 | 9 |
 | 17 | 0.85 | 6 |
 | 19 | 0.85 | 6 |
 | 21 | 0.84 | 6 |
-| 11 | 0.80 | 8 |
-| 20 | 0.78 | 6 |
+| 20 | 0.82 | 6 |
+| 12 | 0.81 | 6 |
+| 10 | 0.78 | 7 |
 | 16 | 0.69 | 6 |
