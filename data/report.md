@@ -1,15 +1,15 @@
-# Page report (02 Nov 2026 13:33 UTC)
+# Page report (02 Nov 2026 16:34 UTC)
 
-139 reels compared (older than 6 hours).
+142 reels compared (older than 6 hours).
 
 ## Top reels
 
 | Views | Reach | Shares | Saves | Category | Design | Title |
 |---|---|---|---|---|---|---|
-| 1661 | 1164 | 1 | 1 | trending | brand | [Unseasonal hailstorm and cyclone risk in Gujarat early November](https://www.instagram.com/reel/DfL_TIMiZ5K/) |
+| 2422 | 1372 | 4 | 1 | crime | brand | [Father murders 10-year-old son in Sanand, Ahmedabad](https://www.instagram.com/reel/DfOvy_qlbzK/) |
+| 1666 | 1166 | 1 | 1 | trending | brand | [Unseasonal hailstorm and cyclone risk in Gujarat early November](https://www.instagram.com/reel/DfL_TIMiZ5K/) |
 | 710 | 527 | 0 | 0 | crime | brand | [Drug case accused shot by Ahmedabad Crime Branch during escape attempt](https://www.instagram.com/reel/De_3l88jIm8/) |
-| 666 | 372 | 0 | 0 | politics | brand | [PM Modi mocks Congress over MLC election results using ballot papers](https://www.instagram.com/reel/DfDFZAQgmFJ/) |
-| 528 | 314 | 2 | 1 | crime | brand | [Father murders 10-year-old son in Sanand, Ahmedabad](https://www.instagram.com/reel/DfOvy_qlbzK/) |
+| 667 | 373 | 0 | 0 | politics | brand | [PM Modi mocks Congress over MLC election results using ballot papers](https://www.instagram.com/reel/DfDFZAQgmFJ/) |
 | 284 | 193 | 2 | 0 | trending | brand | [6+ nations advise citizens to prepare emergency kits for 72 hours](https://www.instagram.com/reel/DfFmRELDxGq/) |
 | 240 | 199 | 0 | 0 | crime |  | [Surat cyber sting busts ₹110 crore online trading scam](https://www.instagram.com/reel/De6tot_ESsK/) |
 | 235 | 173 | 0 | 0 | crime | brand | [Over 19,000 liquor bottles seized from warehouse in Jamnagar](https://www.instagram.com/reel/DfEtHNBjmnD/) |
@@ -21,108 +21,108 @@
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| brand | 0.99 | 130 |
+| brand | 1.00 | 133 |
 
 ## rows
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| magazine | 3.57 | 4 |
-| road | 1.90 | 4 |
-| calendar | 1.82 | 4 |
-| stats | 1.49 | 5 |
-| tvs | 1.19 | 4 |
-| train | 1.13 | 4 |
-| tv | 1.12 | 5 |
-| film | 1.09 | 4 |
-| station | 1.05 | 4 |
-| hub | 0.92 | 4 |
-| cols | 0.90 | 5 |
-| bento | 0.88 | 4 |
-| stamps | 0.88 | 4 |
-| notes | 0.86 | 5 |
-| circles | 0.84 | 5 |
-| rope | 0.84 | 4 |
-| arrows | 0.84 | 4 |
-| capsules | 0.80 | 5 |
-| balloons | 0.78 | 4 |
-| strips | 0.75 | 5 |
-| clipboard | 0.72 | 4 |
-| split | 0.72 | 5 |
-| keys | 0.70 | 4 |
-| detective | 0.69 | 4 |
-| neon | 0.59 | 5 |
-| puzzle | 0.59 | 4 |
-| stairs | 0.56 | 4 |
-| paper | 0.50 | 4 |
-| aurora | 0.45 | 4 |
+| stats | 3.89 | 5 |
+| magazine | 3.25 | 4 |
+| road | 1.74 | 4 |
+| calendar | 1.66 | 4 |
+| tvs | 1.09 | 4 |
+| train | 1.02 | 4 |
+| tv | 1.02 | 5 |
+| film | 0.99 | 4 |
+| station | 0.96 | 4 |
+| hub | 0.84 | 4 |
+| cols | 0.82 | 5 |
+| stamps | 0.80 | 4 |
+| notes | 0.78 | 5 |
+| circles | 0.77 | 5 |
+| rope | 0.76 | 4 |
+| arrows | 0.76 | 4 |
+| bento | 0.75 | 5 |
+| capsules | 0.73 | 5 |
+| balloons | 0.71 | 4 |
+| keys | 0.70 | 5 |
+| strips | 0.69 | 5 |
+| clipboard | 0.66 | 4 |
+| split | 0.66 | 5 |
+| detective | 0.63 | 4 |
+| aurora | 0.57 | 5 |
+| neon | 0.54 | 5 |
+| puzzle | 0.53 | 4 |
+| stairs | 0.51 | 4 |
+| paper | 0.45 | 4 |
 
 ## palette
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| trending | 1.31 | 25 |
-| crime | 1.22 | 27 |
-| politics | 0.89 | 29 |
-| government | 0.79 | 28 |
-| good_news | 0.74 | 21 |
+| crime | 1.58 | 27 |
+| trending | 1.19 | 25 |
+| politics | 0.83 | 30 |
+| government | 0.72 | 29 |
+| good_news | 0.69 | 22 |
 
 ## visual
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| timeline | 3.00 | 5 |
-| table | 1.03 | 16 |
-| compare | 0.95 | 7 |
-| checklist | 0.90 | 95 |
-| reasons | 0.85 | 7 |
+| timeline | 2.73 | 5 |
+| checklist | 0.95 | 98 |
+| table | 0.93 | 16 |
+| compare | 0.86 | 7 |
+| reasons | 0.77 | 7 |
 
 ## category
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| trending | 1.31 | 25 |
-| crime | 1.21 | 30 |
-| politics | 0.89 | 29 |
-| government | 0.81 | 30 |
-| good_news | 0.78 | 23 |
+| crime | 1.53 | 30 |
+| trending | 1.19 | 25 |
+| politics | 0.83 | 30 |
+| government | 0.73 | 31 |
+| good_news | 0.72 | 24 |
 
 ## mood
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| breaking | 1.08 | 60 |
-| info | 1.06 | 26 |
-| money | 0.94 | 20 |
-| happy | 0.76 | 24 |
+| breaking | 1.19 | 60 |
+| info | 0.96 | 28 |
+| money | 0.86 | 20 |
+| happy | 0.70 | 25 |
 
 ## music
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| The Last King | 2.49 | 6 |
-| Iron Rise | 1.03 | 23 |
-| Dark Throne | 1.00 | 39 |
-| Shadow Walk | 0.92 | 32 |
-| Rule of Fear | 0.77 | 14 |
-| One Man Empire | 0.71 | 16 |
+| The Last King | 2.27 | 6 |
+| Dark Throne | 1.23 | 40 |
+| Iron Rise | 0.94 | 23 |
+| Shadow Walk | 0.83 | 33 |
+| Rule of Fear | 0.74 | 15 |
+| One Man Empire | 0.64 | 16 |
 
 ## hour
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| 11 | 1.70 | 13 |
-| 00 | 1.21 | 9 |
-| 12 | 1.17 | 9 |
-| 18 | 1.13 | 11 |
-| 23 | 1.04 | 9 |
-| 22 | 0.99 | 7 |
-| 15 | 0.92 | 7 |
-| 21 | 0.83 | 8 |
-| 13 | 0.82 | 7 |
-| 14 | 0.81 | 6 |
-| 20 | 0.80 | 9 |
-| 19 | 0.79 | 9 |
-| 17 | 0.79 | 8 |
-| 10 | 0.76 | 10 |
-| 16 | 0.64 | 8 |
+| 12 | 2.47 | 9 |
+| 11 | 1.55 | 13 |
+| 00 | 1.11 | 9 |
+| 18 | 1.03 | 11 |
+| 23 | 0.95 | 9 |
+| 22 | 0.90 | 7 |
+| 15 | 0.89 | 8 |
+| 13 | 0.78 | 8 |
+| 21 | 0.75 | 8 |
+| 20 | 0.73 | 9 |
+| 19 | 0.72 | 9 |
+| 17 | 0.72 | 8 |
+| 14 | 0.71 | 7 |
+| 10 | 0.70 | 10 |
+| 16 | 0.58 | 8 |
