@@ -1,4 +1,4 @@
-# Page report (05 Nov 2026 04:38 UTC)
+# Page report (05 Nov 2026 07:32 UTC)
 
 192 reels compared (older than 6 hours).
 
@@ -6,8 +6,8 @@
 
 | Views | Reach | Shares | Saves | Category | Design | Title |
 |---|---|---|---|---|---|---|
-| 2961 | 1782 | 4 | 1 | crime | brand | [Father murders 10-year-old son in Sanand, Ahmedabad](https://www.instagram.com/reel/DfOvy_qlbzK/) |
-| 1904 | 1236 | 2 | 0 | crime | brand | [Gujarat ATS arrests drug mafia Salim Ismail Dola after deportation from Turkey](https://www.instagram.com/reel/DfRkkA-grNV/) |
+| 2961 | 1784 | 4 | 1 | crime | brand | [Father murders 10-year-old son in Sanand, Ahmedabad](https://www.instagram.com/reel/DfOvy_qlbzK/) |
+| 1905 | 1236 | 2 | 0 | crime | brand | [Gujarat ATS arrests drug mafia Salim Ismail Dola after deportation from Turkey](https://www.instagram.com/reel/DfRkkA-grNV/) |
 | 1670 | 1171 | 1 | 1 | trending | brand | [Unseasonal hailstorm and cyclone risk in Gujarat early November](https://www.instagram.com/reel/DfL_TIMiZ5K/) |
 | 710 | 527 | 0 | 0 | crime | brand | [Drug case accused shot by Ahmedabad Crime Branch during escape attempt](https://www.instagram.com/reel/De_3l88jIm8/) |
 | 667 | 373 | 0 | 0 | politics | brand | [PM Modi mocks Congress over MLC election results using ballot papers](https://www.instagram.com/reel/DfDFZAQgmFJ/) |
@@ -27,23 +27,23 @@
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| stats | 3.77 | 6 |
+| stats | 3.76 | 6 |
 | magazine | 2.34 | 6 |
-| split | 2.26 | 7 |
+| split | 2.25 | 7 |
 | road | 1.37 | 6 |
-| calendar | 1.34 | 6 |
+| calendar | 1.33 | 6 |
 | tvs | 0.99 | 6 |
 | detective | 0.97 | 6 |
-| tv | 0.95 | 6 |
-| film | 0.92 | 6 |
+| tv | 0.94 | 6 |
+| film | 0.91 | 6 |
 | train | 0.91 | 6 |
 | station | 0.88 | 6 |
+| stamps | 0.82 | 6 |
 | hub | 0.80 | 6 |
-| stamps | 0.78 | 6 |
+| cols | 0.79 | 7 |
 | notes | 0.78 | 6 |
 | circles | 0.77 | 7 |
 | arrows | 0.77 | 6 |
-| cols | 0.77 | 7 |
 | rope | 0.73 | 6 |
 | capsules | 0.72 | 6 |
 | bento | 0.72 | 6 |
@@ -51,7 +51,7 @@
 | keys | 0.68 | 6 |
 | clipboard | 0.67 | 6 |
 | strips | 0.67 | 6 |
-| neon | 0.61 | 7 |
+| neon | 0.62 | 7 |
 | puzzle | 0.60 | 6 |
 | aurora | 0.59 | 6 |
 | paper | 0.57 | 6 |
@@ -61,21 +61,21 @@
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| crime | 1.72 | 38 |
+| crime | 1.71 | 38 |
 | trending | 1.05 | 36 |
-| politics | 0.80 | 40 |
-| government | 0.71 | 40 |
+| politics | 0.79 | 40 |
+| government | 0.72 | 40 |
 | good_news | 0.70 | 29 |
 
 ## visual
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| timeline | 2.33 | 6 |
+| timeline | 2.32 | 6 |
 | checklist | 1.00 | 136 |
 | table | 0.87 | 22 |
-| compare | 0.79 | 9 |
-| reasons | 0.78 | 10 |
+| compare | 0.81 | 9 |
+| reasons | 0.77 | 10 |
 
 ## category
 
@@ -83,8 +83,8 @@
 |---|---|---|
 | crime | 1.66 | 41 |
 | trending | 1.05 | 36 |
-| politics | 0.80 | 40 |
-| government | 0.72 | 42 |
+| politics | 0.79 | 40 |
+| government | 0.73 | 42 |
 | good_news | 0.72 | 31 |
 
 ## mood
@@ -101,24 +101,24 @@
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
 | The Last King | 1.40 | 14 |
-| Dark Throne | 1.18 | 48 |
-| Shadow Walk | 1.03 | 53 |
+| Dark Throne | 1.17 | 48 |
+| Shadow Walk | 1.04 | 53 |
 | Iron Rise | 0.88 | 27 |
-| Rule of Fear | 0.75 | 21 |
-| One Man Empire | 0.67 | 20 |
+| Rule of Fear | 0.74 | 21 |
+| One Man Empire | 0.66 | 20 |
 
 ## hour
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| 12 | 2.37 | 11 |
+| 12 | 2.36 | 11 |
 | 15 | 1.82 | 11 |
 | 11 | 1.36 | 16 |
 | 00 | 1.02 | 12 |
 | 18 | 0.94 | 14 |
 | 21 | 0.90 | 11 |
 | 23 | 0.88 | 14 |
-| 22 | 0.81 | 12 |
+| 22 | 0.84 | 12 |
 | 13 | 0.77 | 10 |
 | 19 | 0.74 | 13 |
 | 20 | 0.73 | 13 |
