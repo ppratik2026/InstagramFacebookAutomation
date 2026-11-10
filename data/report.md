@@ -1,4 +1,4 @@
-# Page report (10 Nov 2026 04:36 UTC)
+# Page report (10 Nov 2026 07:33 UTC)
 
 279 reels compared (older than 6 hours).
 
@@ -10,7 +10,7 @@
 | 1986 | 1376 | 1 | 0 | crime | brand | [Wife stabs husband over cooking dispute in Naroda, Ahmedabad](https://www.instagram.com/reel/Dfb-obqkv0-/) |
 | 1907 | 1236 | 2 | 0 | crime | brand | [Gujarat ATS arrests drug mafia Salim Ismail Dola after deportation from Turkey](https://www.instagram.com/reel/DfRkkA-grNV/) |
 | 1670 | 1171 | 1 | 1 | trending | brand | [Unseasonal hailstorm and cyclone risk in Gujarat early November](https://www.instagram.com/reel/DfL_TIMiZ5K/) |
-| 1319 | 975 | 1 | 0 | crime | brand | [Two murders reported in Amreli and Bhavnagar on Diwali night](https://www.instagram.com/reel/Dfg2cLxiu9r/) |
+| 1375 | 1022 | 1 | 0 | crime | brand | [Two murders reported in Amreli and Bhavnagar on Diwali night](https://www.instagram.com/reel/Dfg2cLxiu9r/) |
 | 893 | 593 | 3 | 0 | crime | brand | [Four Gujarati pilgrims killed as car plunges into Bhagirathi river in Uttarakhand](https://www.instagram.com/reel/DfW5q-Aleq6/) |
 | 710 | 527 | 0 | 0 | crime | brand | [Drug case accused shot by Ahmedabad Crime Branch during escape attempt](https://www.instagram.com/reel/De_3l88jIm8/) |
 | 667 | 373 | 0 | 0 | politics | brand | [PM Modi mocks Congress over MLC election results using ballot papers](https://www.instagram.com/reel/DfDFZAQgmFJ/) |
@@ -27,15 +27,15 @@
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| magazine | 2.95 | 9 |
-| stats | 2.67 | 9 |
-| calendar | 1.93 | 9 |
-| split | 1.75 | 10 |
+| magazine | 2.94 | 9 |
+| stats | 2.66 | 9 |
+| calendar | 1.96 | 9 |
+| split | 1.74 | 10 |
 | aurora | 1.16 | 9 |
 | road | 1.14 | 9 |
 | station | 1.01 | 9 |
 | tv | 0.92 | 9 |
-| train | 0.91 | 9 |
+| train | 0.92 | 9 |
 | film | 0.86 | 9 |
 | detective | 0.85 | 9 |
 | tvs | 0.85 | 9 |
@@ -51,11 +51,11 @@
 | rope | 0.73 | 9 |
 | clipboard | 0.72 | 9 |
 | notes | 0.71 | 9 |
-| strips | 0.69 | 9 |
+| strips | 0.68 | 9 |
 | neon | 0.67 | 10 |
 | puzzle | 0.62 | 9 |
 | balloons | 0.61 | 9 |
-| stairs | 0.60 | 9 |
+| stairs | 0.59 | 9 |
 
 ## palette
 
@@ -112,9 +112,9 @@
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
 | 12 | 1.78 | 16 |
-| 16 | 1.56 | 17 |
+| 16 | 1.55 | 17 |
 | 15 | 1.44 | 16 |
-| 13 | 1.20 | 16 |
+| 13 | 1.22 | 16 |
 | 11 | 1.15 | 23 |
 | 00 | 1.03 | 17 |
 | 21 | 0.86 | 17 |
