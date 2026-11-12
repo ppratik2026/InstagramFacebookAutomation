@@ -1,4 +1,4 @@
-# Page report (12 Nov 2026 07:36 UTC)
+# Page report (12 Nov 2026 10:36 UTC)
 
 312 reels compared (older than 6 hours).
 
@@ -6,7 +6,7 @@
 
 | Views | Reach | Shares | Saves | Category | Design | Title |
 |---|---|---|---|---|---|---|
-| 6971 | 4152 | 31 | 3 | crime | brand | [Fire incident in Nadiad with 4 gas cylinder blasts](https://www.instagram.com/reel/DfkCA5QvT-i/) |
+| 7006 | 4165 | 31 | 3 | crime | brand | [Fire incident in Nadiad with 4 gas cylinder blasts](https://www.instagram.com/reel/DfkCA5QvT-i/) |
 | 2968 | 1784 | 4 | 1 | crime | brand | [Father murders 10-year-old son in Sanand, Ahmedabad](https://www.instagram.com/reel/DfOvy_qlbzK/) |
 | 1989 | 1378 | 1 | 0 | crime | brand | [Wife stabs husband over cooking dispute in Naroda, Ahmedabad](https://www.instagram.com/reel/Dfb-obqkv0-/) |
 | 1907 | 1236 | 2 | 0 | crime | brand | [Gujarat ATS arrests drug mafia Salim Ismail Dola after deportation from Turkey](https://www.instagram.com/reel/DfRkkA-grNV/) |
@@ -27,15 +27,15 @@
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| arrows | 4.49 | 10 |
+| arrows | 4.51 | 10 |
 | magazine | 2.46 | 10 |
 | stats | 2.20 | 10 |
-| calendar | 1.67 | 10 |
+| calendar | 1.66 | 10 |
 | split | 1.47 | 11 |
 | aurora | 1.03 | 10 |
 | road | 0.97 | 10 |
 | station | 0.87 | 10 |
-| train | 0.81 | 10 |
+| train | 0.80 | 10 |
 | tv | 0.78 | 11 |
 | notes | 0.77 | 11 |
 | tvs | 0.76 | 10 |
@@ -44,12 +44,12 @@
 | capsules | 0.73 | 11 |
 | hub | 0.72 | 10 |
 | stamps | 0.70 | 10 |
-| bento | 0.70 | 10 |
 | circles | 0.69 | 11 |
+| bento | 0.69 | 10 |
 | cols | 0.67 | 11 |
+| strips | 0.66 | 11 |
 | keys | 0.66 | 10 |
 | rope | 0.66 | 10 |
-| strips | 0.65 | 11 |
 | paper | 0.65 | 10 |
 | clipboard | 0.63 | 10 |
 | neon | 0.60 | 11 |
@@ -61,7 +61,7 @@
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| crime | 2.10 | 67 |
+| crime | 2.11 | 67 |
 | trending | 0.80 | 63 |
 | politics | 0.69 | 60 |
 | government | 0.64 | 62 |
@@ -84,7 +84,7 @@
 | crime | 2.05 | 70 |
 | trending | 0.80 | 63 |
 | politics | 0.69 | 60 |
-| government | 0.65 | 64 |
+| government | 0.64 | 64 |
 | good_news | 0.64 | 53 |
 
 ## mood
@@ -111,7 +111,7 @@
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| 19 | 2.42 | 22 |
+| 19 | 2.43 | 22 |
 | 12 | 1.52 | 19 |
 | 16 | 1.33 | 19 |
 | 15 | 1.20 | 18 |
