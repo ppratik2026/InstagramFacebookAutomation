@@ -1,12 +1,12 @@
-# Page report (12 Nov 2026 13:55 UTC)
+# Page report (12 Nov 2026 16:34 UTC)
 
-316 reels compared (older than 6 hours).
+318 reels compared (older than 6 hours).
 
 ## Top reels
 
 | Views | Reach | Shares | Saves | Category | Design | Title |
 |---|---|---|---|---|---|---|
-| 7076 | 4203 | 32 | 3 | crime | brand | [Fire incident in Nadiad with 4 gas cylinder blasts](https://www.instagram.com/reel/DfkCA5QvT-i/) |
+| 7093 | 4230 | 32 | 3 | crime | brand | [Fire incident in Nadiad with 4 gas cylinder blasts](https://www.instagram.com/reel/DfkCA5QvT-i/) |
 | 2968 | 1784 | 4 | 1 | crime | brand | [Father murders 10-year-old son in Sanand, Ahmedabad](https://www.instagram.com/reel/DfOvy_qlbzK/) |
 | 1989 | 1378 | 1 | 0 | crime | brand | [Wife stabs husband over cooking dispute in Naroda, Ahmedabad](https://www.instagram.com/reel/Dfb-obqkv0-/) |
 | 1907 | 1236 | 2 | 0 | crime | brand | [Gujarat ATS arrests drug mafia Salim Ismail Dola after deportation from Turkey](https://www.instagram.com/reel/DfRkkA-grNV/) |
@@ -21,69 +21,69 @@
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| brand | 1.01 | 307 |
+| brand | 1.01 | 309 |
 
 ## rows
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| arrows | 4.54 | 10 |
-| magazine | 2.46 | 10 |
+| arrows | 4.53 | 10 |
+| magazine | 2.45 | 10 |
 | stats | 2.06 | 11 |
 | calendar | 1.66 | 10 |
-| split | 1.47 | 11 |
+| split | 1.46 | 11 |
 | aurora | 1.03 | 11 |
 | road | 0.97 | 10 |
 | station | 0.87 | 10 |
 | train | 0.80 | 10 |
-| tv | 0.78 | 11 |
+| tv | 0.77 | 11 |
 | notes | 0.77 | 11 |
 | tvs | 0.76 | 10 |
 | film | 0.75 | 10 |
 | detective | 0.75 | 10 |
+| hub | 0.74 | 11 |
+| keys | 0.73 | 11 |
 | bento | 0.73 | 11 |
 | capsules | 0.73 | 11 |
-| hub | 0.72 | 10 |
 | stamps | 0.70 | 10 |
-| circles | 0.70 | 11 |
-| keys | 0.69 | 11 |
+| circles | 0.69 | 11 |
 | cols | 0.67 | 11 |
 | strips | 0.66 | 11 |
-| rope | 0.66 | 10 |
+| rope | 0.65 | 10 |
 | paper | 0.65 | 10 |
+| stairs | 0.63 | 11 |
 | clipboard | 0.63 | 10 |
 | neon | 0.60 | 11 |
 | balloons | 0.57 | 10 |
 | puzzle | 0.55 | 10 |
-| stairs | 0.53 | 10 |
 
 ## palette
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| crime | 2.10 | 68 |
-| trending | 0.81 | 64 |
-| politics | 0.69 | 61 |
-| government | 0.65 | 63 |
+| crime | 2.09 | 69 |
+| trending | 0.80 | 64 |
+| politics | 0.69 | 62 |
+| government | 0.64 | 63 |
 | good_news | 0.63 | 51 |
 
 ## visual
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| timeline | 1.46 | 10 |
-| checklist | 1.06 | 238 |
+| timeline | 1.45 | 10 |
+| checklist | 1.06 | 240 |
 | table | 0.74 | 32 |
-| compare | 0.68 | 14 |
+| compare | 0.67 | 14 |
 | reasons | 0.66 | 13 |
 
 ## category
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| crime | 2.04 | 71 |
-| trending | 0.81 | 64 |
-| politics | 0.69 | 61 |
+| crime | 2.04 | 72 |
+| trending | 0.80 | 64 |
+| politics | 0.69 | 62 |
 | government | 0.65 | 65 |
 | good_news | 0.64 | 53 |
 
@@ -91,7 +91,7 @@
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| breaking | 1.45 | 127 |
+| breaking | 1.44 | 129 |
 | info | 0.73 | 74 |
 | money | 0.71 | 41 |
 | happy | 0.64 | 65 |
@@ -103,7 +103,7 @@
 | Dark Throne | 1.51 | 76 |
 | The Last King | 1.13 | 16 |
 | Iron Rise | 0.95 | 54 |
-| Shadow Walk | 0.89 | 83 |
+| Shadow Walk | 0.90 | 85 |
 | Rule of Fear | 0.66 | 35 |
 | One Man Empire | 0.64 | 43 |
 
@@ -112,17 +112,17 @@
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
 | 19 | 2.44 | 22 |
-| 12 | 1.50 | 20 |
-| 16 | 1.33 | 19 |
-| 15 | 1.20 | 18 |
-| 13 | 1.06 | 19 |
-| 11 | 0.98 | 27 |
-| 00 | 0.91 | 19 |
+| 12 | 1.49 | 20 |
+| 16 | 1.32 | 19 |
+| 15 | 1.21 | 19 |
+| 13 | 1.05 | 19 |
+| 11 | 0.97 | 27 |
+| 00 | 0.90 | 19 |
 | 21 | 0.77 | 19 |
 | 22 | 0.76 | 19 |
 | 18 | 0.73 | 21 |
 | 23 | 0.72 | 23 |
 | 20 | 0.71 | 24 |
-| 14 | 0.65 | 16 |
-| 17 | 0.64 | 19 |
+| 14 | 0.69 | 17 |
 | 10 | 0.64 | 22 |
+| 17 | 0.64 | 19 |
