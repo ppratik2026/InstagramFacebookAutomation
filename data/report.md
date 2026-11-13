@@ -1,4 +1,4 @@
-# Page report (13 Nov 2026 04:40 UTC)
+# Page report (13 Nov 2026 07:34 UTC)
 
 329 reels compared (older than 6 hours).
 
@@ -6,16 +6,16 @@
 
 | Views | Reach | Shares | Saves | Category | Design | Title |
 |---|---|---|---|---|---|---|
-| 7098 | 4236 | 32 | 3 | crime | brand | [Fire incident in Nadiad with 4 gas cylinder blasts](https://www.instagram.com/reel/DfkCA5QvT-i/) |
+| 7099 | 4237 | 32 | 3 | crime | brand | [Fire incident in Nadiad with 4 gas cylinder blasts](https://www.instagram.com/reel/DfkCA5QvT-i/) |
 | 2968 | 1784 | 4 | 1 | crime | brand | [Father murders 10-year-old son in Sanand, Ahmedabad](https://www.instagram.com/reel/DfOvy_qlbzK/) |
-| 1989 | 1378 | 1 | 0 | crime | brand | [Wife stabs husband over cooking dispute in Naroda, Ahmedabad](https://www.instagram.com/reel/Dfb-obqkv0-/) |
+| 1990 | 1378 | 1 | 0 | crime | brand | [Wife stabs husband over cooking dispute in Naroda, Ahmedabad](https://www.instagram.com/reel/Dfb-obqkv0-/) |
 | 1907 | 1236 | 2 | 0 | crime | brand | [Gujarat ATS arrests drug mafia Salim Ismail Dola after deportation from Turkey](https://www.instagram.com/reel/DfRkkA-grNV/) |
 | 1670 | 1171 | 1 | 1 | trending | brand | [Unseasonal hailstorm and cyclone risk in Gujarat early November](https://www.instagram.com/reel/DfL_TIMiZ5K/) |
 | 1415 | 1055 | 1 | 0 | crime | brand | [Two murders reported in Amreli and Bhavnagar on Diwali night](https://www.instagram.com/reel/Dfg2cLxiu9r/) |
 | 896 | 596 | 3 | 0 | crime | brand | [Four Gujarati pilgrims killed as car plunges into Bhagirathi river in Uttarakhand](https://www.instagram.com/reel/DfW5q-Aleq6/) |
 | 710 | 527 | 0 | 0 | crime | brand | [Drug case accused shot by Ahmedabad Crime Branch during escape attempt](https://www.instagram.com/reel/De_3l88jIm8/) |
 | 667 | 373 | 0 | 0 | politics | brand | [PM Modi mocks Congress over MLC election results using ballot papers](https://www.instagram.com/reel/DfDFZAQgmFJ/) |
-| 456 | 362 | 0 | 0 | crime | brand | [Man arrested at Surat Udhna station for illegal money collection and harassing passenger](https://www.instagram.com/reel/Dfov8KZSWMd/) |
+| 468 | 373 | 0 | 0 | crime | brand | [Man arrested at Surat Udhna station for illegal money collection and harassing passenger](https://www.instagram.com/reel/Dfov8KZSWMd/) |
 
 ## design
 
@@ -27,16 +27,16 @@
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| arrows | 4.24 | 11 |
-| magazine | 2.31 | 11 |
+| arrows | 4.23 | 11 |
+| magazine | 2.30 | 11 |
 | stats | 2.07 | 11 |
-| calendar | 1.60 | 11 |
+| calendar | 1.59 | 11 |
 | split | 1.46 | 11 |
 | aurora | 1.03 | 11 |
-| road | 0.90 | 11 |
+| road | 0.91 | 11 |
 | station | 0.87 | 10 |
+| tvs | 0.81 | 11 |
 | train | 0.80 | 11 |
-| tvs | 0.80 | 11 |
 | notes | 0.77 | 11 |
 | tv | 0.77 | 11 |
 | film | 0.76 | 11 |
@@ -46,13 +46,13 @@
 | bento | 0.73 | 11 |
 | capsules | 0.73 | 11 |
 | stamps | 0.70 | 10 |
+| stairs | 0.70 | 11 |
 | circles | 0.69 | 11 |
-| stairs | 0.69 | 11 |
 | rope | 0.69 | 11 |
 | paper | 0.67 | 11 |
 | cols | 0.67 | 11 |
 | strips | 0.66 | 11 |
-| clipboard | 0.65 | 11 |
+| clipboard | 0.66 | 11 |
 | neon | 0.60 | 11 |
 | puzzle | 0.59 | 11 |
 | balloons | 0.57 | 10 |
@@ -75,7 +75,7 @@
 | checklist | 1.06 | 248 |
 | table | 0.75 | 33 |
 | compare | 0.70 | 15 |
-| reasons | 0.66 | 13 |
+| reasons | 0.65 | 13 |
 
 ## category
 
@@ -100,7 +100,7 @@
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| Dark Throne | 1.49 | 79 |
+| Dark Throne | 1.48 | 79 |
 | The Last King | 1.14 | 16 |
 | Iron Rise | 0.94 | 56 |
 | Shadow Walk | 0.91 | 86 |
@@ -117,8 +117,8 @@
 | 15 | 1.25 | 19 |
 | 13 | 1.05 | 19 |
 | 11 | 0.97 | 27 |
-| 00 | 0.92 | 21 |
-| 21 | 0.78 | 20 |
+| 00 | 0.93 | 21 |
+| 21 | 0.77 | 20 |
 | 22 | 0.77 | 20 |
 | 18 | 0.74 | 22 |
 | 23 | 0.73 | 24 |
