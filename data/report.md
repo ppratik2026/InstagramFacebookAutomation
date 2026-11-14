@@ -1,4 +1,4 @@
-# Page report (14 Nov 2026 07:35 UTC)
+# Page report (14 Nov 2026 10:34 UTC)
 
 348 reels compared (older than 6 hours).
 
@@ -6,14 +6,14 @@
 
 | Views | Reach | Shares | Saves | Category | Design | Title |
 |---|---|---|---|---|---|---|
-| 7115 | 4249 | 32 | 3 | crime | brand | [Fire incident in Nadiad with 4 gas cylinder blasts](https://www.instagram.com/reel/DfkCA5QvT-i/) |
+| 7120 | 4252 | 32 | 3 | crime | brand | [Fire incident in Nadiad with 4 gas cylinder blasts](https://www.instagram.com/reel/DfkCA5QvT-i/) |
 | 2968 | 1784 | 4 | 1 | crime | brand | [Father murders 10-year-old son in Sanand, Ahmedabad](https://www.instagram.com/reel/DfOvy_qlbzK/) |
-| 1991 | 1378 | 1 | 0 | crime | brand | [Wife stabs husband over cooking dispute in Naroda, Ahmedabad](https://www.instagram.com/reel/Dfb-obqkv0-/) |
+| 1991 | 1380 | 1 | 0 | crime | brand | [Wife stabs husband over cooking dispute in Naroda, Ahmedabad](https://www.instagram.com/reel/Dfb-obqkv0-/) |
 | 1907 | 1236 | 2 | 0 | crime | brand | [Gujarat ATS arrests drug mafia Salim Ismail Dola after deportation from Turkey](https://www.instagram.com/reel/DfRkkA-grNV/) |
 | 1670 | 1171 | 1 | 1 | trending | brand | [Unseasonal hailstorm and cyclone risk in Gujarat early November](https://www.instagram.com/reel/DfL_TIMiZ5K/) |
 | 1415 | 1055 | 1 | 0 | crime | brand | [Two murders reported in Amreli and Bhavnagar on Diwali night](https://www.instagram.com/reel/Dfg2cLxiu9r/) |
 | 898 | 596 | 3 | 0 | crime | brand | [Four Gujarati pilgrims killed as car plunges into Bhagirathi river in Uttarakhand](https://www.instagram.com/reel/DfW5q-Aleq6/) |
-| 785 | 517 | 1 | 0 | crime | brand | [Bapunagar MLA's nephew arrested for running over a person with Range Rover in Ahmedabad](https://www.instagram.com/reel/Dfpx9WtB7X7/) |
+| 787 | 518 | 1 | 0 | crime | brand | [Bapunagar MLA's nephew arrested for running over a person with Range Rover in Ahmedabad](https://www.instagram.com/reel/Dfpx9WtB7X7/) |
 | 710 | 527 | 0 | 0 | crime | brand | [Drug case accused shot by Ahmedabad Crime Branch during escape attempt](https://www.instagram.com/reel/De_3l88jIm8/) |
 | 667 | 373 | 0 | 0 | politics | brand | [PM Modi mocks Congress over MLC election results using ballot papers](https://www.instagram.com/reel/DfDFZAQgmFJ/) |
 
@@ -51,7 +51,7 @@
 | cols | 0.69 | 12 |
 | rope | 0.68 | 11 |
 | strips | 0.67 | 12 |
-| paper | 0.67 | 11 |
+| paper | 0.66 | 11 |
 | clipboard | 0.66 | 11 |
 | neon | 0.62 | 12 |
 | balloons | 0.60 | 11 |
