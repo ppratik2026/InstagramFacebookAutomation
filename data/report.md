@@ -1,14 +1,14 @@
-# Page report (15 Nov 2026 16:32 UTC)
+# Page report (16 Nov 2026 04:37 UTC)
 
-372 reels compared (older than 6 hours).
+383 reels compared (older than 6 hours).
 
 ## Top reels
 
 | Views | Reach | Shares | Saves | Category | Design | Title |
 |---|---|---|---|---|---|---|
 | 7121 | 4254 | 32 | 3 | crime | brand | [Fire incident in Nadiad with 4 gas cylinder blasts](https://www.instagram.com/reel/DfkCA5QvT-i/) |
+| 3585 | 1988 | 0 | 0 | good_news | brand | [Mohit Ulva joins Saurashtra team for Syed Mushtaq Ali Trophy](https://www.instagram.com/reel/DfwQPsOh6uz/) |
 | 2968 | 1784 | 4 | 1 | crime | brand | [Father murders 10-year-old son in Sanand, Ahmedabad](https://www.instagram.com/reel/DfOvy_qlbzK/) |
-| 2757 | 1578 | 0 | 0 | good_news | brand | [Mohit Ulva joins Saurashtra team for Syed Mushtaq Ali Trophy](https://www.instagram.com/reel/DfwQPsOh6uz/) |
 | 1991 | 1380 | 1 | 0 | crime | brand | [Wife stabs husband over cooking dispute in Naroda, Ahmedabad](https://www.instagram.com/reel/Dfb-obqkv0-/) |
 | 1907 | 1236 | 2 | 0 | crime | brand | [Gujarat ATS arrests drug mafia Salim Ismail Dola after deportation from Turkey](https://www.instagram.com/reel/DfRkkA-grNV/) |
 | 1670 | 1171 | 1 | 1 | trending | brand | [Unseasonal hailstorm and cyclone risk in Gujarat early November](https://www.instagram.com/reel/DfL_TIMiZ5K/) |
@@ -21,59 +21,59 @@
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| brand | 1.01 | 363 |
+| brand | 1.01 | 374 |
 
 ## rows
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| arrows | 3.84 | 12 |
-| magazine | 2.11 | 12 |
-| stats | 1.80 | 13 |
-| capsules | 1.71 | 13 |
-| calendar | 1.47 | 12 |
-| split | 1.32 | 13 |
-| aurora | 1.02 | 12 |
-| tvs | 1.02 | 12 |
-| stamps | 0.93 | 12 |
-| road | 0.88 | 12 |
+| arrows | 3.53 | 13 |
+| magazine | 2.10 | 13 |
+| capsules | 2.01 | 13 |
+| stats | 1.79 | 13 |
+| calendar | 1.46 | 12 |
+| split | 1.31 | 13 |
+| tvs | 1.01 | 12 |
+| aurora | 1.00 | 13 |
+| stamps | 0.92 | 12 |
+| road | 0.86 | 13 |
 | station | 0.82 | 12 |
-| detective | 0.82 | 12 |
-| train | 0.77 | 12 |
+| detective | 0.81 | 12 |
 | tv | 0.77 | 13 |
-| notes | 0.76 | 13 |
-| hub | 0.73 | 12 |
-| film | 0.73 | 12 |
-| bento | 0.72 | 12 |
+| notes | 0.75 | 13 |
+| train | 0.74 | 13 |
+| bento | 0.73 | 13 |
+| hub | 0.73 | 13 |
+| film | 0.72 | 12 |
 | keys | 0.71 | 13 |
-| stairs | 0.70 | 12 |
-| circles | 0.69 | 13 |
-| rope | 0.67 | 12 |
-| cols | 0.67 | 13 |
-| paper | 0.65 | 12 |
+| paper | 0.70 | 13 |
+| rope | 0.69 | 13 |
+| circles | 0.68 | 13 |
+| stairs | 0.68 | 13 |
+| cols | 0.66 | 13 |
 | strips | 0.65 | 13 |
-| neon | 0.61 | 13 |
+| neon | 0.60 | 13 |
 | balloons | 0.60 | 12 |
+| puzzle | 0.59 | 13 |
 | clipboard | 0.59 | 12 |
-| puzzle | 0.58 | 12 |
 
 ## palette
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| crime | 1.91 | 80 |
-| good_news | 0.86 | 62 |
-| trending | 0.78 | 78 |
-| government | 0.69 | 72 |
-| politics | 0.68 | 71 |
+| crime | 1.87 | 84 |
+| good_news | 0.91 | 65 |
+| trending | 0.78 | 80 |
+| government | 0.68 | 73 |
+| politics | 0.67 | 72 |
 
 ## visual
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
 | timeline | 1.33 | 12 |
-| checklist | 1.06 | 285 |
-| table | 0.73 | 37 |
+| checklist | 1.06 | 293 |
+| table | 0.74 | 40 |
 | compare | 0.69 | 16 |
 | reasons | 0.63 | 13 |
 
@@ -81,48 +81,48 @@
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| crime | 1.87 | 83 |
-| good_news | 0.86 | 64 |
-| trending | 0.78 | 78 |
-| government | 0.69 | 74 |
-| politics | 0.68 | 71 |
+| crime | 1.83 | 87 |
+| good_news | 0.91 | 67 |
+| trending | 0.78 | 80 |
+| government | 0.68 | 75 |
+| politics | 0.67 | 72 |
 
 ## mood
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| breaking | 1.35 | 152 |
-| happy | 0.83 | 76 |
-| info | 0.72 | 90 |
-| money | 0.71 | 45 |
+| breaking | 1.34 | 156 |
+| happy | 0.87 | 78 |
+| money | 0.71 | 46 |
+| info | 0.70 | 94 |
 
 ## music
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| Dark Throne | 1.56 | 87 |
-| The Last King | 1.00 | 20 |
-| Iron Rise | 0.90 | 64 |
-| Shadow Walk | 0.90 | 100 |
-| One Man Empire | 0.68 | 53 |
-| Rule of Fear | 0.67 | 39 |
+| Dark Throne | 1.59 | 88 |
+| The Last King | 0.99 | 20 |
+| Iron Rise | 0.92 | 67 |
+| Shadow Walk | 0.88 | 103 |
+| One Man Empire | 0.68 | 56 |
+| Rule of Fear | 0.65 | 40 |
 
 ## hour
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| 19 | 2.11 | 27 |
-| 13 | 1.57 | 22 |
+| 19 | 2.04 | 28 |
+| 13 | 1.74 | 22 |
 | 12 | 1.31 | 25 |
-| 16 | 1.21 | 22 |
-| 15 | 1.16 | 22 |
-| 00 | 1.01 | 23 |
+| 16 | 1.19 | 23 |
+| 15 | 1.15 | 22 |
+| 00 | 0.98 | 24 |
 | 11 | 0.91 | 31 |
-| 20 | 0.81 | 27 |
-| 21 | 0.77 | 22 |
-| 22 | 0.74 | 22 |
-| 18 | 0.72 | 24 |
-| 23 | 0.71 | 26 |
+| 21 | 0.85 | 24 |
+| 20 | 0.78 | 28 |
+| 22 | 0.74 | 23 |
+| 23 | 0.72 | 28 |
+| 18 | 0.71 | 25 |
 | 14 | 0.68 | 21 |
+| 17 | 0.66 | 23 |
 | 10 | 0.65 | 27 |
-| 17 | 0.65 | 22 |
