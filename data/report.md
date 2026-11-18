@@ -1,4 +1,4 @@
-# Page report (18 Nov 2026 07:57 UTC)
+# Page report (18 Nov 2026 10:38 UTC)
 
 423 reels compared (older than 6 hours).
 
@@ -9,7 +9,7 @@
 | 7121 | 4254 | 32 | 3 | crime | brand | [Fire incident in Nadiad with 4 gas cylinder blasts](https://www.instagram.com/reel/DfkCA5QvT-i/) |
 | 4261 | 2366 | 0 | 0 | good_news | brand | [Mohit Ulva joins Saurashtra team for Syed Mushtaq Ali Trophy](https://www.instagram.com/reel/DfwQPsOh6uz/) |
 | 2968 | 1784 | 4 | 1 | crime | brand | [Father murders 10-year-old son in Sanand, Ahmedabad](https://www.instagram.com/reel/DfOvy_qlbzK/) |
-| 2211 | 1505 | 10 | 1 | crime | brand | [Vadodara sex racket busted at Nirvana Spa in Atladara](https://www.instagram.com/reel/DfzXh4vIhyd/) |
+| 2212 | 1505 | 10 | 1 | crime | brand | [Vadodara sex racket busted at Nirvana Spa in Atladara](https://www.instagram.com/reel/DfzXh4vIhyd/) |
 | 1991 | 1380 | 1 | 0 | crime | brand | [Wife stabs husband over cooking dispute in Naroda, Ahmedabad](https://www.instagram.com/reel/Dfb-obqkv0-/) |
 | 1907 | 1236 | 2 | 0 | crime | brand | [Gujarat ATS arrests drug mafia Salim Ismail Dola after deportation from Turkey](https://www.instagram.com/reel/DfRkkA-grNV/) |
 | 1866 | 1325 | 1 | 0 | trending | brand | [Cyclone threat in South India: High alert in Andhra Pradesh and Tamil Nadu for November 19](https://www.instagram.com/reel/DfzzH8-ASPV/) |
@@ -119,7 +119,7 @@
 | 15 | 1.08 | 25 |
 | 22 | 1.02 | 26 |
 | 00 | 0.94 | 26 |
-| 11 | 0.88 | 34 |
+| 11 | 0.87 | 34 |
 | 21 | 0.82 | 27 |
 | 20 | 0.76 | 30 |
 | 23 | 0.69 | 30 |
