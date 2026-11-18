@@ -1,4 +1,4 @@
-# Page report (18 Nov 2026 04:46 UTC)
+# Page report (18 Nov 2026 07:57 UTC)
 
 423 reels compared (older than 6 hours).
 
@@ -12,7 +12,7 @@
 | 2211 | 1505 | 10 | 1 | crime | brand | [Vadodara sex racket busted at Nirvana Spa in Atladara](https://www.instagram.com/reel/DfzXh4vIhyd/) |
 | 1991 | 1380 | 1 | 0 | crime | brand | [Wife stabs husband over cooking dispute in Naroda, Ahmedabad](https://www.instagram.com/reel/Dfb-obqkv0-/) |
 | 1907 | 1236 | 2 | 0 | crime | brand | [Gujarat ATS arrests drug mafia Salim Ismail Dola after deportation from Turkey](https://www.instagram.com/reel/DfRkkA-grNV/) |
-| 1866 | 1324 | 1 | 0 | trending | brand | [Cyclone threat in South India: High alert in Andhra Pradesh and Tamil Nadu for November 19](https://www.instagram.com/reel/DfzzH8-ASPV/) |
+| 1866 | 1325 | 1 | 0 | trending | brand | [Cyclone threat in South India: High alert in Andhra Pradesh and Tamil Nadu for November 19](https://www.instagram.com/reel/DfzzH8-ASPV/) |
 | 1670 | 1171 | 1 | 1 | trending | brand | [Unseasonal hailstorm and cyclone risk in Gujarat early November](https://www.instagram.com/reel/DfL_TIMiZ5K/) |
 | 1415 | 1055 | 1 | 0 | crime | brand | [Two murders reported in Amreli and Bhavnagar on Diwali night](https://www.instagram.com/reel/Dfg2cLxiu9r/) |
 | 898 | 596 | 3 | 0 | crime | brand | [Four Gujarati pilgrims killed as car plunges into Bhagirathi river in Uttarakhand](https://www.instagram.com/reel/DfW5q-Aleq6/) |
@@ -44,13 +44,13 @@
 | train | 0.75 | 14 |
 | notes | 0.74 | 14 |
 | hub | 0.71 | 14 |
-| film | 0.71 | 14 |
 | paper | 0.71 | 14 |
+| film | 0.71 | 14 |
 | bento | 0.70 | 14 |
 | keys | 0.69 | 14 |
 | stairs | 0.68 | 14 |
 | rope | 0.68 | 14 |
-| cols | 0.63 | 15 |
+| cols | 0.64 | 15 |
 | strips | 0.62 | 14 |
 | balloons | 0.62 | 14 |
 | neon | 0.61 | 15 |
@@ -63,7 +63,7 @@
 |---|---|---|
 | crime | 1.79 | 96 |
 | good_news | 0.92 | 72 |
-| trending | 0.85 | 88 |
+| trending | 0.84 | 88 |
 | government | 0.67 | 81 |
 | politics | 0.66 | 77 |
 
@@ -71,7 +71,7 @@
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| timeline | 1.28 | 12 |
+| timeline | 1.27 | 12 |
 | checklist | 1.07 | 326 |
 | table | 0.73 | 44 |
 | compare | 0.67 | 19 |
@@ -83,7 +83,7 @@
 |---|---|---|
 | crime | 1.76 | 99 |
 | good_news | 0.91 | 74 |
-| trending | 0.85 | 88 |
+| trending | 0.84 | 88 |
 | government | 0.67 | 83 |
 | politics | 0.66 | 77 |
 
