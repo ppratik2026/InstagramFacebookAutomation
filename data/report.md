@@ -1,4 +1,4 @@
-# Page report (19 Nov 2026 07:38 UTC)
+# Page report (19 Nov 2026 10:36 UTC)
 
 443 reels compared (older than 6 hours).
 
@@ -38,7 +38,7 @@
 | aurora | 0.94 | 15 |
 | stamps | 0.88 | 14 |
 | road | 0.85 | 15 |
-| station | 0.79 | 14 |
+| station | 0.80 | 14 |
 | detective | 0.78 | 14 |
 | notes | 0.77 | 15 |
 | tv | 0.77 | 15 |
@@ -49,7 +49,7 @@
 | keys | 0.71 | 15 |
 | bento | 0.71 | 15 |
 | stairs | 0.69 | 15 |
-| rope | 0.69 | 15 |
+| rope | 0.68 | 15 |
 | cols | 0.64 | 15 |
 | puzzle | 0.64 | 15 |
 | strips | 0.64 | 15 |
