@@ -1,4 +1,4 @@
-# Page report (19 Nov 2026 04:41 UTC)
+# Page report (19 Nov 2026 07:38 UTC)
 
 443 reels compared (older than 6 hours).
 
@@ -38,24 +38,24 @@
 | aurora | 0.94 | 15 |
 | stamps | 0.88 | 14 |
 | road | 0.85 | 15 |
-| station | 0.80 | 14 |
+| station | 0.79 | 14 |
 | detective | 0.78 | 14 |
 | notes | 0.77 | 15 |
 | tv | 0.77 | 15 |
 | train | 0.76 | 15 |
 | hub | 0.73 | 15 |
 | paper | 0.72 | 15 |
-| film | 0.71 | 15 |
+| film | 0.72 | 15 |
 | keys | 0.71 | 15 |
 | bento | 0.71 | 15 |
 | stairs | 0.69 | 15 |
 | rope | 0.69 | 15 |
 | cols | 0.64 | 15 |
-| strips | 0.64 | 15 |
 | puzzle | 0.64 | 15 |
+| strips | 0.64 | 15 |
 | balloons | 0.63 | 14 |
 | neon | 0.62 | 15 |
-| clipboard | 0.61 | 14 |
+| clipboard | 0.60 | 14 |
 
 ## palette
 
@@ -74,7 +74,7 @@
 | timeline | 1.28 | 12 |
 | checklist | 1.06 | 344 |
 | table | 0.74 | 46 |
-| compare | 0.68 | 19 |
+| compare | 0.67 | 19 |
 | reasons | 0.61 | 13 |
 
 ## category
@@ -105,7 +105,7 @@
 | The Last King | 0.94 | 21 |
 | Shadow Walk | 0.92 | 121 |
 | One Man Empire | 0.68 | 62 |
-| Rule of Fear | 0.67 | 47 |
+| Rule of Fear | 0.68 | 47 |
 
 ## hour
 
