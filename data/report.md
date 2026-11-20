@@ -1,4 +1,4 @@
-# Page report (20 Nov 2026 04:33 UTC)
+# Page report (20 Nov 2026 07:39 UTC)
 
 462 reels compared (older than 6 hours).
 
@@ -27,11 +27,11 @@
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| arrows | 3.11 | 15 |
+| arrows | 3.10 | 15 |
 | stats | 2.05 | 16 |
 | capsules | 1.95 | 16 |
 | magazine | 1.90 | 15 |
-| circles | 1.37 | 16 |
+| circles | 1.36 | 16 |
 | calendar | 1.31 | 15 |
 | split | 1.18 | 16 |
 | tvs | 0.94 | 15 |
@@ -41,12 +41,12 @@
 | tv | 0.83 | 16 |
 | station | 0.83 | 15 |
 | detective | 0.78 | 15 |
+| notes | 0.77 | 16 |
 | train | 0.77 | 15 |
-| notes | 0.75 | 16 |
 | paper | 0.73 | 15 |
 | film | 0.73 | 15 |
-| hub | 0.71 | 16 |
 | keys | 0.71 | 16 |
+| hub | 0.71 | 16 |
 | stairs | 0.70 | 15 |
 | rope | 0.69 | 15 |
 | bento | 0.68 | 16 |
@@ -61,7 +61,7 @@
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| crime | 1.72 | 108 |
+| crime | 1.71 | 108 |
 | good_news | 0.91 | 76 |
 | trending | 0.86 | 97 |
 | government | 0.70 | 87 |
@@ -71,11 +71,11 @@
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| timeline | 1.30 | 12 |
+| timeline | 1.29 | 12 |
 | checklist | 1.06 | 361 |
 | table | 0.75 | 47 |
 | compare | 0.68 | 20 |
-| reasons | 0.62 | 13 |
+| reasons | 0.61 | 13 |
 
 ## category
 
@@ -93,8 +93,8 @@
 |---|---|---|
 | breaking | 1.30 | 198 |
 | happy | 0.88 | 94 |
-| money | 0.71 | 52 |
 | info | 0.71 | 109 |
+| money | 0.71 | 52 |
 
 ## music
 
@@ -102,8 +102,8 @@
 |---|---|---|
 | Dark Throne | 1.46 | 106 |
 | Iron Rise | 1.01 | 82 |
+| The Last King | 0.94 | 22 |
 | Shadow Walk | 0.93 | 125 |
-| The Last King | 0.92 | 22 |
 | One Man Empire | 0.70 | 66 |
 | Rule of Fear | 0.68 | 52 |
 
@@ -112,16 +112,16 @@
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
 | 19 | 1.78 | 35 |
-| 13 | 1.69 | 26 |
+| 13 | 1.68 | 26 |
 | 12 | 1.20 | 32 |
 | 16 | 1.12 | 27 |
 | 18 | 1.09 | 29 |
-| 15 | 1.08 | 27 |
+| 15 | 1.07 | 27 |
 | 22 | 1.01 | 28 |
 | 00 | 0.93 | 28 |
 | 11 | 0.89 | 37 |
 | 21 | 0.83 | 30 |
-| 20 | 0.77 | 33 |
+| 20 | 0.78 | 33 |
 | 23 | 0.71 | 32 |
 | 14 | 0.68 | 28 |
 | 17 | 0.67 | 28 |
