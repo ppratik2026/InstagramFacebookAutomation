@@ -1,6 +1,6 @@
-# Page report (20 Nov 2026 07:39 UTC)
+# Page report (20 Nov 2026 10:36 UTC)
 
-462 reels compared (older than 6 hours).
+463 reels compared (older than 6 hours).
 
 ## Top reels
 
@@ -12,7 +12,7 @@
 | 2217 | 1510 | 10 | 1 | crime | brand | [Vadodara sex racket busted at Nirvana Spa in Atladara](https://www.instagram.com/reel/DfzXh4vIhyd/) |
 | 1991 | 1380 | 1 | 0 | crime | brand | [Wife stabs husband over cooking dispute in Naroda, Ahmedabad](https://www.instagram.com/reel/Dfb-obqkv0-/) |
 | 1907 | 1236 | 2 | 0 | crime | brand | [Gujarat ATS arrests drug mafia Salim Ismail Dola after deportation from Turkey](https://www.instagram.com/reel/DfRkkA-grNV/) |
-| 1873 | 1327 | 1 | 0 | trending | brand | [Cyclone threat in South India: High alert in Andhra Pradesh and Tamil Nadu for November 19](https://www.instagram.com/reel/DfzzH8-ASPV/) |
+| 1875 | 1328 | 1 | 0 | trending | brand | [Cyclone threat in South India: High alert in Andhra Pradesh and Tamil Nadu for November 19](https://www.instagram.com/reel/DfzzH8-ASPV/) |
 | 1670 | 1171 | 1 | 1 | trending | brand | [Unseasonal hailstorm and cyclone risk in Gujarat early November](https://www.instagram.com/reel/DfL_TIMiZ5K/) |
 | 1415 | 1055 | 1 | 0 | crime | brand | [Two murders reported in Amreli and Bhavnagar on Diwali night](https://www.instagram.com/reel/Dfg2cLxiu9r/) |
 | 898 | 596 | 3 | 0 | crime | brand | [Four Gujarati pilgrims killed as car plunges into Bhagirathi river in Uttarakhand](https://www.instagram.com/reel/DfW5q-Aleq6/) |
@@ -21,35 +21,35 @@
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| brand | 1.01 | 453 |
+| brand | 1.01 | 454 |
 
 ## rows
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
 | arrows | 3.10 | 15 |
-| stats | 2.05 | 16 |
+| stats | 2.07 | 16 |
 | capsules | 1.95 | 16 |
-| magazine | 1.90 | 15 |
+| magazine | 1.89 | 15 |
 | circles | 1.36 | 16 |
 | calendar | 1.31 | 15 |
 | split | 1.18 | 16 |
 | tvs | 0.94 | 15 |
 | aurora | 0.94 | 16 |
 | road | 0.86 | 15 |
-| stamps | 0.85 | 15 |
+| stamps | 0.86 | 15 |
 | tv | 0.83 | 16 |
 | station | 0.83 | 15 |
 | detective | 0.78 | 15 |
-| notes | 0.77 | 16 |
+| notes | 0.78 | 16 |
 | train | 0.77 | 15 |
 | paper | 0.73 | 15 |
-| film | 0.73 | 15 |
-| keys | 0.71 | 16 |
-| hub | 0.71 | 16 |
-| stairs | 0.70 | 15 |
+| film | 0.72 | 15 |
+| hub | 0.72 | 16 |
+| keys | 0.72 | 16 |
+| stairs | 0.71 | 16 |
 | rope | 0.69 | 15 |
-| bento | 0.68 | 16 |
+| bento | 0.69 | 16 |
 | balloons | 0.66 | 15 |
 | strips | 0.66 | 16 |
 | cols | 0.65 | 16 |
@@ -64,8 +64,8 @@
 | crime | 1.71 | 108 |
 | good_news | 0.91 | 76 |
 | trending | 0.86 | 97 |
-| government | 0.70 | 87 |
-| politics | 0.67 | 85 |
+| government | 0.70 | 88 |
+| politics | 0.68 | 85 |
 
 ## visual
 
@@ -74,7 +74,7 @@
 | timeline | 1.29 | 12 |
 | checklist | 1.06 | 361 |
 | table | 0.75 | 47 |
-| compare | 0.68 | 20 |
+| compare | 0.69 | 21 |
 | reasons | 0.61 | 13 |
 
 ## category
@@ -84,8 +84,8 @@
 | crime | 1.69 | 111 |
 | good_news | 0.91 | 78 |
 | trending | 0.86 | 97 |
-| government | 0.70 | 89 |
-| politics | 0.67 | 85 |
+| government | 0.70 | 90 |
+| politics | 0.68 | 85 |
 
 ## mood
 
@@ -93,18 +93,18 @@
 |---|---|---|
 | breaking | 1.30 | 198 |
 | happy | 0.88 | 94 |
-| info | 0.71 | 109 |
+| info | 0.72 | 110 |
 | money | 0.71 | 52 |
 
 ## music
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| Dark Throne | 1.46 | 106 |
+| Dark Throne | 1.45 | 106 |
 | Iron Rise | 1.01 | 82 |
-| The Last King | 0.94 | 22 |
-| Shadow Walk | 0.93 | 125 |
-| One Man Empire | 0.70 | 66 |
+| The Last King | 0.95 | 22 |
+| Shadow Walk | 0.92 | 125 |
+| One Man Empire | 0.71 | 67 |
 | Rule of Fear | 0.68 | 52 |
 
 ## hour
@@ -114,7 +114,7 @@
 | 19 | 1.78 | 35 |
 | 13 | 1.68 | 26 |
 | 12 | 1.20 | 32 |
-| 16 | 1.12 | 27 |
+| 16 | 1.11 | 27 |
 | 18 | 1.09 | 29 |
 | 15 | 1.07 | 27 |
 | 22 | 1.01 | 28 |
@@ -123,6 +123,6 @@
 | 21 | 0.83 | 30 |
 | 20 | 0.78 | 33 |
 | 23 | 0.71 | 32 |
-| 14 | 0.68 | 28 |
+| 14 | 0.69 | 28 |
 | 17 | 0.67 | 28 |
-| 10 | 0.66 | 33 |
+| 10 | 0.67 | 34 |
