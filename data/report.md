@@ -1,4 +1,4 @@
-# Page report (21 Nov 2026 04:36 UTC)
+# Page report (21 Nov 2026 07:33 UTC)
 
 481 reels compared (older than 6 hours).
 
@@ -27,12 +27,12 @@
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| arrows | 2.95 | 16 |
+| arrows | 2.94 | 16 |
 | stats | 2.08 | 16 |
 | capsules | 1.94 | 16 |
-| magazine | 1.83 | 16 |
-| circles | 1.36 | 16 |
-| split | 1.35 | 17 |
+| magazine | 1.82 | 16 |
+| split | 1.36 | 17 |
+| circles | 1.35 | 16 |
 | calendar | 1.31 | 16 |
 | aurora | 0.94 | 16 |
 | tvs | 0.94 | 16 |
@@ -51,7 +51,7 @@
 | rope | 0.70 | 16 |
 | bento | 0.69 | 16 |
 | balloons | 0.68 | 16 |
-| cols | 0.67 | 17 |
+| cols | 0.66 | 17 |
 | puzzle | 0.65 | 16 |
 | strips | 0.65 | 16 |
 | neon | 0.65 | 17 |
@@ -61,7 +61,7 @@
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| crime | 1.69 | 114 |
+| crime | 1.70 | 114 |
 | good_news | 0.91 | 78 |
 | trending | 0.86 | 100 |
 | government | 0.70 | 91 |
@@ -71,7 +71,7 @@
 
 | Value | Strength (1 = page average) | Reels |
 |---|---|---|
-| timeline | 1.29 | 12 |
+| timeline | 1.28 | 12 |
 | checklist | 1.06 | 378 |
 | table | 0.74 | 47 |
 | compare | 0.70 | 22 |
@@ -102,10 +102,10 @@
 |---|---|---|
 | Dark Throne | 1.46 | 109 |
 | Iron Rise | 1.02 | 84 |
-| The Last King | 0.96 | 24 |
+| The Last King | 0.95 | 24 |
 | Shadow Walk | 0.92 | 132 |
 | One Man Empire | 0.70 | 68 |
-| Rule of Fear | 0.68 | 55 |
+| Rule of Fear | 0.69 | 55 |
 
 ## hour
 
@@ -113,15 +113,15 @@
 |---|---|---|
 | 19 | 1.75 | 36 |
 | 13 | 1.64 | 27 |
-| 12 | 1.18 | 34 |
+| 12 | 1.17 | 34 |
 | 16 | 1.10 | 28 |
 | 15 | 1.08 | 28 |
 | 18 | 1.08 | 30 |
 | 22 | 1.00 | 30 |
 | 00 | 0.93 | 29 |
-| 11 | 0.89 | 38 |
+| 11 | 0.88 | 38 |
 | 21 | 0.83 | 31 |
-| 23 | 0.81 | 33 |
+| 23 | 0.82 | 33 |
 | 20 | 0.78 | 34 |
 | 14 | 0.72 | 30 |
 | 10 | 0.67 | 35 |
